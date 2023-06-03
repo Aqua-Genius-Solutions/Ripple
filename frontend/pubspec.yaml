@@ -18,10 +18,22 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^2.0.0
 
 flutter:
   uses-material-design: true
   assets:
-   -  images/phone.png  
+    - images/bubbles.png
+    - images/unnamed.jpg
+    - images/backgroundd.jpg
+    - icons/home-page.png
+    - icons/news.png
+    - icons/setting.png
+    - icons/trophy.png
+    - icons/home-page-colored.png
+    - icons/news-colored.png
+    - icons/setting-colored.png
+    - icons/trophy-colored.png
+    - images/rip2.png
+    - images/arrow.png
+    - images/phone.png

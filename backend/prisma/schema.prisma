@@ -4,52 +4,53 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgres://root:rAjdVxvQihwqnR2w0zLH5PM1CqFO90oE@dpg-chsfo2grddl1j5vqcfgg-a.oregon-postgres.render.com/ripple"
 }
 
 model User {
-  id         Int      @id @default(autoincrement())
-  name       String
-  surname    String
-  email      String
-  password   String
-  address    String
-  isPro      Boolean
-  creditCard Int
-  CVC        Int
-  Referrals  Int[]
-  Bubbles    Int
-  Reference  Int
-  isAdmin    Boolean
-  NbFamMem   Int
-  Events     Events[] @relation("UserLikedEvents")
-  News       News[]   @relation("UserLikedNews")
+  id            Int      @id @default(autoincrement())
+  name          String
+  surname       String
+  email         String
+  password      String
+  address       String
+  isPro         Boolean
+  creditCard    Int
+  CVC           Int
+  Referrals     Int[]
+  Bubbles       Int
+  Reference     Int
+  isAdmin       Boolean
+  NbFamMem      Int
+  LikedEvents   Events[] @relation("UserLikedEvents")
+  LikedNews     News[]   @relation("UserLikedNews")
 }
 
 model Events {
-  id           Int      @id @default(autoincrement())
-  author       String
-  link         String
-  date         DateTime
-  participants Int[]
-  image        String
-  User         User[]   @relation("UserLikedEvents")
+  id            Int      @id @default(autoincrement())
+  author        String
+  link          String
+  date          DateTime
+  participants  Int[]
+  image         String
+  LikedBy       User[]   @relation("UserLikedEvents")
 }
 
 model News {
-  id          Int      @id @default(autoincrement())
-  author      String
-  description String
-  link        String
-  date        DateTime
-  image       String
-  User        User[]   @relation("UserLikedNews")
+  id            Int      @id @default(autoincrement())
+  author        String
+  description   String
+  link          String
+  date          DateTime
+  image         String
+  LikedBy       User[]   @relation("UserLikedNews")
 }
 
 model Rewards {
-  id          Int    @id @default(autoincrement())
-  name        String
-  price       Int
-  image       Int
-  description String
+  id            Int      @id @default(autoincrement())
+  name          String
+  price         Int
+  image         Int
+  description   String
 }
+
