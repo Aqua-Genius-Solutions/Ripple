@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class HomePage extends StatelessWidget {
-    Future<void> fetchData() async {
+  Future<void> fetchData() async {
     try {
-      final response = await http.get(Uri.parse('http://localhost:3000/events'));
+      final response =
+          await http.get(Uri.parse('https://ripple-4wg9.onrender.com/events'));
 
       if (response.statusCode == 200) {
         // Successful request
@@ -20,6 +21,7 @@ class HomePage extends StatelessWidget {
       print('An error occurred: $error');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     fetchData();
