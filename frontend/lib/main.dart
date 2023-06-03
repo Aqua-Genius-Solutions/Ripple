@@ -90,7 +90,7 @@ class SecondPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Singin'),
+        title: Text('Signin'),
       ),
       body: Center(
         child: Text('start here savior'),
