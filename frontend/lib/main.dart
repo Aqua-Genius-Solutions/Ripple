@@ -7,7 +7,7 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key});
 
   @override
   Widget build(BuildContext context) {
@@ -33,8 +33,67 @@ class MyHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color.fromARGB(255, 101, 215, 247),
+              Color.fromARGB(255, 15, 109, 225),
+              Color.fromARGB(255, 4, 67, 144),
+            ],
+          ),
+        ),
+        child: Align(
+          alignment: Alignment.topCenter,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.only(top: 40.0),
+                child: Image.asset(
+                  'images/rip2.png',
+                  width: 300,
+                  height: 300,
+                ),
+              ),
+              SizedBox(height: 8),
+              InkResponse(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => SecondPage()),
+                  );
+                },
+                child: Padding(
+                  padding: EdgeInsets.only(
+                    top: 70,
+                    bottom: 40,
+                  ),
+                  child: Image.asset(
+                    'images/arrow.png',
+                    width: 80,
+                    height: 80,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SecondPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Singin'),
+      ),
       body: Center(
-        child: Center(child: Text('Welcome to Ripple!')),
+        child: Text('start here savior'),
       ),
     );
   }
