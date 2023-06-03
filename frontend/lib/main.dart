@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'nav_bar.dart';
 import 'package:http/http.dart' as http;
+import 'Home/home.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: HomePage(),
     );
   }
 }
@@ -152,16 +153,4 @@ class ScreenFour extends StatelessWidget {
   }
 }
 
-class SecondPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Singin'),
-      ),
-      body: Center(
-        child: Text('start here savior'),
-      ),
-    );
-  }
-}
+
