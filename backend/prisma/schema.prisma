@@ -15,10 +15,10 @@ model User {
   password   String
   address    String
   isPro      Boolean
-  creditCard BigInt
+  creditCard Int
   CVC        Int
   Referrals  Int[]
-  Bubbles    BigInt
+  Bubbles    Int
   Reference  Int
   isAdmin    Boolean
   NbFamMem   Int

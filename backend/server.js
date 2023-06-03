@@ -4,6 +4,7 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const prisma = require("./prisma/client");
 
 const userRouter = require("./routes/route");
 
@@ -14,6 +15,11 @@ app.use(cors());
 app.use(morgan("dev"));
 
 app.use("/users", userRouter);
+
+app.get("/add", async (req, res) => {
+  await prisma.user.create({ data: { name: "test" } });
+  res.send("User added");
+});
 
 app.get("/users", async (req, res) => {
   const users = await prisma.user.findMany();
