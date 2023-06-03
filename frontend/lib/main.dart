@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'nav_bar.dart';
+import 'package:http/http.dart' as http;
 
 void main() => runApp(MyApp());
 
@@ -49,7 +50,6 @@ class _MyHomePageState extends State<MyHomePage> {
               setState(() {
                 _currentIndex = index;
               });
-              print("current index $_currentIndex");
             },
           ),
         ],
