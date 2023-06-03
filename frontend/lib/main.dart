@@ -1,40 +1,106 @@
-import 'package:english_words/english_words.dart';
-import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+// ignore_for_file: library_private_types_in_public_api
 
-void main() {
-  runApp(MyApp());
-}
+import 'package:flutter/material.dart';
+import 'nav_bar.dart';
+
+void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Fixed Bottom Navbar',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _currentIndex = 0;
+
+  final List<Widget> _screens = [
+    ScreenOne(),
+    ScreenTwo(),
+    ScreenThree(),
+    ScreenFour(),
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (context) => MyAppState(),
-      child: MaterialApp(
-        title: 'Namer App',
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepOrange),
-        ),
-        home: MyHomePage(),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Fixed Bottom Navbar'),
+      ),
+      body: Stack(
+        children: [
+          _screens[_currentIndex],
+          BottomNavigationBarWidget(
+            screens: _screens,
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+              print("current index $_currentIndex");
+            },
+          ),
+        ],
       ),
     );
   }
 }
 
-class MyAppState extends ChangeNotifier {
-  var current = WordPair.random();
-}
-
-class MyHomePage extends StatelessWidget {
+class ScreenOne extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Center(child: Text('Welcome to Ripple!')),
+    return Center(
+      child: Text(
+        'Home Screen',
+        style: TextStyle(fontSize: 24),
+      ),
+    );
+  }
+}
+
+class ScreenTwo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'Rewards Screen',
+        style: TextStyle(fontSize: 24),
+      ),
+    );
+  }
+}
+
+class ScreenThree extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'News Screen',
+        style: TextStyle(fontSize: 24),
+      ),
+    );
+  }
+}
+
+class ScreenFour extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'Settings Screen',
+        style: TextStyle(fontSize: 24),
       ),
     );
   }

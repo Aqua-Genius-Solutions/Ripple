@@ -23,3 +23,12 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - icons/home-page.png
+    - icons/news.png
+    - icons/setting.png
+    - icons/trophy.png
+    - icons/home-page-colored.png
+    - icons/news-colored.png
+    - icons/setting-colored.png
+    - icons/trophy-colored.png
