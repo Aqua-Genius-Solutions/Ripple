@@ -1,8 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const { PrismaClient } =  require('@prisma/client')
+const prisma = new PrismaClient()
 
 const userRouter = require("./routes/route");
+const eventRouter = require("./routes/events");
 
 const app = express();
 
@@ -11,11 +14,7 @@ app.use(cors());
 app.use(morgan("dev"));
 
 app.use("/users", userRouter);
-
-app.get("/users", async (req, res) => {
-  const users = await prisma.user.findMany();
-  res.json(users);
-});
+app.use("/",eventRouter)
 
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");

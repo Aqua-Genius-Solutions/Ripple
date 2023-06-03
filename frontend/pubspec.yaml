@@ -11,15 +11,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  http: ^0.13.0
   english_words: ^4.0.0
   provider: ^6.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
   flutter_lints: ^2.0.0
 
 flutter:
   uses-material-design: true
+  assets:
+    - images/bubbles.png
+    - images/unnamed.jpg
+    - images/backgroundd.jpg
