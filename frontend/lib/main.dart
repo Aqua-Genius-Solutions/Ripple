@@ -1,9 +1,10 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'nav_bar.dart';
-import 'package:http/http.dart' as http;
-import 'Home/home.dart';
+import 'home/home.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,7 +18,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: HomePage(),
+      home: MyHomePage(),
     );
   }
 }
@@ -28,76 +29,18 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _currentIndex = 0;
-
-  final List<Widget> _screens = [
-    ScreenOne(),
-    ScreenTwo(),
-    ScreenThree(),
-    ScreenFour(),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Fixed Bottom Navbar'),
       ),
-      body: Stack(
-        children: [
-          _screens[_currentIndex],
-          BottomNavigationBarWidget(
-            screens: _screens,
-            currentIndex: _currentIndex,
-            onTap: (index) {
-              setState(() {
-                _currentIndex = index;
-              });
-            },
-          ),
-        ],
-      ),
+      body: WelcomePage(),
     );
   }
 }
 
-class ScreenOne extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Home Screen',
-        style: TextStyle(fontSize: 24),
-      ),
-    );
-  }
-}
-
-class ScreenTwo extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'Rewards Screen',
-        style: TextStyle(fontSize: 24),
-      ),
-    );
-  }
-}
-
-class ScreenThree extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'News Screen',
-        style: TextStyle(fontSize: 24),
-      ),
-    );
-  }
-}
-
-class ScreenFour extends StatelessWidget {
+class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -130,7 +73,7 @@ class ScreenFour extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SecondPage()),
+                    MaterialPageRoute(builder: (context) => LoginPage()),
                   );
                 },
                 child: Padding(
@@ -153,4 +96,76 @@ class ScreenFour extends StatelessWidget {
   }
 }
 
+class LoginPage extends StatefulWidget {
+  @override
+  _LoginPageState createState() => _LoginPageState();
+}
 
+class _LoginPageState extends State<LoginPage> {
+  int _currentIndex = 0;
+
+  final List<Widget> _screens = [
+    HomePage(),
+    ScreenTwo(),
+    ScreenThree(),
+    ScreenFour(),
+  ];
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Singin here savior'),
+      ),
+      body: Stack(
+        children: [
+          _screens[_currentIndex],
+          BottomNavigationBarWidget(
+            screens: _screens,
+            currentIndex: _currentIndex,
+            onTap: (index) {
+              setState(() {
+                _currentIndex = index;
+              });
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ScreenTwo extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'Rewards Screen',
+        style: TextStyle(fontSize: 24),
+      ),
+    );
+  }
+}
+
+class ScreenThree extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'News Screen',
+        style: TextStyle(fontSize: 24),
+      ),
+    );
+  }
+}
+
+class ScreenFour extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'Settings Screen',
+        style: TextStyle(fontSize: 24),
+      ),
+    );
+  }
+}
