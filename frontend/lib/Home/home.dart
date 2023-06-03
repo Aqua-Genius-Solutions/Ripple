@@ -1,28 +1,59 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-class HomePage extends StatelessWidget {
-    Future<void> fetchData() async {
+class Event {
+  final String title;
+  final String location;
+
+  Event({required this.title, required this.location});
+}
+
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List<Event> events = []; // List to store the mapped events
+
+  Future<void> fetchData() async {
     try {
-      final response = await http.get(Uri.parse('http://localhost:3000/events'));
+      final response = await http.get(Uri.parse('https://ripple-4wg9.onrender.com/events'));
 
       if (response.statusCode == 200) {
-        // Successful request
         final data = response.body;
-        // Process the data as needed
+        final decodedData = json.decode(data); // Convert the string to a list of objects
+
+        List<Event> mappedEvents = []; // Temporary list to store the mapped events
+
+        for (var event in decodedData) {
+          // Map each object to the Event class and add it to the list
+          mappedEvents.add(Event(title: event['title'], location: event['location']));
+        }
+
+        setState(() {
+          events = mappedEvents; // Update the events list with the mapped data
+        });
+
         print(data);
       } else {
-        // Error handling
         print('Request failed with status: ${response.statusCode}');
       }
     } catch (error) {
-      // Exception handling
       print('An error occurred: $error');
     }
   }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
+
   @override
   Widget build(BuildContext context) {
-    fetchData();
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -32,8 +63,8 @@ class HomePage extends StatelessWidget {
       ),
       child: Scaffold(
         appBar: AppBar(
-          automaticallyImplyLeading: false, // Hide the back button
-          titleSpacing: 0.0, // Remove default title spacing
+          automaticallyImplyLeading: false,
+          titleSpacing: 0.0,
           title: Row(
             children: [
               SizedBox(
@@ -48,7 +79,7 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 20.0), // Add spacing between the icon and title
+              SizedBox(width: 20.0),
             ],
           ),
           actions: [
@@ -56,7 +87,7 @@ class HomePage extends StatelessWidget {
               padding: EdgeInsets.only(right: 20, top: 16.0),
               child: CircleAvatar(
                 backgroundImage: AssetImage('images/unnamed.jpg'),
-                radius: 20.0, // Adjust the radius to change the size
+                radius: 20.0,
               ),
             ),
           ],
@@ -89,7 +120,7 @@ class HomePage extends StatelessWidget {
             ),
             Container(
               width: double.infinity,
-              height: 400.0, // Adjust the height to make it bigger
+              height: 400.0,
               margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
@@ -108,20 +139,22 @@ class HomePage extends StatelessWidget {
                 children: [
                   SizedBox(height: 25.0),
                   Container(
-                    width: 320.0, // Adjust the width as needed
+                    width: 320.0,
                     height: 160.0,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Color.fromARGB(255, 255, 255, 255),
                       borderRadius: BorderRadius.circular(12.0),
                     ),
-                  ),
-                  SizedBox(height: 25.0),
-                  Container(
-                    width: 320.0, // Adjust the width as needed
-                    height: 160.0,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(12.0),
+                    child: Center(
+                      child: ListView.builder(
+                        itemCount: events.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            title: Text(events[index].title),
+                            subtitle: Text(events[index].location),
+                          );
+                        },
+                      ),
                     ),
                   ),
                   SizedBox(height: 30.0),
