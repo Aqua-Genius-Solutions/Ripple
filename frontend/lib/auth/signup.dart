@@ -9,21 +9,21 @@ class SignInScreen extends StatefulWidget {
 
 class _SignInScreenState extends State<SignInScreen> {
   TextEditingController nameController = TextEditingController();
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController gmailController = TextEditingController();
+  TextEditingController surnameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
-  Future<void> signIn() async {
+  Future<void> signUp() async {
     String name = nameController.text.trim();
-    String username = usernameController.text.trim();
-    String gmail = gmailController.text.trim();
+    String surname = surnameController.text.trim();
+    String email = emailController.text.trim();
     String password = passwordController.text.trim();
     String confirmPassword = confirmPasswordController.text.trim();
 
     if (name.isEmpty ||
-        username.isEmpty ||
-        gmail.isEmpty ||
+        surname.isEmpty ||
+        email.isEmpty ||
         password.isEmpty ||
         confirmPassword.isEmpty) {
       // Handle empty fields error
@@ -38,14 +38,14 @@ class _SignInScreenState extends State<SignInScreen> {
     try {
       UserCredential userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
-        email: gmail,
+        email: email,
         password: password,
       );
       // Authentication successful, do something
-      print('User signed in: ${userCredential.user}');
+      print('User signed up: ${userCredential.user}');
     } on FirebaseAuthException catch (e) {
       // Handle authentication error
-      print('Failed to sign in: $e');
+      print('Failed to sign up: $e');
     }
   }
 
@@ -53,9 +53,9 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sign In'),
+        title: Text('Sign Up'),
       ),
-      body: SingleChildScrollView( // Wrap with SingleChildScrollView
+      body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.all(16.0),
           child: Column(
@@ -77,20 +77,20 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),
               SizedBox(height: 8.0),
-              // Username Input
+              // Surname Input
               TextField(
-                controller: usernameController,
+                controller: surnameController,
                 decoration: InputDecoration(
-                  labelText: 'Username',
+                  labelText: 'Surname',
                   border: OutlineInputBorder(),
                 ),
               ),
               SizedBox(height: 8.0),
-              // Gmail Input
+              // Email Input
               TextField(
-                controller: gmailController,
+                controller: emailController,
                 decoration: InputDecoration(
-                  labelText: 'Gmail',
+                  labelText: 'Email',
                   border: OutlineInputBorder(),
                 ),
               ),
@@ -115,14 +115,29 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),
               SizedBox(height: 16.0),
-              // Sign In Button
-              InkResponse(
-                onTap: signIn, // Use onTap instead of onPressed
-                child: Image.asset(
-                  'images/arrow-blue.png',
-                  width: 60,
-                  height: 60,
-                ),
+              // Sign Up Button
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  InkResponse(
+                    onTap: signUp,
+                    child: Image.asset(
+                      'images/arrow-blue.png',
+                      width: 60,
+                      height: 60,
+                    ),
+                  ),
+                  SizedBox(width: 16.0),
+                InkResponse(
+                    onTap: signUp,
+                    child: Image.asset(
+                      'images/google.png',
+                      width: 60,
+                      height: 60,
+                    ),
+                  ),
+                  SizedBox(width: 16.0),
+                ],
               ),
             ],
           ),

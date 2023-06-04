@@ -16,6 +16,8 @@ dependencies:
   provider: ^6.0.0
   firebase_core: ^2.13.1
   firebase_auth: ^4.6.2
+  cloud_firestore: ^4.8.0
+  google_sign_in: ^6.1.3
 
 dev_dependencies:
   flutter_test:
@@ -42,3 +44,4 @@ flutter:
     - images/logggo-transformed.png
     - images/flesh-transformed-transformed.png
     - images/arrow-blue.png
+    - images/google.png
