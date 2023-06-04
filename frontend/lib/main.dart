@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
+import 'auth/signup.dart';
 
 void main() => runApp(MyApp());
 
@@ -106,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
 
   final List<Widget> _screens = [
     HomePage(),
-    ScreenTwo(),
+    SignInScreen(),
     ScreenThree(),
     ScreenFour(),
   ];

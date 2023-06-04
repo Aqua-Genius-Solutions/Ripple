@@ -14,6 +14,10 @@ dependencies:
   http: ^0.13.3
   english_words: ^4.0.0
   provider: ^6.0.0
+  firebase_core: ^2.13.1
+  firebase_auth: ^4.6.2
+  cloud_firestore: ^4.8.0
+  google_sign_in: ^6.1.3
 
 dev_dependencies:
   flutter_test:
@@ -37,3 +41,7 @@ flutter:
     - images/rip2.png
     - images/arrow.png
     - images/phone.png
+    - images/logggo-transformed.png
+    - images/flesh-transformed-transformed.png
+    - images/arrow-blue.png
+    - images/google.png
