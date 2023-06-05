@@ -1,7 +1,11 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
+
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
+
 class SignInScreen extends StatefulWidget {
   @override
   _SignInScreenState createState() => _SignInScreenState();
@@ -41,11 +45,92 @@ class _SignInScreenState extends State<SignInScreen> {
         email: email,
         password: password,
       );
+      print('firebase response $userCredential.user');
+
+      String uid = userCredential.user?.uid ?? '';
+
       // Authentication successful, do something
       print('User signed up: ${userCredential.user}');
+      // Send the data to your Prisma backend
+      final response =
+          await http.post(Uri.parse('http://localhost:3000/auth/signup'),
+              body: jsonEncode({
+                'uid': uid,
+                'name': name,
+                'surname': surname,
+                'email': email,
+                // Add any additional fields you want to send
+              }),
+              headers: {"Content-Type": "application/json"});
+
+      if (response.statusCode == 201) {
+        // Request to Prisma backend successful
+        final responseData = response.body;
+        // Process the response data as needed
+        print(responseData);
+      } else {
+        // Error handling for Prisma backend request
+        print(
+            'Prisma backend request failed with status: ${response.statusCode}');
+      }
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Success'),
+            content: Text('User signed up successfully!'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     } on FirebaseAuthException catch (e) {
       // Handle authentication error
       print('Failed to sign up: $e');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Failed to sign up. Please try again.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (error) {
+      // Exception handling
+      print('An error occurred: $error');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('An error occurred. Please try again.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -128,7 +213,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ),
                   SizedBox(width: 16.0),
-                InkResponse(
+                  InkResponse(
                     onTap: signUp,
                     child: Image.asset(
                       'images/google.png',
@@ -144,5 +229,41 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
       ),
     );
+  }
+}
+
+class YourPrismaPackage {
+  static Future<void> createUser({
+    required String uid,
+    required String name,
+    required String surname,
+    required String email,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:3000/auth/signup'),
+        body: {
+          'uid': uid,
+          'name': name,
+          'surname': surname,
+          'email': email,
+          // Add any additional fields you want to send
+        },
+      );
+
+      if (response.statusCode == 201) {
+        // Request to Prisma backend successful
+        final responseData = response.body;
+        // Process the response data as needed
+        print(responseData);
+      } else {
+        // Error handling for Prisma backend request
+        print(
+            'Prisma backend request failed with status: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Exception handling
+      print('An error occurred: $error');
+    }
   }
 }

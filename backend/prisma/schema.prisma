@@ -8,6 +8,7 @@ datasource db {
 }
 
 model User {
+  uid         String      @id @default("0")
   name        String
   surname     String
   email       String
@@ -20,7 +21,6 @@ model User {
   Reference   Int
   isAdmin     Boolean
   NbFamMem    Int
-  uid         String   @id @default("0")
   LikedEvents Events[] @relation("UserLikedEvents")
   LikedNews   News[]   @relation("UserLikedNews")
 }
