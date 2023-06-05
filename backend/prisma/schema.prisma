@@ -8,49 +8,47 @@ datasource db {
 }
 
 model User {
-  id            Int      @id @default(autoincrement())
-  name          String
-  surname       String
-  email         String
-  password      String
-  address       String
-  isPro         Boolean
-  creditCard    Int
-  CVC           Int
-  Referrals     Int[]
-  Bubbles       Int
-  Reference     Int
-  isAdmin       Boolean
-  NbFamMem      Int
-  LikedEvents   Events[] @relation("UserLikedEvents")
-  LikedNews     News[]   @relation("UserLikedNews")
+  name        String
+  surname     String
+  email       String
+  address     String
+  isPro       Boolean
+  creditCard  Int
+  CVC         Int
+  Referrals   Int[]
+  Bubbles     Int
+  Reference   Int
+  isAdmin     Boolean
+  NbFamMem    Int
+  uid         String   @id @default("0")
+  LikedEvents Events[] @relation("UserLikedEvents")
+  LikedNews   News[]   @relation("UserLikedNews")
 }
 
 model Events {
-  id            Int      @id @default(autoincrement())
-  author        String
-  link          String
-  date          DateTime
-  participants  Int[]
-  image         String
-  LikedBy       User[]   @relation("UserLikedEvents")
+  id           Int      @id @default(autoincrement())
+  author       String
+  link         String
+  date         DateTime
+  participants Int[]
+  image        String
+  LikedBy      User[]   @relation("UserLikedEvents")
 }
 
 model News {
-  id            Int      @id @default(autoincrement())
-  author        String
-  description   String
-  link          String
-  date          DateTime
-  image         String
-  LikedBy       User[]   @relation("UserLikedNews")
+  id          Int      @id @default(autoincrement())
+  author      String
+  description String
+  link        String
+  date        DateTime
+  image       String
+  LikedBy     User[]   @relation("UserLikedNews")
 }
 
 model Rewards {
-  id            Int      @id @default(autoincrement())
-  name          String
-  price         Int
-  image         Int
-  description   String
+  id          Int    @id @default(autoincrement())
+  name        String
+  price       Int
+  image       Int
+  description String
 }
-

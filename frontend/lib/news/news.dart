@@ -19,7 +19,8 @@ class _NewsListState extends State<NewsList> {
   }
 
   Future<void> fetchNewsArticles() async {
-    final response = await http.get(Uri.parse('https://ripple-4wg9.onrender.com/news'));
+    final response =
+        await http.get(Uri.parse('https://ripple-4wg9.onrender.com/news'));
 
     if (response.statusCode == 200) {
       final List<dynamic> responseBody = jsonDecode(response.body);
@@ -49,7 +50,7 @@ class _NewsListState extends State<NewsList> {
         return Column(
           children: [
             if (isFirst) WaterSpillImage(),
-            SizedBox(height: 16), 
+            SizedBox(height: 16),
             NewsCard(
               imageUrl: article['imageUrl'],
               title: article['title'],
@@ -62,6 +63,7 @@ class _NewsListState extends State<NewsList> {
     );
   }
 }
+
 class WaterSpillImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -71,12 +73,13 @@ class WaterSpillImage extends StatelessWidget {
     );
   }
 }
+
 class NewsCard extends StatelessWidget {
   final String imageUrl;
   final String title;
   final String date;
   final String author;
- NewsCard({
+  NewsCard({
     required this.imageUrl,
     required this.title,
     required this.date,
