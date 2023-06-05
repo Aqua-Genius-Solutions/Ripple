@@ -1,8 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
 import 'auth/signup.dart';
@@ -33,9 +31,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Fixed Bottom Navbar'),
-      ),
       body: WelcomePage(),
     );
   }
