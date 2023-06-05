@@ -111,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
   final List<Widget> _screens = [
     HomePage(),
     SignInScreen(),
-    ScreenThree(),// LoginScreen() LoginScreen just to test the page 
+    LoginScreen(),// ScreenThree() LoginScreen just to test the page 
     ScreenFour(),
   ];
   @override
