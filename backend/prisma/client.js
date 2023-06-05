@@ -20,13 +20,13 @@ const prisma = new PrismaClient()
 //             Reference: 1,
 //             isAdmin: false,
 //             NbFamMem: 2,
-//             LikedEvents: { connect: [] },
-//             LikedNews: { connect: [] } 
+//             LikedEvents: { connect: [1] },
+//             LikedNews: { connect: [3] } 
 //         }
 //     })
 //     console.log(user)
-//     // const users= await prisma.user.findMany()
-//     // console.log(users)
+    // const users= await prisma.user.findMany()
+    // console.log(users)
 
 //     const newEvent = await prisma.events.create({
 //         data: {
