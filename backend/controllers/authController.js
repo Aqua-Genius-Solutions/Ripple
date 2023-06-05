@@ -1,7 +1,7 @@
 const prisma = require("../prisma/client");
 
 const signup = async (req, res) => {
-  const { name, surname, email, } = req.body;
+  const { name, surname, email, uid } = req.body;
   console.log(req.body);
   try {
     // Check if the user already exists
@@ -25,13 +25,13 @@ const signup = async (req, res) => {
         email: email,
         address: "123 Main St",
         isPro: false,
-        creditCard: 1234567890,
         CVC: 123,
         Referrals: [],
         Bubbles: 0,
         Reference: 1,
         isAdmin: false,
         NbFamMem: 2,
+        creditCards: { connect: [] },
         LikedEvents: { connect: [] },
         LikedNews: { connect: [] },
       },
