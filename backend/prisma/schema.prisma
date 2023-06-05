@@ -8,21 +8,21 @@ datasource db {
 }
 
 model User {
-  uid         String      @id @default("0")
   name        String
   surname     String
   email       String
   address     String
   isPro       Boolean
-  creditCard  Int
   CVC         Int
   Referrals   Int[]
   Bubbles     Int
   Reference   Int
   isAdmin     Boolean
   NbFamMem    Int
-  LikedEvents Events[] @relation("UserLikedEvents")
-  LikedNews   News[]   @relation("UserLikedNews")
+  uid         String       @id @default("0")
+  CreditCard  CreditCard[]
+  LikedEvents Events[]     @relation("UserLikedEvents")
+  LikedNews   News[]       @relation("UserLikedNews")
 }
 
 model Events {
@@ -51,4 +51,13 @@ model Rewards {
   price       Int
   image       Int
   description String
+}
+
+model CreditCard {
+  id      Int      @id @default(autoincrement())
+  number  Int
+  CVC     Int
+  expDate DateTime
+  ownerId String
+  User    User     @relation(fields: [ownerId], references: [uid])
 }
