@@ -7,10 +7,10 @@ const prisma = new PrismaClient()
 // async function main() {
 //     const user = await prisma.user.create({
 //         data: {
-//             name: "Nour",
-//             surname: "Aloui",
-//             email: "nour.aloui@example.com",
-//             password: "password123",
+//             uid: "55",
+//             name: "John",
+//             surname: "Doe",
+//             email: "johndoe@example.com",
 //             address: "123 Main St",
 //             isPro: false,
 //             creditCard: 1234567890,
@@ -28,19 +28,19 @@ const prisma = new PrismaClient()
     // const users= await prisma.user.findMany()
     // console.log(users)
 
-    // const newEvent = await prisma.events.create({
-    //     data: {
-    //         author: "Save Water",
-    //         link: "https://example.com/event",
-    //         date: new Date(),
-    //         participants: [1,0,3],
-    //         image: "https://th.bing.com/th/id/OIP.ujrkaVK1XnEU9Hpe5W5qfwHaE8?pid=ImgDet&rs=1",
-    //         LikedBy: {
-    //             connect: { id: 4 } // Connects the event to a specific user with ID 1
-    //         }
-    //     },
-    // })
-    // console.log("New event created:", newEvent)
+//     const newEvent = await prisma.events.create({
+//         data: {
+//             author: "",
+//             link: "https://example.com/event",
+//             date: new Date(),
+//             participants: [],
+//             image: "event_image.jpg",
+//             LikedBy: {
+//                 connect: [] // Connects the event to a specific user with ID 1
+//             }
+//         },
+//     })
+//     console.log("New event created:", newEvent)
 
 //     const newNews = await prisma.news.create({
 //         data: {
@@ -50,7 +50,7 @@ const prisma = new PrismaClient()
 //             date: new Date(),
 //             image: "news_image.jpg",
 //             LikedBy: {
-//                 connect: { id: 1 } // Connects the news to a specific user with ID 1
+//                 connect: [] // Connects the news to a specific user with ID 1
 //             }
 //         },
 //     })
