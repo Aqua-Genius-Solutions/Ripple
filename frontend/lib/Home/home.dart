@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchData() async {
     try {
       final response = await http.get(
-        Uri.parse('https://43ca-197-4-218-41.ngrok-free.app/events'),
+        Uri.parse('https://13c2-197-27-200-206.ngrok-free.app/events'),
       );
 
       if (response.statusCode == 200) {
@@ -145,15 +145,15 @@ class _HomePageState extends State<HomePage> {
                         colors: [
                           Color.fromARGB(255, 255, 255, 255),
                           Color.fromARGB(255, 255, 255, 255),
-                        ],                        
+                        ],
                       ),
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                     child: Image.asset(
-                          'images/stt.png',
-                          width: 50,
-                          height: 30,
-                        ),
+                      'images/stt.png',
+                      width: 50,
+                      height: 30,
+                    ),
                   ),
                   // Container 2 (Right)
                   Column(
@@ -197,7 +197,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           borderRadius: BorderRadius.circular(12.0),
                         ),
-                       child: Row(
+                        child: Row(
                           children: [
                             Expanded(
                               child: Image.asset(

@@ -8,7 +8,11 @@ import 'home/home.dart';
 import 'auth/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-void main() => runApp(MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
@@ -105,7 +109,7 @@ class _LoginPageState extends State<LoginPage> {
 
   final List<Widget> _screens = [
     HomePage(),
-    ScreenTwo(),
+    SignInScreen(),
     ScreenThree(),
     ScreenFour(),
   ];
