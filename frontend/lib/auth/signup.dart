@@ -52,16 +52,16 @@ class _SignInScreenState extends State<SignInScreen> {
       // Authentication successful, do something
       print('User signed up: ${userCredential.user}');
       // Send the data to your Prisma backend
-      final response =
-          await http.post(Uri.parse('http://localhost:3000/auth/signup'),
-              body: jsonEncode({
-                'uid': uid,
-                'name': name,
-                'surname': surname,
-                'email': email,
-                // Add any additional fields you want to send
-              }),
-              headers: {"Content-Type": "application/json"});
+      final response = await http.post(
+          Uri.parse('https://13c2-197-27-200-206.ngrok-free.app/auth/signup'),
+          body: jsonEncode({
+            'uid': uid,
+            'name': name,
+            'surname': surname,
+            'email': email,
+            // Add any additional fields you want to send
+          }),
+          headers: {"Content-Type": "application/json"});
 
       if (response.statusCode == 201) {
         // Request to Prisma backend successful
@@ -70,8 +70,7 @@ class _SignInScreenState extends State<SignInScreen> {
         print(responseData);
       } else {
         // Error handling for Prisma backend request
-        print(
-            'Prisma backend request failed with status: ${response.statusCode}');
+        print('Prisma backend request failed with status: ${response.body}');
       }
 
       showDialog(

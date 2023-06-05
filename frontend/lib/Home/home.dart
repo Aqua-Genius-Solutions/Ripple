@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchData() async {
     try {
       final response = await http.get(
-        Uri.parse('https://43ca-197-4-218-41.ngrok-free.app/events'),
+        Uri.parse('https://13c2-197-27-200-206.ngrok-free.app/events'),
       );
 
       if (response.statusCode == 200) {

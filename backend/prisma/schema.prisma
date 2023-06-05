@@ -8,6 +8,7 @@ datasource db {
 }
 
 model User {
+  uid         String       @id @default("0")
   name        String
   surname     String
   email       String
@@ -19,8 +20,7 @@ model User {
   Reference   Int
   isAdmin     Boolean
   NbFamMem    Int
-  uid         String       @id @default("0")
-  CreditCard  CreditCard[]
+  creditCards CreditCard[]
   LikedEvents Events[]     @relation("UserLikedEvents")
   LikedNews   News[]       @relation("UserLikedNews")
 }
@@ -58,6 +58,6 @@ model CreditCard {
   number  Int
   CVC     Int
   expDate DateTime
+  owner   User     @relation(fields: [ownerId], references: [uid])
   ownerId String
-  User    User     @relation(fields: [ownerId], references: [uid])
 }
