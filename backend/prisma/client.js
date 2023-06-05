@@ -7,40 +7,40 @@ const prisma = new PrismaClient()
 // async function main() {
 //     const user = await prisma.user.create({
 //         data: {
-//             name: "John",
-//             surname: "Doe",
-//             email: "johndoe@example.com",
+//             name: "Nour",
+//             surname: "Aloui",
+//             email: "nour.aloui@example.com",
 //             password: "password123",
 //             address: "123 Main St",
 //             isPro: false,
-//             creditCard: BigInt(1234567890),
+//             creditCard: 1234567890,
 //             CVC: 123,
 //             Referrals: [],
-//             Bubbles: BigInt(0),
+//             Bubbles: 0,
 //             Reference: 1,
 //             isAdmin: false,
 //             NbFamMem: 2,
-//             LikedEvents: { connect: [] },
-//             LikedNews: { connect: [] } 
+//             LikedEvents: { connect: [1] },
+//             LikedNews: { connect: [3] } 
 //         }
 //     })
 //     console.log(user)
-//     // const users= await prisma.user.findMany()
-//     // console.log(users)
+    // const users= await prisma.user.findMany()
+    // console.log(users)
 
-//     const newEvent = await prisma.events.create({
-//         data: {
-//             author: "John Doe",
-//             link: "https://example.com/event",
-//             date: new Date(),
-//             participants: [],
-//             image: "event_image.jpg",
-//             LikedBy: {
-//                 connect: { id: 1 } // Connects the event to a specific user with ID 1
-//             }
-//         },
-//     })
-//     console.log("New event created:", newEvent)
+    // const newEvent = await prisma.events.create({
+    //     data: {
+    //         author: "Save Water",
+    //         link: "https://example.com/event",
+    //         date: new Date(),
+    //         participants: [1,0,3],
+    //         image: "https://th.bing.com/th/id/OIP.ujrkaVK1XnEU9Hpe5W5qfwHaE8?pid=ImgDet&rs=1",
+    //         LikedBy: {
+    //             connect: { id: 4 } // Connects the event to a specific user with ID 1
+    //         }
+    //     },
+    // })
+    // console.log("New event created:", newEvent)
 
 //     const newNews = await prisma.news.create({
 //         data: {

@@ -32,7 +32,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-     
       body: WelcomePage(),
     );
   }
@@ -112,7 +111,9 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Singin here savior'),
+        
+        backgroundColor: Colors.white,
+        title: Text(''),
       ),
       body: Stack(
         children: [
