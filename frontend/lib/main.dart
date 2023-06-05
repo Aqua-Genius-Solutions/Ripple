@@ -5,8 +5,15 @@ import 'nav_bar.dart';
 import 'home/home.dart';
 import 'auth/signup.dart';
 import 'auth/login.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() => runApp(MyApp());
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});

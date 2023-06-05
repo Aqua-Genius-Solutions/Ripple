@@ -1,7 +1,9 @@
-// ignore_for_file: library_private_types_in_public_api
+// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:http/http.dart' as http;
+
 class SignInScreen extends StatefulWidget {
   @override
   _SignInScreenState createState() => _SignInScreenState();
@@ -41,11 +43,97 @@ class _SignInScreenState extends State<SignInScreen> {
         email: email,
         password: password,
       );
+
       // Authentication successful, do something
       print('User signed up: ${userCredential.user}');
+
+      // Create the user in your PostgreSQL database using Prisma ORM
+      await YourPrismaPackage.createUser(
+        name: name,
+        surname: surname,
+        email: email,
+        // Add any additional fields you want to store in the database
+      );
+
+      // Send the data to your Prisma backend
+      final response = await http.post(
+        Uri.parse('http://your-prisma-backend-url'),
+        body: {
+          'name': name,
+          'surname': surname,
+          'email': email,
+          // Add any additional fields you want to send
+        },
+      );
+
+      if (response.statusCode == 200) {
+        // Request to Prisma backend successful
+        final responseData = response.body;
+        // Process the response data as needed
+        print(responseData);
+      } else {
+        // Error handling for Prisma backend request
+        print('Prisma backend request failed with status: ${response.statusCode}');
+      }
+
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Success'),
+            content: Text('User signed up successfully!'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+
     } on FirebaseAuthException catch (e) {
       // Handle authentication error
       print('Failed to sign up: $e');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('Failed to sign up. Please try again.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    } catch (error) {
+      // Exception handling
+      print('An error occurred: $error');
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text('An error occurred. Please try again.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -128,7 +216,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     ),
                   ),
                   SizedBox(width: 16.0),
-                InkResponse(
+                  InkResponse(
                     onTap: signUp,
                     child: Image.asset(
                       'images/google.png',
@@ -144,5 +232,25 @@ class _SignInScreenState extends State<SignInScreen> {
         ),
       ),
     );
+  }
+}
+
+class YourPrismaPackage {
+  static Future<void> createUser({
+    required String name,
+    required String surname,
+    required String email,
+  }) async {
+    // Implement the logic to create a user in your PostgreSQL database using Prisma ORM here
+    // You can use Prisma client or make direct database queries
+    // Example:
+    // final user = await PrismaClient().user.create({
+    //   data: {
+    //     name: name,
+    //     surname: surname,
+    //     email: email,
+    //     // Add any additional fields you want to store in the database
+    //   },
+    // });
   }
 }
