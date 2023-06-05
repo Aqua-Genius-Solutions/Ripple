@@ -47,8 +47,8 @@ class WelcomePage extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color.fromARGB(255, 101, 215, 247),
-              Color.fromARGB(255, 15, 109, 225),
+              Color.fromARGB(255, 129, 222, 248),
+              Color.fromARGB(255, 111, 176, 255),
               Color.fromARGB(255, 4, 67, 144),
             ],
           ),

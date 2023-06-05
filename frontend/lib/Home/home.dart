@@ -99,7 +99,91 @@ class _HomePageState extends State<HomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  // Add your components here
+                  // Container 1 (Left)
+                  Container(
+                    width: 100,
+                    height: 150,
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color.fromARGB(37, 87, 114, 249),
+                          Color.fromARGB(15, 87, 114, 249),
+                          Color.fromARGB(164, 255, 255, 255),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                  ),
+                  // Container 2 (Right)
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        width: 200,
+                        height: 70,
+                        margin: EdgeInsets.symmetric(
+                            horizontal: 16.0, vertical: 8.0),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Color.fromARGB(37, 87, 114, 249),
+                              Color.fromARGB(15, 87, 114, 249),
+                              Color.fromARGB(164, 255, 255, 255),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: Image.asset(
+                          'images/star.png',
+                          width: 100,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Container(
+                        width: 200,
+                        height: 70,
+                        // margin: EdgeInsets.symmetric(
+                        //     horizontal: 16.0, vertical: 8.0),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Color.fromARGB(37, 87, 114, 249),
+                              Color.fromARGB(15, 87, 114, 249),
+                              Color.fromARGB(246, 255, 255, 255),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              'images/dinar.png',
+                              width: 50,
+                              height: 50,
+                              // fit: BoxFit.cover,
+                            ),
+                            SizedBox(width: 8.0),
+                            Text(
+                              'Click to pay your bill',
+                              style: TextStyle(
+                                  fontFamily: 'yourFont',
+                                  fontSize: 12.0,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
