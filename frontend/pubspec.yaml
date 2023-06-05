@@ -14,6 +14,10 @@ dependencies:
   http: ^0.13.3
   english_words: ^4.0.0
   provider: ^6.0.0
+  firebase_core: ^2.13.1
+  firebase_auth: ^4.6.2
+  cloud_firestore: ^4.8.0
+  google_sign_in: ^6.1.3
 
 dev_dependencies:
   flutter_test:
@@ -35,9 +39,16 @@ flutter:
     - icons/news-colored.png
     - icons/setting-colored.png
     - icons/trophy-colored.png
-
     - images/arrow.png
     - images/phone.png
-    - images/star.png
-    - images/pay.PNG
-    - images/dinar.png
+    - images/calendar.png
+    - images/heart.png
+    - images/hands-up.png
+    - images/exp.jpeg
+    - images/paybill.png
+    - images/medd.png
+    - images/stt.png
+    - images/logggo-transformed.png
+    - images/flesh-transformed-transformed.png
+    - images/arrow-blue.png
+    - images/google.png
