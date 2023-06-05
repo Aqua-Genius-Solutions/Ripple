@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
 import 'auth/signup.dart';
-import 'auth/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 
 
