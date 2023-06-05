@@ -218,7 +218,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1300;
 				ORGANIZATIONNAME = "";
 				TargetAttributes = {
 					331C8080294A63A400263BE5 = {
@@ -479,6 +479,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				PODS_PODFILE_DIR_PATH = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.frontend;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -659,6 +660,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				PODS_PODFILE_DIR_PATH = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.frontend;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
@@ -681,6 +683,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				PODS_PODFILE_DIR_PATH = "$(inherited)";
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.frontend;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
