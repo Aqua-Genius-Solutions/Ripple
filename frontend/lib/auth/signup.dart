@@ -1,5 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
@@ -43,37 +45,33 @@ class _SignInScreenState extends State<SignInScreen> {
         email: email,
         password: password,
       );
+      print('firebase response $userCredential.user');
+
+      String uid = userCredential.user?.uid ?? '';
 
       // Authentication successful, do something
       print('User signed up: ${userCredential.user}');
-
-      // Create the user in your PostgreSQL database using Prisma ORM
-      await YourPrismaPackage.createUser(
-        name: name,
-        surname: surname,
-        email: email,
-        // Add any additional fields you want to store in the database
-      );
-
       // Send the data to your Prisma backend
-      final response = await http.post(
-        Uri.parse('http://your-prisma-backend-url'),
-        body: {
-          'name': name,
-          'surname': surname,
-          'email': email,
-          // Add any additional fields you want to send
-        },
-      );
+      final response =
+          await http.post(Uri.parse('http://localhost:3000/auth/signup'),
+              body: jsonEncode({
+                'uid': uid,
+                'name': name,
+                'surname': surname,
+                'email': email,
+                // Add any additional fields you want to send
+              }),
+              headers: {"Content-Type": "application/json"});
 
-      if (response.statusCode == 200) {
+      if (response.statusCode == 201) {
         // Request to Prisma backend successful
         final responseData = response.body;
         // Process the response data as needed
         print(responseData);
       } else {
         // Error handling for Prisma backend request
-        print('Prisma backend request failed with status: ${response.statusCode}');
+        print(
+            'Prisma backend request failed with status: ${response.statusCode}');
       }
 
       showDialog(
@@ -93,7 +91,6 @@ class _SignInScreenState extends State<SignInScreen> {
           );
         },
       );
-
     } on FirebaseAuthException catch (e) {
       // Handle authentication error
       print('Failed to sign up: $e');
@@ -237,20 +234,36 @@ class _SignInScreenState extends State<SignInScreen> {
 
 class YourPrismaPackage {
   static Future<void> createUser({
+    required String uid,
     required String name,
     required String surname,
     required String email,
   }) async {
-    // Implement the logic to create a user in your PostgreSQL database using Prisma ORM here
-    // You can use Prisma client or make direct database queries
-    // Example:
-    // final user = await PrismaClient().user.create({
-    //   data: {
-    //     name: name,
-    //     surname: surname,
-    //     email: email,
-    //     // Add any additional fields you want to store in the database
-    //   },
-    // });
+    try {
+      final response = await http.post(
+        Uri.parse('http://localhost:3000/auth/signup'),
+        body: {
+          'uid': uid,
+          'name': name,
+          'surname': surname,
+          'email': email,
+          // Add any additional fields you want to send
+        },
+      );
+
+      if (response.statusCode == 201) {
+        // Request to Prisma backend successful
+        final responseData = response.body;
+        // Process the response data as needed
+        print(responseData);
+      } else {
+        // Error handling for Prisma backend request
+        print(
+            'Prisma backend request failed with status: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Exception handling
+      print('An error occurred: $error');
+    }
   }
 }

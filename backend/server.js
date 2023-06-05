@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
+const bodyParser = require('body-parser')
 
 const userRouter = require("./routes/route");
 const eventRouter = require("./routes/events");
@@ -9,7 +10,7 @@ const authRouter = require("./routes/authRoute");
 
 const app = express();
 
-app.use(express.json());
+app.use(bodyParser.json())
 app.use(cors());
 app.use(morgan("dev"));
 
