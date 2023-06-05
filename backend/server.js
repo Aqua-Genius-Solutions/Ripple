@@ -5,6 +5,7 @@ const morgan = require("morgan");
 const userRouter = require("./routes/route");
 const eventRouter = require("./routes/events");
 const newsRouter = require("./routes/newsRoute");
+const authRouter = require("./routes/authRoute");
 
 const app = express();
 
@@ -13,8 +14,9 @@ app.use(cors());
 app.use(morgan("dev"));
 
 app.use("/users", userRouter);
-app.use("/events",eventRouter)
-app.use("/news",newsRouter)
+app.use("/events", eventRouter);
+app.use("/news", newsRouter);
+app.use("/auth", authRouter);
 
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");

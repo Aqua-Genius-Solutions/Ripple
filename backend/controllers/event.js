@@ -1,12 +1,7 @@
 const prisma = require("../prisma/client");
 
 const getEvents = async (req, res) => {
-  const events = await prisma.events.findMany({
-    orderBy:{
-      date :'asc'
-      },
-      take:3
-  });
+  const events = await prisma.events.findMany();
   res.json(events);
 };
 
