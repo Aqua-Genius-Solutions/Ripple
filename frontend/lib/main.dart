@@ -6,6 +6,7 @@ import 'nav_bar.dart';
 import 'home/home.dart';
 import 'auth/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'events/events.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -52,8 +53,8 @@ class WelcomePage extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color.fromARGB(255, 101, 215, 247),
-              Color.fromARGB(255, 15, 109, 225),
+              Color.fromARGB(255, 129, 222, 248),
+              Color.fromARGB(255, 111, 176, 255),
               Color.fromARGB(255, 4, 67, 144),
             ],
           ),
@@ -110,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
     HomePage(),
     ScreenTwo(),
     ScreenThree(),
-    AddCard(),
+    EventPage(),
   ];
   @override
   Widget build(BuildContext context) {
