@@ -28,6 +28,7 @@ const signup = async (req, res) => {
         CVC: 123,
         Referrals: [],
         Bubbles: 0,
+        Image: "",
         Reference: 1,
         isAdmin: false,
         NbFamMem: 2,
