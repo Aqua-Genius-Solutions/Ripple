@@ -27,12 +27,12 @@ class Event {
   }
 }
 
-class HomePage extends StatefulWidget {
+class EventPage extends StatefulWidget {
   @override
-  _HomePageState createState() => _HomePageState();
+  _eventPageState createState() => _eventPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _eventPageState extends State<EventPage> {
   List<Event> events = [];
 
   Future<void> fetchData() async {
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('images/backgroundd.jpg'),
+          image: AssetImage('images/background.png'),
           fit: BoxFit.cover,
         ),
       ),
@@ -84,14 +84,14 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SizedBox(
-                  width: 70.0,
-                  height: 70.0,
+                  width: 100.0,
+                  height: 100.0,
                   child: Padding(
                     padding: EdgeInsets.only(left: 16.0, top: 16.0),
                     child: Image.asset(
                       'images/bubble2.png',
-                      width: 60.0,
-                      height: 60.0,
+                      width: 80.0,
+                      height: 80.0,
                     ),
                   ),
                 ),
@@ -113,114 +113,11 @@ class _HomePageState extends State<HomePage> {
                 ),
               ],
             ),
-            Container(
-              width: double.infinity,
-              height: 200.0,
-              margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color.fromARGB(37, 87, 114, 249),
-                    Color.fromARGB(15, 87, 114, 249),
-                    Color.fromARGB(164, 255, 255, 255),
-                  ],
-                ),
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  // Container 1 (Left)
-                  Container(
-                    width: 140,
-                    height: 170,
-                    margin:
-                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color.fromARGB(255, 255, 255, 255),
-                          Color.fromARGB(255, 255, 255, 255),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: Image.asset(
-                      'images/statt.png',
-                      width: 50,
-                      height: 30,
-                    ),
-                  ),
-                  // Container 2 (Right)
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        width: 150,
-                        height: 70,
-                        // margin: EdgeInsets.symmetric(
-                        // horizontal: 16.0, vertical: 8.0),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color.fromARGB(255, 255, 255, 255),
-                              Color.fromARGB(255, 255, 255, 255),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: Image.asset(
-                          'images/medd.png',
-                          width: 50,
-                          height: 20,
-                        ),
-                      ),
-                      Container(
-                        width: 150,
-                        height: 70,
-                        // margin: EdgeInsets.symmetric(
-                        //     horizontal: 16.0, vertical: 8.0),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color.fromARGB(255, 255, 255, 255),
-                              Color.fromARGB(255, 255, 255, 255),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Image.asset(
-                                'images/paybill.png',
-                                width: 90,
-                                height: 90,
-                                // fit: BoxFit.cover,
-                              ),
-                            ),
-                            SizedBox(width: 8.0),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
             Column(
               children: [
                 Center(
                   child: Text(
-                    'OUR LATEST EVENTS',
+                    'Events you might like',
                     style: TextStyle(
                       fontWeight: FontWeight.w300,
                       fontSize: 26.0,
@@ -233,18 +130,18 @@ class _HomePageState extends State<HomePage> {
               child: Container(
                 width: double.infinity,
                 margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color.fromARGB(37, 87, 114, 249),
-                      Color.fromARGB(15, 87, 114, 249),
-                      Color.fromARGB(164, 255, 255, 255),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
+                // decoration: BoxDecoration(
+                //   gradient: LinearGradient(
+                //     begin: Alignment.topCenter,
+                //     end: Alignment.bottomCenter,
+                //     colors: [
+                //       Color.fromARGB(37, 87, 114, 249),
+                //       Color.fromARGB(15, 17, 129, 227),
+                //       Color.fromARGB(163, 131, 219, 239),
+                //     ],
+                //   ),
+                //   borderRadius: BorderRadius.circular(12.0),
+                // ),
                 child: ListView.builder(
                   itemCount: events.length,
                   itemBuilder: (context, index) {
@@ -277,7 +174,7 @@ class _HomePageState extends State<HomePage> {
                                   Row(
                                     children: [
                                       Image.asset(
-                                        'images/calendar.png',
+                                        'images/agenda.png',
                                         width: 30.0,
                                         height: 30.0,
                                       ),
@@ -295,7 +192,7 @@ class _HomePageState extends State<HomePage> {
                                   Row(
                                     children: [
                                       Image.asset(
-                                        'images/heart.png',
+                                        'images/heart1.png',
                                         width: 30.0,
                                         height: 30.0,
                                       ),
@@ -313,7 +210,7 @@ class _HomePageState extends State<HomePage> {
                                   Row(
                                     children: [
                                       Image.asset(
-                                        'images/hands-up.png',
+                                        'images/add.png',
                                         width: 30.0,
                                         height: 30.0,
                                       ),
@@ -344,12 +241,6 @@ class _HomePageState extends State<HomePage> {
                                   width: 120.0,
                                   height: 150.0,
                                 ),
-                                // Image.network(
-                                //   events[index].image,
-                                //   width: 100.0,
-                                //   height: 100.0,
-                                //   fit: BoxFit.cover,
-                                // ),
                               ),
                             ),
                           ),

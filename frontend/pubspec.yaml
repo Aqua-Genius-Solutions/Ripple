@@ -10,7 +10,7 @@ environment:
 
 dependencies:
   flutter:
-    sdk: flutter  
+    sdk: flutter
   http: ^0.13.3
   english_words: ^4.0.0
   provider: ^6.0.0
@@ -18,6 +18,7 @@ dependencies:
   firebase_auth: ^4.6.2
   cloud_firestore: ^4.8.0
   google_sign_in: ^6.1.3
+  flutter_credit_card: ^3.0.6
 
 dev_dependencies:
   flutter_test:
@@ -27,9 +28,10 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
+    - images/rip2.png
     - images/bubbles.png
     - images/unnamed.jpg
-    - images/backgroundd.jpg
+    - images/background.png
     - icons/home-page.png
     - icons/news.png
     - icons/setting.png
@@ -38,15 +40,15 @@ flutter:
     - icons/news-colored.png
     - icons/setting-colored.png
     - icons/trophy-colored.png
-    - images/rip2.png
     - images/arrow.png
     - images/phone.png
+    - images/savewater.png
+    - images/panda.jpg
+    - images/planet.jpg
     - images/calendar.png
     - images/heart.png
     - images/hands-up.png
     - images/exp.jpeg
-    - images/star.png
-    - images/dinar.png
     - images/paybill.png
     - images/medd.png
     - images/statt.png
@@ -54,3 +56,8 @@ flutter:
     - images/flesh-transformed-transformed.png
     - images/arrow-blue.png
     - images/google.png
+    - images/bubble2.png
+    - images/add.png
+    - images/heart1.png
+    - images/agenda.png
+    - images/backgroundd.jpg

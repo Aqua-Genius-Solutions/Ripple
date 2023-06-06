@@ -18,9 +18,10 @@ model User {
   Bubbles     Int
   Reference   Int
   isAdmin     Boolean
-  NbFamMem    Int 
-  NormalConsp Int?
+  NbFamMem    Int
   uid         String       @id @default("0")
+  Image       String
+  NormalConsp Int?
   creditCards CreditCard[]
   LikedEvents Events[]     @relation("UserLikedEvents")
   LikedNews   News[]       @relation("UserLikedNews")
