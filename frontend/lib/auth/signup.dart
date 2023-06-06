@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
+import 'package:namer_app/main.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -51,23 +52,26 @@ class _SignInScreenState extends State<SignInScreen> {
 
       // Authentication successful, do something
       print('User signed up: ${userCredential.user}');
-      // Send the data to your Prisma backend
-      final response = await http.post(
-          Uri.parse('https://13c2-197-27-200-206.ngrok-free.app/auth/signup'),
-          body: jsonEncode({
-            'uid': uid,
-            'name': name,
-            'surname': surname,
-            'email': email,
-            // Add any additional fields you want to send
-          }),
-          headers: {"Content-Type": "application/json"});
+
+      final response = await http
+          .post(Uri.parse('https://ripple-4wg9.onrender.com/auth/signup'),
+              body: jsonEncode({
+                'uid': uid,
+                'name': name,
+                'surname': surname,
+                'email': email,
+              }),
+              headers: {"Content-Type": "application/json"});
+      print("Respone received");
 
       if (response.statusCode == 201) {
-        // Request to Prisma backend successful
         final responseData = response.body;
-        // Process the response data as needed
+
         print(responseData);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
       } else {
         // Error handling for Prisma backend request
         print('Prisma backend request failed with status: ${response.body}');
