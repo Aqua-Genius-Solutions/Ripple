@@ -30,7 +30,7 @@ flutter:
     - images/rip2.png
     - images/bubbles.png
     - images/unnamed.jpg
-    - images/backgroundd.jpg
+    - images/background.png
     - icons/home-page.png
     - icons/news.png
     - icons/setting.png
@@ -52,3 +52,8 @@ flutter:
     - images/flesh-transformed-transformed.png
     - images/arrow-blue.png
     - images/google.png
+    - images/bubble2.png
+    - images/add.png
+    - images/heart1.png
+    - images/agenda.png
+    - images/backgroundd.jpg

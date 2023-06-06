@@ -7,6 +7,7 @@ import 'nav_bar.dart';
 import 'home/home.dart';
 import 'auth/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'events/events.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -76,7 +77,7 @@ class WelcomePage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    MaterialPageRoute(builder: (context) => SignInScreen()),
                   );
                 },
                 child: Padding(
@@ -111,7 +112,7 @@ class _LoginPageState extends State<LoginPage> {
     HomePage(),
     SignInScreen(),
     ScreenThree(),
-    ScreenFour(),
+    EventPage(),
   ];
   @override
   Widget build(BuildContext context) {
