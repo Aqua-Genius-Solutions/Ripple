@@ -42,6 +42,9 @@ flutter:
     - icons/trophy-colored.png
     - images/arrow.png
     - images/phone.png
+    - images/savewater.png
+    - images/panda.jpg
+    - images/planet.jpg
     - images/calendar.png
     - images/heart.png
     - images/hands-up.png
