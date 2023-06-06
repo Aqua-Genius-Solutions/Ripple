@@ -63,3 +63,4 @@ model CreditCard {
   ownerId String
   owner   User     @relation(fields: [ownerId], references: [uid])
 }
+

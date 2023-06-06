@@ -150,7 +150,7 @@ class _HomePageState extends State<HomePage> {
                       borderRadius: BorderRadius.circular(12.0),
                     ),
                     child: Image.asset(
-                      'images/stt.png',
+                      'images/statt.png',
                       width: 50,
                       height: 30,
                     ),
