@@ -30,7 +30,8 @@ class _NewsListState extends State<NewsList> {
   }
 
   Future<void> fetchNewsArticles() async {
-    final response = await http.get(Uri.parse('https://ripple-4wg9.onrender.com/news'));
+    final response =
+        await http.get(Uri.parse('https://ripple-4wg9.onrender.com/news'));
 
     if (response.statusCode == 200) {
       final List<dynamic> responseBody = await jsonDecode(response.body);
@@ -63,6 +64,7 @@ class _NewsListState extends State<NewsList> {
         return Column(
           children: [
             if (isFirst) WaterSpillImage(),
+            SizedBox(height: 16),
             SizedBox(height: 16),
             NewsCard(
               imageName: imageNames[index % imageNames.length],

@@ -1,12 +1,18 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
-import 'news/news.dart';
-void main() => runApp(MyApp());
+import 'auth/signup.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'events/events.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
@@ -32,9 +38,6 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Fixed Bottom Navbar'),
-      ),
       body: WelcomePage(),
     );
   }
@@ -50,8 +53,8 @@ class WelcomePage extends StatelessWidget {
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
             colors: [
-              Color.fromARGB(255, 101, 215, 247),
-              Color.fromARGB(255, 15, 109, 225),
+              Color.fromARGB(255, 129, 222, 248),
+              Color.fromARGB(255, 111, 176, 255),
               Color.fromARGB(255, 4, 67, 144),
             ],
           ),
@@ -73,7 +76,7 @@ class WelcomePage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    MaterialPageRoute(builder: (context) => SignInScreen()),
                   );
                 },
                 child: Padding(
@@ -107,14 +110,15 @@ class _LoginPageState extends State<LoginPage> {
   final List<Widget> _screens = [
     HomePage(),
     ScreenTwo(),
-    NewsList(),
-    ScreenFour(),
+    ScreenThree(),
+    EventPage(),
   ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Singin here savior'),
+        backgroundColor: Colors.white,
+        title: Text(''),
       ),
       body: Stack(
         children: [

@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-sdk android:minSdkVersion="19" />
+
     <application
         android:label="frontend"
         android:name="${applicationName}"
