@@ -1,8 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
 import 'auth/signup.dart';
@@ -76,7 +75,7 @@ class WelcomePage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    MaterialPageRoute(builder: (context) => SignInScreen()),
                   );
                 },
                 child: Padding(
@@ -109,9 +108,9 @@ class _LoginPageState extends State<LoginPage> {
 
   final List<Widget> _screens = [
     HomePage(),
-    SignInScreen(),
+    ScreenTwo(),
     ScreenThree(),
-    ScreenFour(),
+    AddCard(),
   ];
   @override
   Widget build(BuildContext context) {
