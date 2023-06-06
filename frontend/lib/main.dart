@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
-
+import 'news/news.dart';
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -107,7 +107,7 @@ class _LoginPageState extends State<LoginPage> {
   final List<Widget> _screens = [
     HomePage(),
     ScreenTwo(),
-    ScreenThree(),
+    NewsList(),
     ScreenFour(),
   ];
   @override
