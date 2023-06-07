@@ -134,12 +134,36 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+<<<<<<< HEAD
                   Text(
                     'Welcome to Ripple',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 24.0,
                       fontWeight: FontWeight.bold,
+=======
+                  // Container 1 (Left)
+                  Container(
+                    width: 140,
+                    height: 170,
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color.fromARGB(255, 255, 255, 255),
+                          Color.fromARGB(255, 255, 255, 255),
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    child: Image.asset(
+                      'images/statt.png',
+                      width: 50,
+                      height: 30,
+>>>>>>> 5448379c103ccadf75aca0fdaedea835b524639d
                     ),
                   ),
                   SizedBox(height: 8.0),

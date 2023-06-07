@@ -1,13 +1,13 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'package:english_words/english_words.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
 import 'auth/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'events/events.dart';
+import 'news/news.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -110,8 +110,8 @@ class _LoginPageState extends State<LoginPage> {
 
   final List<Widget> _screens = [
     HomePage(),
-    SignInScreen(),
-    ScreenThree(),
+    ScreenTwo(),
+    NewsList(),
     EventPage(),
   ];
   @override
