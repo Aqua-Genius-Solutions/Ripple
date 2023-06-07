@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:namer_app/events/events.dart';
 
 class Event {
   final String author;
@@ -8,6 +9,7 @@ class Event {
   final int participants;
   final int likedBy;
   final String image;
+
   Event({
     required this.author,
     required this.date,
@@ -127,243 +129,102 @@ class _HomePageState extends State<HomePage> {
                     Color.fromARGB(164, 255, 255, 255),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(12.0),
+                borderRadius: BorderRadius.circular(16.0),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  // Container 1 (Left)
-                  Container(
-                    width: 140,
-                    height: 170,
-                    margin:
-                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Color.fromARGB(255, 255, 255, 255),
-                          Color.fromARGB(255, 255, 255, 255),
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: Image.asset(
-                      'images/stt.png',
-                      width: 50,
-                      height: 30,
+                  Text(
+                    'Welcome to Ripple',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
-                  // Container 2 (Right)
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Container(
-                        width: 150,
-                        height: 70,
-                        // margin: EdgeInsets.symmetric(
-                        // horizontal: 16.0, vertical: 8.0),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color.fromARGB(255, 255, 255, 255),
-                              Color.fromARGB(255, 255, 255, 255),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: Image.asset(
-                          'images/medd.png',
-                          width: 50,
-                          height: 20,
-                        ),
-                      ),
-                      Container(
-                        width: 150,
-                        height: 70,
-                        // margin: EdgeInsets.symmetric(
-                        //     horizontal: 16.0, vertical: 8.0),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Color.fromARGB(255, 255, 255, 255),
-                              Color.fromARGB(255, 255, 255, 255),
-                            ],
-                          ),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Image.asset(
-                                'images/paybill.png',
-                                width: 90,
-                                height: 90,
-                                // fit: BoxFit.cover,
-                              ),
-                            ),
-                            SizedBox(width: 8.0),
-                          ],
-                        ),
-                      ),
-                    ],
+                  SizedBox(height: 8.0),
+                  Text(
+                    'Discover and join events around you.',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                    ),
                   ),
                 ],
               ),
             ),
-            Column(
-              children: [
-                Center(
-                  child: Text(
-                    'OUR LATEST EVENTS',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w300,
-                      fontSize: 26.0,
-                    ),
-                  ),
-                ),
-              ],
-            ),
             Expanded(
-              child: Container(
-                width: double.infinity,
-                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Color.fromARGB(37, 87, 114, 249),
-                      Color.fromARGB(15, 87, 114, 249),
-                      Color.fromARGB(164, 255, 255, 255),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(12.0),
-                ),
-                child: ListView.builder(
-                  itemCount: events.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: EdgeInsets.all(18.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 3,
-                            child: Container(
-                              padding: EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Center(
-                                    child: Text(
-                                      events[index].author,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20.0,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(height: 15.0),
-                                  Row(
-                                    children: [
-                                      Image.asset(
-                                        'images/calendar.png',
-                                        width: 30.0,
-                                        height: 30.0,
-                                      ),
-                                      SizedBox(width: 5.0),
-                                      Text(
-                                        events[index].date.substring(0, 10),
-                                        style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 0, 0, 0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 15.0),
-                                  Row(
-                                    children: [
-                                      Image.asset(
-                                        'images/heart.png',
-                                        width: 30.0,
-                                        height: 30.0,
-                                      ),
-                                      SizedBox(width: 5.0),
-                                      Text(
-                                        '${events[index].likedBy} likes',
-                                        style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 0, 0, 0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 15.0),
-                                  Row(
-                                    children: [
-                                      Image.asset(
-                                        'images/hands-up.png',
-                                        width: 30.0,
-                                        height: 30.0,
-                                      ),
-                                      SizedBox(width: 5.0),
-                                      Text(
-                                        '${events[index].participants} participants',
-                                        style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 0, 0, 0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 15.0),
-                                ],
+              child: ListView.builder(
+                itemCount: events.length,
+                itemBuilder: (context, index) {
+                  return Container(
+                    margin: EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            CircleAvatar(
+                              backgroundImage: AssetImage('images/unnamed.jpg'),
+                              radius: 16.0,
+                            ),
+                            SizedBox(width: 8.0),
+                            Text(
+                              events[index].author,
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  left: 16.0, top: 22.0, right: 25.0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(26.0),
-                                child: Image.asset(
-                                  'images/exp.jpeg',
-                                  width: 120.0,
-                                  height: 150.0,
-                                ),
-                                // Image.network(
-                                //   events[index].image,
-                                //   width: 100.0,
-                                //   height: 100.0,
-                                //   fit: BoxFit.cover,
-                                // ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                          ],
+                        ),
+                        SizedBox(height: 8.0),
+                        Image.network(events[index].image),
+                        SizedBox(height: 8.0),
+                        Text(
+                          events[index].date,
+                          style: TextStyle(fontSize: 12.0),
+                        ),
+                        SizedBox(height: 8.0),
+                        Row(
+                          children: [
+                            Icon(Icons.person),
+                            SizedBox(width: 4.0),
+                            Text(events[index].participants.toString()),
+                            SizedBox(width: 16.0),
+                            Icon(Icons.thumb_up),
+                            SizedBox(width: 4.0),
+                            Text(events[index].likedBy.toString()),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => EventPage()),
+                );
+              },
+              child: Text(
+                'See More',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
                 ),
               ),
             ),
-            SizedBox(height: 16.0),
           ],
         ),
       ),
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(home: HomePage()));
 }

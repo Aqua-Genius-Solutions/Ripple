@@ -20,6 +20,8 @@ model User {
   isAdmin     Boolean
   NbFamMem    Int
   uid         String       @id @default("0")
+  Image       String
+  NormalConsp Int?
   creditCards CreditCard[]
   LikedEvents Events[]     @relation("UserLikedEvents")
   LikedNews   News[]       @relation("UserLikedNews")
