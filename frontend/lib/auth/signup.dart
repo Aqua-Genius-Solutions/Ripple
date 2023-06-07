@@ -151,7 +151,7 @@ class _SignInScreenState extends State<SignInScreen> {
             children: [
               // Logo
               Image.asset(
-                'images/logggo-transformed.png',
+                'images/rip2.png',
                 width: 210,
                 height: 210,
               ),
