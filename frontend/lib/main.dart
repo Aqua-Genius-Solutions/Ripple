@@ -6,7 +6,6 @@ import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
 import 'auth/signup.dart';
-import 'profile/profile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'events/events.dart';
 import 'news/news.dart';

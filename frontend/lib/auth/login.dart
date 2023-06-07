@@ -1,5 +1,3 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -7,7 +5,6 @@ class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
-
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -15,12 +12,10 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> login() async {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
-
     if (email.isEmpty || password.isEmpty) {
       // Handle empty fields error
       return;
     }
-
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
@@ -53,7 +48,6 @@ class _LoginScreenState extends State<LoginScreen> {
     } on FirebaseAuthException catch (e) {
       // Handle authentication error
       print('Failed to log in: $e');
-
       // Show error dialog
       showDialog(
         context: context,
@@ -74,7 +68,6 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
