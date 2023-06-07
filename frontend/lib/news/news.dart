@@ -113,7 +113,8 @@ class NewsCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
         elevation: 5,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -148,7 +149,10 @@ class NewsCard extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(16.0, 4.0, 16.0, 12.0),
               child: Text(
                 tip,
-                style: TextStyle(fontSize: 14, color: const Color.fromARGB(255, 0, 0, 0), fontStyle: FontStyle.italic),
+                style: TextStyle(
+                    fontSize: 14,
+                    color: const Color.fromARGB(255, 0, 0, 0),
+                    fontStyle: FontStyle.italic),
               ),
             ),
             _buildButtons(context),
@@ -204,32 +208,32 @@ class CommentButton extends StatefulWidget {
 
 class _CommentButtonState extends State<CommentButton> {
   void _showCommentDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Add your comment'),
-        content: TextField(
-          decoration: InputDecoration(hintText: 'Write your comment here...'),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text('Cancel'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Add your comment'),
+          content: TextField(
+            decoration: InputDecoration(hintText: 'Write your comment here...'),
           ),
-          TextButton(
-            child: Text('Submit'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Submit'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

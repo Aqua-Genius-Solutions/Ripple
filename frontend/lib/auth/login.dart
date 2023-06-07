@@ -30,8 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
       // Show success dialog
       showDialog(
         context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
+        
             title: Text('Login Successful'),
             content: Text('You have successfully logged in.'),
             actions: [
