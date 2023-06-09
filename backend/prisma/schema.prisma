@@ -13,15 +13,13 @@ model User {
   email       String
   address     String
   isPro       Boolean
-  CVC         Int
-  Referrals   Int[]
+  Referrals   Int[] 
   Bubbles     Int
   Reference   Int
   isAdmin     Boolean
-  NbFamMem    Int
   uid         String       @id @default("0")
   Image       String
-  NormalConsp Int?
+  Bill        Bill[]
   creditCards CreditCard[]
   LikedEvents Events[]     @relation("UserLikedEvents")
   LikedNews   News[]       @relation("UserLikedNews")
@@ -64,3 +62,15 @@ model CreditCard {
   owner   User     @relation(fields: [ownerId], references: [uid])
 }
 
+model Bill {
+  id          Int      @id @default(autoincrement())
+  price       Int
+  NFM         Int
+  consumption Int
+  NormalConsp Int
+  paid        Boolean
+  startDate   DateTime
+  endDate     DateTime
+  userId      String
+  User        User     @relation(fields: [userId], references: [uid])
+}
