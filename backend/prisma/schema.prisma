@@ -19,7 +19,7 @@ model User {
   isAdmin     Boolean
   uid         String       @id @default("0")
   Image       String
-  Bill        Bill[]
+  bills       Bill[]       @relation("UserBills")
   creditCards CreditCard[]
   LikedEvents Events[]     @relation("UserLikedEvents")
   LikedNews   News[]       @relation("UserLikedNews")
@@ -72,5 +72,5 @@ model Bill {
   startDate   DateTime
   endDate     DateTime
   userId      String
-  User        User     @relation(fields: [userId], references: [uid])
+  user        User     @relation("UserBills", fields: [userId], references: [uid])
 }
