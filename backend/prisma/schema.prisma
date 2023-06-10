@@ -8,21 +8,22 @@ datasource db {
 }
 
 model User {
-  name        String
-  surname     String
-  email       String
-  address     String
-  isPro       Boolean
-  Referrals   Int[]
-  Bubbles     Int
-  Reference   Int
-  isAdmin     Boolean
-  uid         String       @id @default("0")
-  Image       String
-  bills       Bill[]       @relation("UserBills")
-  creditCards CreditCard[]
-  LikedEvents Events[]     @relation("UserLikedEvents")
-  LikedNews   News[]       @relation("UserLikedNews")
+  name               String
+  surname            String
+  email              String
+  address            String
+  isPro              Boolean
+  Referrals          Int[]
+  Bubbles            Int
+  Reference          Int
+  isAdmin            Boolean
+  uid                String       @id @default("0")
+  Image              String
+  creditCards        CreditCard[]
+  ParticipatedEvents Events[]     @relation("UserParticipatedEvents")
+  bills              Bill[]       @relation("UserBills")
+  LikedEvents        Events[]     @relation("UserLikedEvents")
+  LikedNews          News[]       @relation("UserLikedNews")
 }
 
 model Events {
@@ -30,9 +31,9 @@ model Events {
   author       String
   link         String
   date         DateTime
-  participants Int[]
   image        String
   LikedBy      User[]   @relation("UserLikedEvents")
+  participants User[]   @relation("UserParticipatedEvents")
 }
 
 model News {
