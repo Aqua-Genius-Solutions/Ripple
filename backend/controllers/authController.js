@@ -29,7 +29,7 @@ const signup = async (req, res) => {
         Image: "",
         Reference: 1,
         isAdmin: false,
-        Bill: { connect: [] },
+        bills: { connect: [] },
         creditCards: { connect: [] },
         LikedEvents: { connect: [] },
         LikedNews: { connect: [] },

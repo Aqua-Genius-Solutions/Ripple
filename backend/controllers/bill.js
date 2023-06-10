@@ -14,6 +14,7 @@ const getBill = async (req, res) => {
 const addBill = async (req, res) => {
   try {
     const { price, consumption, paid, userId, startDate, endDate } = req.body;
+    console.log("adding bill", req.body);
 
     const bill = await prisma.bill.create({
       data: {
@@ -25,8 +26,8 @@ const addBill = async (req, res) => {
         user: {
           connect: { uid: userId },
         },
-        startDate: startDate || new Date(),
-        endDate: endDate || new Date(),
+        startDate: new Date(startDate) || new Date(),
+        endDate: new Date(endDate) || new Date(),
       },
     });
 

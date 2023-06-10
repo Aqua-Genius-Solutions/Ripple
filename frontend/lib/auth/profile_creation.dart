@@ -163,7 +163,7 @@ class _CreateProfileState extends State<CreateProfileScreen> {
   Future<void> uploadBill(ImageSource source) async {
     final picker = ImagePicker();
     final pickedImage = await picker.pickImage(source: source);
-
+    print("converting image $pickedImage");
     if (pickedImage != null) {
       final imageBytes = await pickedImage.readAsBytes();
 
@@ -172,33 +172,52 @@ class _CreateProfileState extends State<CreateProfileScreen> {
       final url =
           Uri.parse('https://api.cloudinary.com/v1_1/$cloudName/image/upload');
 
-      final response = await http.post(
-        url,
-        body: {
-          'file': 'data:image/jpeg;base64,$base64Image',
-          'upload_preset': uploadPreset,
-          'api_key': apiKey,
-          'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
-        },
-      );
+      print("uploading image $base64Image");
+      try {
+        final response = await http.post(
+          url,
+          body: {
+            'file': 'data:image/jpeg;base64,$base64Image',
+            'upload_preset': uploadPreset,
+            'api_key': apiKey,
+            'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
+          },
+        );
 
-      if (response.statusCode == 200) {
-        final responseData = jsonDecode(response.body);
-        String imageUrl = responseData['secure_url'];
-        // TOD O: Text extraction will be implemented here
-        Bill newBill = Bill(
-            price: 23,
-            consumption: 33,
-            paid: true,
-            imageUrl: imageUrl,
-            userId: user!.uid);
+        print(response.statusCode);
 
-        final dd = await http.post(
-            Uri.parse("https://ripple-4wg9.onrender.com/stat/add"),
-            body: newBill);
-        print("bill added : ${dd.body}");
-      } else {
-        print('Failed to upload image: ${response.body}');
+        if (response.statusCode == 200) {
+          final responseData = jsonDecode(response.body);
+          String imageUrl = responseData['secure_url'];
+          print("image uploaded : $imageUrl");
+          // TOD O: Text extraction will be implemented here
+          Bill newBill = Bill(
+              price: 23,
+              consumption: 33,
+              paid: true,
+              imageUrl: imageUrl,
+              userId: user!.uid);
+
+          Map<String, dynamic> billData = {
+            'consumption': newBill.consumption,
+            'price': newBill.price,
+            'paid': newBill.paid,
+            'imageUrl': newBill.imageUrl,
+            'userId': newBill.userId,
+            'startDate': newBill.startDate.toIso8601String(),
+            'endDate': newBill.endDate.toIso8601String(),
+          };
+
+          final billRequest = await http.post(
+              Uri.parse("https://75fe-197-27-42-196.ngrok-free.app/stat/add"),
+              headers: {'Content-Type': 'application/json'},
+              body: jsonEncode(billData));
+          print("bill added : ${billRequest.body}");
+        } else {
+          print('Failed to upload image: ${response.body}');
+        }
+      } catch (error) {
+        print("error occured : $error");
       }
     }
   }

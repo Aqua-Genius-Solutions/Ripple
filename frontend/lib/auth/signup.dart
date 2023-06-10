@@ -46,22 +46,21 @@ class _SignInScreenState extends State<SignInScreen> {
         email: email,
         password: password,
       );
-      print('firebase response $userCredential.user');
 
       String uid = userCredential.user?.uid ?? '';
 
       // Authentication successful, do something
       print('User signed up: ${userCredential.user}');
 
-      final response =
-          await http.post(Uri.parse('http://localhost:3000/auth/signup'),
-              body: jsonEncode({
-                'uid': uid,
-                'name': name,
-                'surname': surname,
-                'email': email,
-              }),
-              headers: {"Content-Type": "application/json"});
+      final response = await http.post(
+          Uri.parse('https://75fe-197-27-42-196.ngrok-free.app/auth/signup'),
+          body: jsonEncode({
+            'uid': uid,
+            'name': name,
+            'surname': surname,
+            'email': email,
+          }),
+          headers: {"Content-Type": "application/json"});
       print("Respone received : ${response.body}");
 
       showDialog(
