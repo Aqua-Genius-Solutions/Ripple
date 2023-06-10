@@ -129,19 +129,11 @@ class _HomePageState extends State<HomePage> {
                     Color.fromARGB(164, 255, 255, 255),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(16.0),
+                borderRadius: BorderRadius.circular(12.0),
               ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-<<<<<<< HEAD
-                  Text(
-                    'Welcome to Ripple',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24.0,
-                      fontWeight: FontWeight.bold,
-=======
                   // Container 1 (Left)
                   Container(
                     width: 140,
@@ -163,82 +155,234 @@ class _HomePageState extends State<HomePage> {
                       'images/statt.png',
                       width: 50,
                       height: 30,
->>>>>>> 5448379c103ccadf75aca0fdaedea835b524639d
                     ),
                   ),
-                  SizedBox(height: 8.0),
-                  Text(
-                    'Discover and join events around you.',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                    ),
+                  // Container 2 (Right)
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Container(
+                        width: 150,
+                        height: 70,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Color.fromARGB(255, 255, 255, 255),
+                              Color.fromARGB(255, 255, 255, 255),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: Image.asset(
+                          'images/medd.png',
+                          width: 50,
+                          height: 20,
+                        ),
+                      ),
+                      Container(
+                        width: 150,
+                        height: 70,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Color.fromARGB(255, 255, 255, 255),
+                              Color.fromARGB(255, 255, 255, 255),
+                            ],
+                          ),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: Image.asset(
+                                'images/paybill.png',
+                                width: 90,
+                                height: 90,
+                              ),
+                            ),
+                            SizedBox(width: 8.0),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: events.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              backgroundImage: AssetImage('images/unnamed.jpg'),
-                              radius: 16.0,
-                            ),
-                            SizedBox(width: 8.0),
-                            Text(
-                              events[index].author,
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8.0),
-                        Image.network(events[index].image),
-                        SizedBox(height: 8.0),
-                        Text(
-                          events[index].date,
-                          style: TextStyle(fontSize: 12.0),
-                        ),
-                        SizedBox(height: 8.0),
-                        Row(
-                          children: [
-                            Icon(Icons.person),
-                            SizedBox(width: 4.0),
-                            Text(events[index].participants.toString()),
-                            SizedBox(width: 16.0),
-                            Icon(Icons.thumb_up),
-                            SizedBox(width: 4.0),
-                            Text(events[index].likedBy.toString()),
-                          ],
-                        ),
-                      ],
+            Column(
+              children: [
+                Center(
+                  child: Text(
+                    'OUR LATEST EVENTS',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w300,
+                      fontSize: 26.0,
                     ),
-                  );
-                },
+                  ),
+                ),
+              ],
+            ),
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Color.fromARGB(37, 87, 114, 249),
+                      Color.fromARGB(15, 87, 114, 249),
+                      Color.fromARGB(164, 255, 255, 255),
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: ListView.builder(
+                  itemCount: events.length,
+                  itemBuilder: (context, index) {
+                    return Container(
+                      margin: EdgeInsets.all(18.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12.0),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: Container(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Center(
+                                        child: Text(
+                                          events[index].author,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20.0,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(height: 15.0),
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                            'images/calendar.png',
+                                            width: 30.0,
+                                            height: 30.0,
+                                          ),
+                                          SizedBox(width: 5.0),
+                                          Text(
+                                            events[index].date.substring(0, 10),
+                                            style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 0, 0, 0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 15.0),
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                            'images/heart.png',
+                                            width: 30.0,
+                                            height: 30.0,
+                                          ),
+                                          SizedBox(width: 5.0),
+                                          Text(
+                                            '${events[index].likedBy} likes',
+                                            style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 0, 0, 0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 15.0),
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                            'images/hands-up.png',
+                                            width: 30.0,
+                                            height: 30.0,
+                                          ),
+                                          SizedBox(width: 5.0),
+                                          Text(
+                                            '${events[index].participants} participants',
+                                            style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 0, 0, 0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 15.0),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 16.0, top: 22.0, right: 25.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(26.0),
+                                    child: Image.asset(
+                                      'images/exp.jpeg',
+                                      width: 120.0,
+                                      height: 150.0,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 16.0),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => EventPage()),
-                );
-              },
-              child: Text(
-                'See More',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => EventPage()),
+                    );
+                  },
+                  child: Text(
+                    'See More',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 22, 56, 191),
+                      fontSize: 16.0,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 16.0),
+                    primary: Color.fromARGB(255, 255, 255, 255),
+                  ),
                 ),
               ),
             ),
@@ -247,8 +391,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(home: HomePage()));
 }

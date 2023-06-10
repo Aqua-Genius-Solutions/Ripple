@@ -8,23 +8,22 @@ datasource db {
 }
 
 model User {
-  name        String
-  surname     String
-  email       String
-  address     String
-  isPro       Boolean
-  CVC         Int
-  Referrals   Int[]
-  Bubbles     Int
-  Reference   Int
-  isAdmin     Boolean
-  NbFamMem    Int
-  uid         String       @id @default("0")
-  Image       String
-  NormalConsp Int?
-  creditCards CreditCard[]
-  LikedEvents Events[]     @relation("UserLikedEvents")
-  LikedNews   News[]       @relation("UserLikedNews")
+  name               String
+  surname            String
+  email              String
+  address            String
+  isPro              Boolean
+  Referrals          Int[]
+  Bubbles            Int
+  Reference          Int
+  isAdmin            Boolean
+  uid                String       @id @default("0")
+  Image              String
+  Bill               Bill[]
+  creditCards        CreditCard[]
+  LikedEvents        Events[]     @relation("UserLikedEvents")
+  LikedNews          News[]       @relation("UserLikedNews")
+  ParticipatedEvents Events[]     @relation("UserParticipatedEvents")
 }
 
 model Events {
@@ -32,9 +31,9 @@ model Events {
   author       String
   link         String
   date         DateTime
-  participants Int[]
   image        String
   LikedBy      User[]   @relation("UserLikedEvents")
+  participants User[]   @relation("UserParticipatedEvents")
 }
 
 model News {
@@ -64,3 +63,15 @@ model CreditCard {
   owner   User     @relation(fields: [ownerId], references: [uid])
 }
 
+model Bill {
+  id          Int      @id @default(autoincrement())
+  price       Int
+  NFM         Int
+  consumption Int
+  NormalConsp Int
+  paid        Boolean
+  startDate   DateTime
+  endDate     DateTime
+  userId      String
+  User        User     @relation(fields: [userId], references: [uid])
+}

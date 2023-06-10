@@ -19,6 +19,8 @@ dependencies:
   cloud_firestore: ^4.8.0
   google_sign_in: ^6.1.3
   flutter_credit_card: ^3.0.6
+  intl: ^0.17.0
+  liquid_pull_to_refresh: ^3.0.1
 
 dev_dependencies:
   flutter_test:
@@ -61,4 +63,3 @@ flutter:
     - images/heart1.png
     - images/agenda.png
     - images/backgroundd.jpg
-    

@@ -6,7 +6,6 @@ import 'nav_bar.dart';
 import 'home/home.dart';
 import 'auth/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'events/events.dart';
 import 'news/news.dart';
 
 void main() async {
@@ -77,7 +76,7 @@ class WelcomePage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SignInScreen()),
+                    MaterialPageRoute(builder: (context) => LoginPage()),
                   );
                 },
                 child: Padding(
@@ -112,7 +111,7 @@ class _LoginPageState extends State<LoginPage> {
     HomePage(),
     ScreenTwo(),
     NewsList(),
-    EventPage(),
+    ScreenFour(),
   ];
   @override
   Widget build(BuildContext context) {
