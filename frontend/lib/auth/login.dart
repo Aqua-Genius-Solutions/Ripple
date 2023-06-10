@@ -20,7 +20,8 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -30,7 +31,8 @@ class _LoginScreenState extends State<LoginScreen> {
       // Show success dialog
       showDialog(
         context: context,
-        
+        builder: (BuildContext context) {
+          return AlertDialog(
             title: Text('Login Successful'),
             content: Text('You have successfully logged in.'),
             actions: [
@@ -54,7 +56,8 @@ class _LoginScreenState extends State<LoginScreen> {
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Login Error'),
-            content: Text('Failed to log in. Please check your credentials and try again.'),
+            content: Text(
+                'Failed to log in. Please check your credentials and try again.'),
             actions: [
               TextButton(
                 child: Text('OK'),

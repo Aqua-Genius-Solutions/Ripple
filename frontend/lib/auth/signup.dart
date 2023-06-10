@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
-import 'package:namer_app/main.dart';
+import 'package:namer_app/auth/profile_creation.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -46,36 +46,22 @@ class _SignInScreenState extends State<SignInScreen> {
         email: email,
         password: password,
       );
-      print('firebase response $userCredential.user');
 
       String uid = userCredential.user?.uid ?? '';
 
       // Authentication successful, do something
       print('User signed up: ${userCredential.user}');
 
-      final response = await http
-          .post(Uri.parse('https://ripple-4wg9.onrender.com/auth/signup'),
-              body: jsonEncode({
-                'uid': uid,
-                'name': name,
-                'surname': surname,
-                'email': email,
-              }),
-              headers: {"Content-Type": "application/json"});
-      print("Respone received");
-
-      if (response.statusCode == 201) {
-        final responseData = response.body;
-
-        print(responseData);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
-        );
-      } else {
-        // Error handling for Prisma backend request
-        print('Prisma backend request failed with status: ${response.body}');
-      }
+      final response = await http.post(
+          Uri.parse('https://75fe-197-27-42-196.ngrok-free.app/auth/signup'),
+          body: jsonEncode({
+            'uid': uid,
+            'name': name,
+            'surname': surname,
+            'email': email,
+          }),
+          headers: {"Content-Type": "application/json"});
+      print("Respone received : ${response.body}");
 
       showDialog(
         context: context,
@@ -86,7 +72,10 @@ class _SignInScreenState extends State<SignInScreen> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CreateProfileScreen()));
                 },
                 child: Text('OK'),
               ),
@@ -205,28 +194,47 @@ class _SignInScreenState extends State<SignInScreen> {
               SizedBox(height: 16.0),
               // Sign Up Button
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 8.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Expanded(
+                      child: Row(
+                        children: [
+                          InkResponse(
+                            onTap: signUp,
+                            child: Image.asset(
+                              'images/google.png',
+                              width: 30,
+                              height: 30,
+                            ),
+                          ),
+                          SizedBox(width: 16.0),
+                          Text(
+                            'Signup with Google',
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   InkResponse(
                     onTap: signUp,
                     child: Image.asset(
                       'images/arrow-blue.png',
-                      width: 60,
-                      height: 60,
+                      width: 45,
+                      height: 45,
                     ),
                   ),
-                  SizedBox(width: 16.0),
-                  InkResponse(
-                    onTap: signUp,
-                    child: Image.asset(
-                      'images/google.png',
-                      width: 60,
-                      height: 60,
-                    ),
-                  ),
-                  SizedBox(width: 16.0),
                 ],
-              ),
+              )
             ],
           ),
         ),
@@ -250,22 +258,17 @@ class YourPrismaPackage {
           'name': name,
           'surname': surname,
           'email': email,
-          // Add any additional fields you want to send
         },
       );
 
       if (response.statusCode == 201) {
-        // Request to Prisma backend successful
         final responseData = response.body;
-        // Process the response data as needed
         print(responseData);
       } else {
-        // Error handling for Prisma backend request
         print(
             'Prisma backend request failed with status: ${response.statusCode}');
       }
     } catch (error) {
-      // Exception handling
       print('An error occurred: $error');
     }
   }
