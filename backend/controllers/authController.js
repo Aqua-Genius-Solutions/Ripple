@@ -8,7 +8,6 @@ const signup = async (req, res) => {
     const existingUser = await prisma.user.findFirst({
       where: {
         email: email,
-        // id: uid,
       },
     });
 
@@ -25,19 +24,19 @@ const signup = async (req, res) => {
         email: email,
         address: "123 Main St",
         isPro: false,
-        CVC: 123,
         Referrals: [],
         Bubbles: 0,
         Image: "",
         Reference: 1,
         isAdmin: false,
-        NbFamMem: 2,
+        Bill: { connect: [] },
         creditCards: { connect: [] },
         LikedEvents: { connect: [] },
         LikedNews: { connect: [] },
-      },
+      } ,
     });
-    console.log(req.body);
+
+    console.log("New user created:", newUser);
 
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {

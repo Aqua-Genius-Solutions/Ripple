@@ -53,8 +53,8 @@ class _SignInScreenState extends State<SignInScreen> {
       // Authentication successful, do something
       print('User signed up: ${userCredential.user}');
 
-      final response = await http
-          .post(Uri.parse('https://ripple-4wg9.onrender.com/auth/signup'),
+      final response =
+          await http.post(Uri.parse('http://localhost:3000/auth/signup'),
               body: jsonEncode({
                 'uid': uid,
                 'name': name,
@@ -259,22 +259,17 @@ class YourPrismaPackage {
           'name': name,
           'surname': surname,
           'email': email,
-          // Add any additional fields you want to send
         },
       );
 
       if (response.statusCode == 201) {
-        // Request to Prisma backend successful
         final responseData = response.body;
-        // Process the response data as needed
         print(responseData);
       } else {
-        // Error handling for Prisma backend request
         print(
             'Prisma backend request failed with status: ${response.statusCode}');
       }
     } catch (error) {
-      // Exception handling
       print('An error occurred: $error');
     }
   }
