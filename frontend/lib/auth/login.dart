@@ -1,5 +1,3 @@
-// ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -7,6 +5,7 @@ class LoginScreen extends StatefulWidget {
   @override
   _LoginScreenState createState() => _LoginScreenState();
 }
+
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
@@ -14,25 +13,26 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> login() async {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
+
     if (email.isEmpty || password.isEmpty) {
+      // Handle empty fields error
       return;
     }
+
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
       // Authentication successful
       print('User logged in: ${userCredential.user}');
 
-      // Retrieve the current user
-      User? currentUser = FirebaseAuth.instance.currentUser;
-      print('Current User: $currentUser');
-
       // Show success dialog
       showDialog(
         context: context,
-        
+        builder: (BuildContext context) {
+          return AlertDialog(
             title: Text('Login Successful'),
             content: Text('You have successfully logged in.'),
             actions: [
@@ -49,13 +49,15 @@ class _LoginScreenState extends State<LoginScreen> {
     } on FirebaseAuthException catch (e) {
       // Handle authentication error
       print('Failed to log in: $e');
+
       // Show error dialog
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Login Error'),
-            content: Text('Failed to log in. Please check your credentials and try again.'),
+            content: Text(
+                'Failed to log in. Please check your credentials and try again.'),
             actions: [
               TextButton(
                 child: Text('OK'),
@@ -69,6 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
