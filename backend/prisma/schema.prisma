@@ -12,8 +12,6 @@ model User {
   surname     String
   email       String
   address     String
-  NFM         Int
-  normalConsp Int 
   isPro       Boolean
   Referrals   Int[]
   Bubbles     Int
@@ -67,7 +65,9 @@ model CreditCard {
 model Bill {
   id          Int      @id @default(autoincrement())
   price       Int
+  NFM         Int
   consumption Int
+  NormalConsp Int
   paid        Boolean
   startDate   DateTime
   endDate     DateTime

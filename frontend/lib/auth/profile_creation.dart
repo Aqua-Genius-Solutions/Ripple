@@ -192,8 +192,9 @@ class _CreateProfileState extends State<CreateProfileScreen> {
             paid: true,
             imageUrl: imageUrl,
             userId: user!.uid);
+
         final dd = await http.post(
-            Uri.parse("https://ripple-4wg9.onrender.com/stat/bill"),
+            Uri.parse("https://ripple-4wg9.onrender.com/stat/add"),
             body: newBill);
         print("bill added : ${dd.body}");
       } else {

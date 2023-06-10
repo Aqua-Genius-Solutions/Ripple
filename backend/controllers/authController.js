@@ -33,7 +33,7 @@ const signup = async (req, res) => {
         creditCards: { connect: [] },
         LikedEvents: { connect: [] },
         LikedNews: { connect: [] },
-      } ,
+      },
     });
 
     console.log("New user created:", newUser);
@@ -63,7 +63,7 @@ const createProfile = async (req, res) => {
       where: {
         uid: uid,
       },
-      data: {},
+      data: { address, NFM: nfm },
     });
   } catch (error) {
     console.error("Error creating profile:", error);
