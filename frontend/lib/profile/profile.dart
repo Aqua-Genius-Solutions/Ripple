@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -63,20 +65,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void updateProfile() async {
-    String address = addressController.text.trim();
-    int cvc = int.tryParse(cvcController.text) ?? 0;
-    int nbFamMem = int.tryParse(nbFamMemController.text) ?? 0;
-
+ String name = addressController.text.trim();
+    int lastname = int.tryParse(cvcController.text) ?? 0;
+    int address = int.tryParse(nbFamMemController.text) ?? 0;
+    
     try {
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         // Update the user's profile in your Prisma backend
         final response = await http.put(
-          Uri.parse('http://localhost:3000/auth/profile/${user.uid}'),
+          Uri.parse('http://localhost:3000/profile/${user.uid}'),
           body: jsonEncode({
-            'address': address,
-            'CVC': cvc,
-            'NbFamMem': nbFamMem,
+            'Name': name,
+            'Lastname': lastname,
+            'Address': address,
             // Add any additional fields you want to update
           }),
           headers: {"Content-Type": "application/json"},
@@ -208,33 +210,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Address Input
+                          // Name Input
                           TextField(
                             controller: addressController,
                             decoration: InputDecoration(
-                              labelText: 'Address',
+                              labelText: 'Name',
                               border: OutlineInputBorder(),
                             ),
                           ),
                           SizedBox(height: 8.0),
 
-                          // CVC Input
+                          // Surname Input
                           TextField(
                             controller: cvcController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              labelText: 'CVC',
+                              labelText: 'Surname',
                               border: OutlineInputBorder(),
                             ),
                           ),
                           SizedBox(height: 8.0),
 
-                          // Number of Family Members Input
+                          // Address Input
                           TextField(
                             controller: nbFamMemController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
-                              labelText: 'Number of Family Members',
+                              labelText: 'Address',
                               border: OutlineInputBorder(),
                             ),
                           ),
@@ -290,10 +292,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ),
 
                           // Display Selected Image
-                          if (_image != null) ...[
                             SizedBox(height: 16.0),
-                            Image.file(_image!),
-                          ],
+                          if (_image != null)
+                            Container(
+                              width: 200,
+                              height: 200,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                image: DecorationImage(
+                                  image: FileImage(_image!),
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
                         ],
                       ),
                     ),

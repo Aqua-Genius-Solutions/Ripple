@@ -143,8 +143,13 @@ class _WelcomePageState extends State<WelcomePage>
                 ),
               ),
               SizedBox(height: 8),
-              GestureDetector(
-                onTap: _startAnimation,
+              InkResponse(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                  );
+                },
                 child: Padding(
                   padding: EdgeInsets.only(
                     top: 70,
