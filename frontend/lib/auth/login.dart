@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import '../profile/profile.dart';
+import 'profile_creation.dart';
 
 import 'package:namer_app/main.dart';
 import 'package:http/http.dart' as http;
@@ -135,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onTap: (){
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ProfileScreen()),
+                    MaterialPageRoute(builder: (context) => CreateProfileScreen()),
                   );
                 },
                 child: Image.asset(
