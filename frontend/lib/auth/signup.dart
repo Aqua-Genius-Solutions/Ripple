@@ -5,7 +5,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
-import 'package:namer_app/main.dart';
+import 'package:namer_app/auth/profile_creation.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -62,20 +62,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 'email': email,
               }),
               headers: {"Content-Type": "application/json"});
-      print("Respone received");
-
-      if (response.statusCode == 201) {
-        final responseData = response.body;
-
-        print(responseData);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
-        );
-      } else {
-        // Error handling for Prisma backend request
-        print('Prisma backend request failed with status: ${response.body}');
-      }
+      print("Respone received : ${response.body}");
 
       showDialog(
         context: context,
@@ -86,7 +73,10 @@ class _SignInScreenState extends State<SignInScreen> {
             actions: [
               TextButton(
                 onPressed: () {
-                  Navigator.of(context).pop();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => CreateProfileScreen()));
                 },
                 child: Text('OK'),
               ),
@@ -205,28 +195,47 @@ class _SignInScreenState extends State<SignInScreen> {
               SizedBox(height: 16.0),
               // Sign Up Button
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  Container(
+                    margin: EdgeInsets.symmetric(horizontal: 8.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.black,
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Expanded(
+                      child: Row(
+                        children: [
+                          InkResponse(
+                            onTap: signUp,
+                            child: Image.asset(
+                              'images/google.png',
+                              width: 30,
+                              height: 30,
+                            ),
+                          ),
+                          SizedBox(width: 16.0),
+                          Text(
+                            'Signup with Google',
+                            style: TextStyle(fontSize: 16.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                   InkResponse(
                     onTap: signUp,
                     child: Image.asset(
                       'images/arrow-blue.png',
-                      width: 60,
-                      height: 60,
+                      width: 45,
+                      height: 45,
                     ),
                   ),
-                  SizedBox(width: 16.0),
-                  InkResponse(
-                    onTap: signUp,
-                    child: Image.asset(
-                      'images/google.png',
-                      width: 60,
-                      height: 60,
-                    ),
-                  ),
-                  SizedBox(width: 16.0),
                 ],
-              ),
+              )
             ],
           ),
         ),

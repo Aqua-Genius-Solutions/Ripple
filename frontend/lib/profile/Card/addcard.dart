@@ -3,11 +3,16 @@ import 'package:flutter_credit_card/credit_card_brand.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
 
 class AppColors {
-  static const cardBgColor = Color(0xFFABCDEF);
+  static const cardBgColor = Color.fromARGB(195, 16, 142, 226);
   static const colorE5D1B2 = Color(0xFFE5D1B2);
   static const colorB58D67 = Color(0xFFB58D67);
   static const colorF9EED2 = Color(0xFFF9EED2);
   static const colorFFFFFD = Color(0xFFFFFFFD);
+  static List<Color> customColors = [
+    Color.fromARGB(255, 4, 67, 144),
+    Color.fromARGB(255, 111, 176, 255),
+    Color.fromARGB(255, 129, 222, 248),
+  ];
 }
 
 class AddCard extends StatefulWidget {
@@ -50,8 +55,8 @@ class AddCardState extends State<AddCard> {
       home: Scaffold(
         resizeToAvoidBottomInset: false,
         body: Container(
-          decoration:  BoxDecoration(
-            color: Colors.grey.withOpacity(0.7),
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.7),
           ),
           child: SafeArea(
             child: Column(
@@ -153,75 +158,14 @@ class AddCardState extends State<AddCard> {
                         const SizedBox(
                           height: 20,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                               Text(
-                                'Glassmorphism',
-                                style: TextStyle(
-                                  color: Colors.grey.withOpacity(0.7),
-                                  fontSize: 18,
-                                ),
-                              ),
-                              const Spacer(),
-                              Switch(
-                                value: useGlassMorphism,
-                                inactiveTrackColor: Colors.grey,
-                                activeColor: Colors.grey.withOpacity(0.7),
-                                activeTrackColor: AppColors.colorE5D1B2,
-                                onChanged: (bool value) => setState(() {
-                                  useGlassMorphism = value;
-                                }),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 16),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                               Text(
-                                'Card Image',
-                                style: TextStyle(
-                                  color: Colors.grey.withOpacity(0.7),
-                                  fontSize: 18,
-                                ),
-                              ),
-                              const Spacer(),
-                              Switch(
-                                value: useBackgroundImage,
-                                inactiveTrackColor: Colors.grey,
-                                activeColor: Colors.grey.withOpacity(0.7),
-                                activeTrackColor: AppColors.colorE5D1B2,
-                                onChanged: (bool value) => setState(() {
-                                  useBackgroundImage = value;
-                                }),
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
                         GestureDetector(
                           onTap: _onValidate,
                           child: Container(
                             margin: const EdgeInsets.symmetric(
                                 horizontal: 16, vertical: 8),
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: <Color>[
-                                  AppColors.colorB58D67,
-                                  AppColors.colorB58D67,
-                                  AppColors.colorE5D1B2,
-                                  AppColors.colorF9EED2,
-                                  AppColors.colorFFFFFD,
-                                  AppColors.colorF9EED2,
-                                  AppColors.colorB58D67,
-                                ],
+                              gradient: LinearGradient(
+                                colors: AppColors.customColors,
                                 begin: Alignment(-1, -4),
                                 end: Alignment(1, 4),
                               ),
@@ -230,10 +174,10 @@ class AddCardState extends State<AddCard> {
                             padding: const EdgeInsets.symmetric(vertical: 15),
                             width: double.infinity,
                             alignment: Alignment.center,
-                            child: const Text(
+                            child: Text(
                               'Validate',
                               style: TextStyle(
-                                color: Colors.black,
+                                color: Colors.white.withOpacity(0.8),
                                 fontFamily: 'halter',
                                 fontSize: 14,
                                 package: 'flutter_credit_card',

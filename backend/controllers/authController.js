@@ -56,4 +56,20 @@ const getUsers = async (req, res) => {
   }
 };
 
-module.exports = { signup, getUsers };
+const createProfile = async (req, res) => {
+  const { uid } = req.params;
+  const { address, nfm } = req.body;
+  try {
+    const user = await prisma.user.update({
+      where: {
+        uid: uid,
+      },
+      data: {},
+    });
+  } catch (error) {
+    console.error("Error creating profile:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+module.exports = { signup, getUsers, createProfile };
