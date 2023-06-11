@@ -355,24 +355,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed: () {
-                      // Navigate to stats component
-                    },
-                    child: Text('Stats'),
-                  ),
-                ),
-                Expanded(
-                  child: TextButton(
-                    onPressed: navigateToPayment,
-                    child: Text('Payment'),
-                  ),
-                ),
-              ],
-            ),
           ],
         ),
       ),
