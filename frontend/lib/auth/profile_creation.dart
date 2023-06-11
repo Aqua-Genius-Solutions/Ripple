@@ -38,13 +38,15 @@ class _CreateProfileState extends State<CreateProfileScreen> {
       // Handle empty fields error
       return;
     }
-
+    final profileUrl =
+        Uri.parse('https://ripple-4wg9.onrender.com/auth/profile/${user?.uid}');
     try {
       final response = await http.post(
-        Uri.parse('https://ripple-4wg9.onrender.com/auth/signup'),
+        profileUrl,
         body: jsonEncode({
           'name': address,
-          'nfm': nfm,
+          'NFM': nfm,
+          "profilePicURL": profilePicURL,
         }),
         headers: {"Content-Type": "application/json"},
       );
@@ -189,10 +191,9 @@ class _CreateProfileState extends State<CreateProfileScreen> {
         if (response.statusCode == 200) {
           final responseData = jsonDecode(response.body);
           String imageUrl = responseData['secure_url'];
-          print("image uploaded : $imageUrl");
           // TOD O: Text extraction will be implemented here
           Bill newBill = Bill(
-              price: 23,
+              price: 23.6,
               consumption: 33,
               paid: true,
               imageUrl: imageUrl,
@@ -404,7 +405,7 @@ class YourPrismaPackage {
 
 class Bill {
   final double consumption;
-  final int price;
+  final double price;
   final bool paid;
   final String imageUrl;
   final DateTime startDate = DateTime.now();

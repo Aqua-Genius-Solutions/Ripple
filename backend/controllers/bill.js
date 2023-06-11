@@ -1,6 +1,7 @@
 const prisma = require("../prisma/client");
 
 const getBill = async (req, res) => {
+  console.log(await prisma.bill.findMany());
   const bill = await prisma.bill.findMany({
     orderBy: {
       id: "desc",
@@ -8,12 +9,12 @@ const getBill = async (req, res) => {
     take: 4, // Get only 4 bills
   });
   res.json(bill);
-  console.log(bill);
 };
 
 const addBill = async (req, res) => {
   try {
-    const { price, consumption, paid, userId, startDate, endDate } = req.body;
+    const { price, consumption, paid, userId, startDate, endDate, imageUrl } =
+      req.body;
     console.log("adding bill", req.body);
 
     const bill = await prisma.bill.create({
@@ -23,6 +24,7 @@ const addBill = async (req, res) => {
         NFM: 4,
         NormalConsp: 36,
         paid,
+        imageUrl,
         user: {
           connect: { uid: userId },
         },

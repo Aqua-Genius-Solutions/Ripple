@@ -57,14 +57,22 @@ const getUsers = async (req, res) => {
 
 const createProfile = async (req, res) => {
   const { uid } = req.params;
-  const { address, nfm } = req.body;
+  const { address, NFM, profilePicURL } = req.body;
   try {
     const user = await prisma.user.update({
       where: {
         uid: uid,
       },
-      data: { address, NFM: nfm },
+      data: { address, NFM, Image: profilePicURL },
     });
+
+    const NormalConsp = NFM * 9;
+    await prisma.bill.update({
+      where: { userId: uid },
+      data: { NormalConsp },
+    });
+
+    res.status(200).json({ message: "User profile created", user });
   } catch (error) {
     console.error("Error creating profile:", error);
     res.status(500).json({ message: "Internal server error" });
