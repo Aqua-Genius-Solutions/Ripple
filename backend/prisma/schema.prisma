@@ -32,9 +32,9 @@ model Events {
   author       String
   link         String
   date         DateTime
-  participants Int[]
   image        String
   LikedBy      User[]   @relation("UserLikedEvents")
+  participants User[]   @relation("UserParticipatedEvents")
 }
 
 model News {

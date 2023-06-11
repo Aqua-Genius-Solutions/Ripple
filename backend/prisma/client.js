@@ -104,6 +104,8 @@ const prisma = new PrismaClient()
 //         }
 //     })
 //     console.log(user)
+//     const users= await prisma.user.findMany()
+//     console.log(users)
 //     // const users= await prisma.user.findMany()
 //     // console.log(users)
 

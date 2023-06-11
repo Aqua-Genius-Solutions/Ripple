@@ -9,7 +9,6 @@ import 'auth/signup.dart';
 import 'auth/login.dart';
 import 'profile/profile.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'events/events.dart';
 import 'news/news.dart';
 
 void main() async {
@@ -20,7 +19,6 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
-  
 
   @override
   Widget build(BuildContext context) {
