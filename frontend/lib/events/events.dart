@@ -76,15 +76,14 @@ class _EventPageState extends State<EventPage>
     print(user);
     try {
       final response = await http.put(
-        Uri.parse(
-            'https://ripple-4wg9.onrender.com/events/$eventId/like/${user?.uid}'),
+        Uri.parse('https://ripple-4wg9.onrender.com/events/$eventId/like/1234'),
         headers: {'Content-Type': 'application/json'},
       );
       print(eventId);
       print(user?.uid);
       print(events);
-      print(
-          'https://ripple-4wg9.onrender.com/events/$eventId/like/${user?.uid}');
+      // print(
+      //     'https://ripple-4wg9.onrender.com/events/$eventId/like/${user?.uid}');
 
       if (response.statusCode == 200) {
         print(response);
@@ -121,7 +120,7 @@ class _EventPageState extends State<EventPage>
     try {
       final response = await http.put(
         Uri.parse(
-            'https://ripple-4wg9.onrender.com/events/$eventId/part/${user?.uid}'),
+            'https://ripple-4wg9.onrender.com/events/$eventId/part/123456'),
         headers: {'Content-Type': 'application/json'},
       );
       print(eventId);

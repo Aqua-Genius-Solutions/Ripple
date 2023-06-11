@@ -44,42 +44,38 @@ async function likeEvent(req, res) {
     res.status(500).json({ error: 'An error occurred while liking the event' });
   }
 }
-
 async function participateInEvent(req, res) {
   const eventId = parseInt(req.params.eventId);
-  const userId = req.params.userId;
+  const userId = parseInt(req.params.userId);
   console.log(eventId, userId);
   try {
-    const user = await prisma.user.findUnique({
-      where: { uid: userId },
+    const user = await prisma.user.findFirst({
+      where: { uid: userId.toString() },
     });
 
     const updatedEventPar = await prisma.events.update({
       where: { id: eventId },
-      data: { participants: { connect: { uid: userId } } },
+      data: { participants: { push: userId } },
     });
     console.log(updatedEventPar);
 
-    const event = await prisma.events.findFirst({
+    const event = await prisma.events.findUnique({
       where: { id: eventId },
-      include: { participants: true },
+      // include: { participants: true },
     });
     console.log(event.participants);
     const numParticipants = event.participants.length;
 
-   
-  
     await prisma.user.update({
-      where: { uid: userId },
+      where: { uid: userId.toString() },
       data: { participatedEvents: user.participatedEvents },
     });
 
     res.json({ message: 'Participated in event successfully', numParticipants });
-  }  catch (error) {
+  } catch (error) {
     console.error('An error occurred:', error);
-    res.status(500).json({ error: 'An error occurred while participating the event' });
+    res.status(500).json({ error: 'An error occurred while participating in the event' });
   }
- 
 }
 
 

@@ -12,6 +12,8 @@ model User {
   surname            String
   email              String
   address            String
+  NFM                Int
+  NormalConsp        Int
   isPro              Boolean
   Referrals          Int[]
   Bubbles            Int
@@ -19,11 +21,11 @@ model User {
   isAdmin            Boolean
   uid                String       @id @default("0")
   Image              String
-  creditCards        CreditCard[]
-  ParticipatedEvents Events[]     @relation("UserParticipatedEvents")
   bills              Bill[]       @relation("UserBills")
+  creditCards        CreditCard[]
   LikedEvents        Events[]     @relation("UserLikedEvents")
   LikedNews          News[]       @relation("UserLikedNews")
+  ParticipatedEvents Events[]     @relation("UserParticipatedEvents")
 }
 
 model Events {
@@ -65,13 +67,12 @@ model CreditCard {
 
 model Bill {
   id          Int      @id @default(autoincrement())
-  price       Int
-  NFM         Int
+  price       Decimal
   consumption Int
-  NormalConsp Int
   paid        Boolean
   startDate   DateTime
   endDate     DateTime
+  imageUrl    String
   userId      String
   user        User     @relation("UserBills", fields: [userId], references: [uid])
 }

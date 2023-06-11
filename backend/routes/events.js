@@ -4,7 +4,7 @@ const { getEvents, likeEvent, participateInEvent } = require("../controllers/eve
 
 router.put('/:eventId/like/:userId', likeEvent);
 router.get("/", getEvents);
-router.get("/:eventId/part/:userId", participateInEvent);
+router.put("/:eventId/part/:userId", participateInEvent);
 
 
 
