@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:namer_app/news/news.dart';
+import 'package:namer_app/payment/bills.dart';
 import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
@@ -73,7 +74,7 @@ class _WelcomePageState extends State<WelcomePage>
       if (status == AnimationStatus.completed) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SignInScreen()),
+          MaterialPageRoute(builder: (context) => BillsScreen()),
         );
       }
     });

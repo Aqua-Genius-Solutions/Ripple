@@ -70,3 +70,6 @@ flutter:
     - images/backgroundd.jpg
     - images/mastercard.png
     - images/arrow3.svg
+    - images/water-bill.png
+    - icons/warn.png
+    - icons/check.png
