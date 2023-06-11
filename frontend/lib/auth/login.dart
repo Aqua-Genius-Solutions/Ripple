@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:namer_app/main.dart';
 import 'package:http/http.dart' as http;
+import '../profile/profile.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -135,7 +136,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => NewsList()),
+                        builder: (context) => ProfileScreen()),
                   );
                 },
                 child: Image.asset(

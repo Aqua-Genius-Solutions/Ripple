@@ -3,7 +3,7 @@ const prisma = require("../prisma/client");
 
 
 const updateUser = async (req, res) => {
-    const { name, surname, email , address, Image } = req.body;
+    const { name, surname , address, Image } = req.body;
     const { userId } = req.params;
     try {
       // Update the user with the provided data
@@ -14,7 +14,6 @@ const updateUser = async (req, res) => {
         data: {
           name: name,
           surname: surname,
-          email: email,
           address: address,
           Image: Image,
         },
@@ -29,4 +28,32 @@ const updateUser = async (req, res) => {
     }
   };
 
-  module.exports = { updateUser };
+  const getUserLikedItems = async (req, res) => {
+    const { userId } = req.params;
+    try {
+      // Find the user by userId and include the liked events and news
+      const user = await prisma.user.findUnique({
+        where: { uid: userId },
+        include: {
+          LikedEvents: true,
+          LikedNews: true,
+        },
+      });
+  
+      if (!user) {
+        // User not found
+        return res.status(404).json({ message: "User not found" });
+      }
+  
+      // Extract the liked events and news from the user object
+      const likedEvents = user.LikedEvents;
+      const likedNews = user.LikedNews;
+  
+      res.status(200).json({ likedEvents, likedNews });
+    } catch (error) {
+      console.error("Error retrieving user liked items:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  };
+
+  module.exports = { updateUser , getUserLikedItems };
