@@ -45,7 +45,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
   Future<void> fetchCreditCards() async {
     final response = await http.get(Uri.parse(
-        'https://50a8-165-51-211-51.ngrok-free.app/payment/user/123456'));
+        'https://c664-41-225-237-233.ngrok-free.app/payment/user/123456'));
 
     if (response.statusCode == 200) {
       final List<dynamic> responseData = jsonDecode(response.body);

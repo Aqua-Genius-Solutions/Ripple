@@ -43,12 +43,13 @@ const signup = async (req, res) => {
         name: name,
         surname: surname,
         email: email,
-        address: "123 Main St",
+        NFM: 0,
+        NormalConsp: 0,
+        address: "",
         isPro: false,
         Referrals: [],
         Bubbles: 0,
         Image: "",
-        Reference: 1,
         isAdmin: false,
         bills: { connect: [] },
         creditCards: { connect: [] },
@@ -69,18 +70,13 @@ const signup = async (req, res) => {
 const createProfile = async (req, res) => {
   const { uid } = req.params;
   const { address, NFM, profilePicURL } = req.body;
+  const NormalConsp = NFM * 9;
   try {
     const user = await prisma.user.update({
       where: {
         uid: uid,
       },
-      data: { address, NFM, Image: profilePicURL },
-    });
-
-    const NormalConsp = NFM * 9;
-    await prisma.bill.update({
-      where: { userId: uid },
-      data: { NormalConsp },
+      data: { address, NFM, Image: profilePicURL, NormalConsp },
     });
 
     res.status(200).json({ message: "User profile created", user });

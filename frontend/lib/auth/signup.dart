@@ -53,7 +53,7 @@ class _SignInScreenState extends State<SignInScreen> {
       print('User signed up: ${userCredential.user}');
 
       final response = await http.post(
-          Uri.parse('https://75fe-197-27-42-196.ngrok-free.app/auth/signup'),
+          Uri.parse('https://c664-41-225-237-233.ngrok-free.app/auth/signup'),
           body: jsonEncode({
             'uid': uid,
             'name': name,

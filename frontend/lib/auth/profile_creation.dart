@@ -38,21 +38,21 @@ class _CreateProfileState extends State<CreateProfileScreen> {
       // Handle empty fields error
       return;
     }
-    final profileUrl =
-        Uri.parse('https://ripple-4wg9.onrender.com/auth/profile/${user?.uid}');
+    final profileUrl = Uri.parse(
+        'https://c664-41-225-237-233.ngrok-free.app/auth/profile/${user?.uid}');
     try {
-      final response = await http.post(
+      final response = await http.put(
         profileUrl,
         body: jsonEncode({
-          'name': address,
-          'NFM': nfm,
+          'address': address,
+          'NFM': int.parse(nfm),
           "profilePicURL": profilePicURL,
         }),
         headers: {"Content-Type": "application/json"},
       );
       print("Response received");
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         final responseData = response.body;
 
         print(responseData);
@@ -210,7 +210,7 @@ class _CreateProfileState extends State<CreateProfileScreen> {
           };
 
           final billRequest = await http.post(
-              Uri.parse("https://75fe-197-27-42-196.ngrok-free.app/stat/add"),
+              Uri.parse("https://c664-41-225-237-233.ngrok-free.app/stat/add"),
               headers: {'Content-Type': 'application/json'},
               body: jsonEncode(billData));
           print("bill added : ${billRequest.body}");

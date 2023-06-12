@@ -21,8 +21,6 @@ const addBill = async (req, res) => {
       data: {
         price,
         consumption,
-        NFM: 4,
-        NormalConsp: 36,
         paid,
         imageUrl,
         user: {

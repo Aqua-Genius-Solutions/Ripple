@@ -27,7 +27,7 @@ class _BillsScreenState extends State<BillsScreen> {
 
   Future<void> getUser() async {
     final response = await http.get(Uri.parse(
-        'https://50a8-165-51-211-51.ngrok-free.app/auth/getOne/1234'));
+        'https://c664-41-225-237-233.ngrok-free.app/auth/getOne/1234'));
 
     setState(() {
       fullUser = jsonDecode(response.body);
@@ -36,7 +36,7 @@ class _BillsScreenState extends State<BillsScreen> {
 
   Future<void> importBills() async {
     final response = await http.get(
-        Uri.parse('https://50a8-165-51-211-51.ngrok-free.app/stat/user/1234'));
+        Uri.parse('https://c664-41-225-237-233.ngrok-free.app/stat/user/1234'));
 
     final List<dynamic> responseData = jsonDecode(response.body);
     print(responseData);

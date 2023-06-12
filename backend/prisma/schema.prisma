@@ -17,7 +17,6 @@ model User {
   isPro               Boolean
   Referrals           Int[]
   Bubbles             Int
-  Reference           Int
   isAdmin             Boolean
   uid                 String       @id @default("0")
   Image               String
@@ -25,12 +24,12 @@ model User {
   creditCards         CreditCard[]
   LikedEvents         Events[]     @relation("UserLikedEvents")
   LikedNews           News[]       @relation("UserLikedNews")
-  ParticipatedEvents  Events[] @relation("UserParticipatedEvents")
+  ParticipatedEvents  Events[]     @relation("UserParticipatedEvents")
 }
 
 model Events {
   id           Int      @id @default(autoincrement())
-  author       String
+  title        String
   link         String
   date         DateTime
   image        String
@@ -45,6 +44,7 @@ model News {
   link        String
   date        DateTime
   image       String
+  comments    Comment[]
   LikedBy     User[]   @relation("UserLikedNews")
 }
 
@@ -76,4 +76,12 @@ model Bill {
   imageUrl    String
   userId      String
   user        User     @relation("UserBills", fields: [userId], references: [uid])
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  author    String
+  newsId    Int
+  news      News     @relation(fields: [newsId], references: [id])
 }

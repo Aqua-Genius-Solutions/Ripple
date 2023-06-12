@@ -1,21 +1,18 @@
 -- CreateTable
 CREATE TABLE "User" (
-    "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "surname" TEXT NOT NULL,
     "email" TEXT NOT NULL,
-    "password" TEXT NOT NULL,
     "address" TEXT NOT NULL,
     "isPro" BOOLEAN NOT NULL,
-    "creditCard" BIGINT NOT NULL,
-    "CVC" INTEGER NOT NULL,
     "Referrals" INTEGER[],
-    "Bubbles" BIGINT NOT NULL,
+    "Bubbles" INTEGER NOT NULL,
     "Reference" INTEGER NOT NULL,
     "isAdmin" BOOLEAN NOT NULL,
-    "NbFamMem" INTEGER NOT NULL,
+    "uid" TEXT NOT NULL DEFAULT '0',
+    "Image" TEXT NOT NULL,
 
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "User_pkey" PRIMARY KEY ("uid")
 );
 
 -- CreateTable
@@ -54,15 +51,41 @@ CREATE TABLE "Rewards" (
 );
 
 -- CreateTable
+CREATE TABLE "CreditCard" (
+    "id" SERIAL NOT NULL,
+    "number" INTEGER NOT NULL,
+    "CVC" INTEGER NOT NULL,
+    "expDate" TIMESTAMP(3) NOT NULL,
+    "ownerId" TEXT NOT NULL,
+
+    CONSTRAINT "CreditCard_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Bill" (
+    "id" SERIAL NOT NULL,
+    "price" INTEGER NOT NULL,
+    "NFM" INTEGER NOT NULL,
+    "consumption" INTEGER NOT NULL,
+    "NormalConsp" INTEGER NOT NULL,
+    "paid" BOOLEAN NOT NULL,
+    "startDate" TIMESTAMP(3) NOT NULL,
+    "endDate" TIMESTAMP(3) NOT NULL,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "Bill_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "_UserLikedEvents" (
     "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
+    "B" TEXT NOT NULL
 );
 
 -- CreateTable
 CREATE TABLE "_UserLikedNews" (
     "A" INTEGER NOT NULL,
-    "B" INTEGER NOT NULL
+    "B" TEXT NOT NULL
 );
 
 -- CreateIndex
@@ -78,13 +101,19 @@ CREATE UNIQUE INDEX "_UserLikedNews_AB_unique" ON "_UserLikedNews"("A", "B");
 CREATE INDEX "_UserLikedNews_B_index" ON "_UserLikedNews"("B");
 
 -- AddForeignKey
+ALTER TABLE "CreditCard" ADD CONSTRAINT "CreditCard_ownerId_fkey" FOREIGN KEY ("ownerId") REFERENCES "User"("uid") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Bill" ADD CONSTRAINT "Bill_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("uid") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "_UserLikedEvents" ADD CONSTRAINT "_UserLikedEvents_A_fkey" FOREIGN KEY ("A") REFERENCES "Events"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_UserLikedEvents" ADD CONSTRAINT "_UserLikedEvents_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_UserLikedEvents" ADD CONSTRAINT "_UserLikedEvents_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("uid") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "_UserLikedNews" ADD CONSTRAINT "_UserLikedNews_A_fkey" FOREIGN KEY ("A") REFERENCES "News"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "_UserLikedNews" ADD CONSTRAINT "_UserLikedNews_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE "_UserLikedNews" ADD CONSTRAINT "_UserLikedNews_B_fkey" FOREIGN KEY ("B") REFERENCES "User"("uid") ON DELETE CASCADE ON UPDATE CASCADE;
