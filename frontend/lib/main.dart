@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
+import 'package:namer_app/consumption/consumption.dart';
 import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
@@ -8,6 +9,7 @@ import 'auth/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'events/events.dart';
 import 'news/news.dart';
+import 'consumption/bar_graph.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -77,7 +79,7 @@ class WelcomePage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SignInScreen()),
+                    MaterialPageRoute(builder: (context) => BarChartWidget()),
                   );
                 },
                 child: Padding(
@@ -112,7 +114,7 @@ class _LoginPageState extends State<LoginPage> {
     HomePage(),
     ScreenTwo(),
     NewsList(),
-    EventPage(),
+    ScreenFour(),
   ];
   @override
   Widget build(BuildContext context) {
