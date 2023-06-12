@@ -23,16 +23,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   String profilePicURL = '';
 
-  String imageNames = '';
+  bool isNewsFetched = false;
 
-  String waterSavingTips = '';
+  List<Map<String, dynamic>> newsArticles = [];
+
+  List<String> imageNames = [];
+  List<String> waterSavingTips = [];
 
   Future<List<dynamic>> fetchNewsArticles() async {
-    final response =
-        await http.get(Uri.parse('http://localhost:3000/news/'));
+    final response = await http.get(Uri.parse('http://localhost:3000/news/'));
     if (response.statusCode == 200) {
-      final data = jsonDecode(response.body);
-      return data as List<dynamic>;
+      final List<dynamic> responseBody = await jsonDecode(response.body);
+      print(responseBody);
+      setState(() {
+        newsArticles = responseBody.map((article) {
+          return {
+            'id': article['id'] ?? '',
+            'imageUrl': article['imageUrl'] ?? '',
+            'title': article['title'] ?? '',
+            'date': article['date'] ?? '',
+            'author': article['author'] ?? '',
+          };
+        }).toList();
+        isNewsFetched = true;
+      });
+
+      return newsArticles.toList();
     } else {
       throw Exception('Failed to fetch news articles');
     }
@@ -119,7 +135,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text('Error'),
-                content: Text('Failed to update the profile. Please try again.'),
+                content:
+                    Text('Failed to update the profile. Please try again.'),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -198,7 +215,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Text('Liked Events'),
                   ),
                   FutureBuilder<List<dynamic>>(
-                    future: fetchNewsArticles(),
+                    future: !isNewsFetched ? fetchNewsArticles() : null,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
                         return Center(
@@ -209,22 +226,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Text('Error: ${snapshot.error}'),
                         );
                       } else {
-                        final newsArticles = snapshot.data;
                         return ListView.builder(
-                          itemCount: newsArticles!.length,
+                          itemCount: newsArticles.length,
                           itemBuilder: (context, index) {
                             final article = newsArticles[index];
+                            final imageName = imageNames.isNotEmpty
+                                ? imageNames[index % imageNames.length]
+                                : '';
+                            final tip = waterSavingTips.isNotEmpty
+                                ? waterSavingTips[
+                                    index % waterSavingTips.length]
+                                : '';
                             return Column(
                               children: [
                                 SizedBox(height: 16),
                                 NewsCard(
-                                  imageName:
-                                      imageNames[index % imageNames.length],
+                                  imageName: imageName,
                                   title: article['title'],
                                   date: article['date'],
                                   author: article['author'],
-                                  tip: waterSavingTips[
-                                      index % waterSavingTips.length],
+                                  tip: tip,
                                 ),
                               ],
                             );
@@ -259,8 +280,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       TextButton(
                                         onPressed: () async {
                                           Navigator.of(context).pop();
-                                          await uploadImage(
-                                              ImageSource.camera);
+                                          await uploadImage(ImageSource.camera);
                                         },
                                         child: Text('Camera'),
                                       ),
