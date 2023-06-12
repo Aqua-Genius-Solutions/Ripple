@@ -30,4 +30,17 @@ const addCard = async (req, res) => {
   }
 };
 
-module.exports = { addCard };
+const getCreditCards = async (req, res) => {
+  const uid = req.params.uid;
+  try {
+    const creditCards = await prisma.creditCard.findMany({
+      where: { ownerId: uid },
+    });
+    res.status(200).json(creditCards);
+  } catch (error) {
+    console.error("Error adding credit card:", error);
+    return res.status(500).json({ error: "Failed to add credit card" });
+  }
+};
+
+module.exports = { addCard, getCreditCards };

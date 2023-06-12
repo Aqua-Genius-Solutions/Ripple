@@ -1,5 +1,7 @@
 const router = require("express").Router();
-const { addCard } = require("../controllers/paymentController");
+const { addCard, getCreditCards } = require("../controllers/paymentController");
+
+router.get("/user/:uid", getCreditCards);
 
 router.post("/", addCard);
 

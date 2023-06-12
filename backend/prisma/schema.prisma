@@ -57,12 +57,13 @@ model Rewards {
 }
 
 model CreditCard {
-  id      Int      @id @default(autoincrement())
-  number  Int
-  CVC     Int
-  expDate DateTime
-  ownerId String
-  owner   User     @relation(fields: [ownerId], references: [uid])
+  id         Int      @id @default(autoincrement())
+  number     Int
+  CVC        Int
+  balance    Int
+  expDate    DateTime
+  ownerId    String
+  owner      User     @relation(fields: [ownerId], references: [uid])
 }
 
 model Bill {

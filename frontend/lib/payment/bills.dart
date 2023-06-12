@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:namer_app/payment/pay_bill.dart';
 
 class BillsScreen extends StatefulWidget {
   @override
@@ -157,7 +158,13 @@ class _BillsScreenState extends State<BillsScreen> {
                                 onPressed: bill.paid
                                     ? null
                                     : () {
-                                        // Redirect logic here
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PaymentScreen(
+                                                        fullUser: fullUser,
+                                                        bill: bill)));
                                       },
                                 child: Center(
                                   child: Row(
