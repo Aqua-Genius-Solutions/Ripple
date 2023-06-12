@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
+import 'package:namer_app/news/news.dart';
+import 'package:namer_app/rewards/rewards_page.dart';
 import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
@@ -76,7 +77,7 @@ class WelcomePage extends StatelessWidget {
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => SignInScreen()),
+                    MaterialPageRoute(builder: (context) => LoginPage()),
                   );
                 },
                 child: Padding(
@@ -109,8 +110,8 @@ class _LoginPageState extends State<LoginPage> {
 
   final List<Widget> _screens = [
     HomePage(),
-    ScreenTwo(),
-    ScreenThree(),
+    RewardsPage(),
+    NewsList(),
     EventPage(),
   ];
   @override
@@ -137,7 +138,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
-
 class ScreenTwo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

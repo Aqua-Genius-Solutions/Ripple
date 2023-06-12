@@ -3,4 +3,4 @@ const { getEvents } = require("../controllers/event");
 
 router.get("/", getEvents);
 
-module.exports = router;
+module.exports = router;    

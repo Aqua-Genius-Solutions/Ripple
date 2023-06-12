@@ -4,24 +4,12 @@ import 'package:http/http.dart' as http;
 
 class NewsList extends StatefulWidget {
   @override
-  _NewsListState createState() => _NewsListState();
+  NewsListState createState() => NewsListState();
 }
 
-class _NewsListState extends State<NewsList> {
+class NewsListState extends State<NewsList> {
   List<Map<String, dynamic>> newsArticles = [];
-  List<String> waterSavingTips = [
-    "Every drop counts! Save water by turning off the tap while brushing your teeth or washing your hands.",
-    "Take shorter showers. Reducing your shower time by just a few minutes can save gallons of water.",
-    "Fix leaks promptly. A small leak can waste more than 3,000 gallons of water per year.",
-    "Water your plants wisely. Water your garden during the early morning or late evening to reduce evaporation.",
-    "Choose water-efficient appliances. Look for the WaterSense label when buying new appliances to save water and money on your water bill.",
-  ];
-
-  List<String> imageNames = [
-    'savewater.png',
-    'panda.jpg',
-    'planet.jpg',
-  ];
+  String newsApiUrl = 'https://ripple-4wg9.onrender.com/news';
 
   @override
   void initState() {
@@ -30,8 +18,8 @@ class _NewsListState extends State<NewsList> {
   }
 
   Future<void> fetchNewsArticles() async {
-    final response =
-        await http.get(Uri.parse('https://ripple-4wg9.onrender.com/news'));
+    try {
+      final response = await http.get(Uri.parse(newsApiUrl));
 
     if (response.statusCode == 200) {
       final List<dynamic> responseBody = await jsonDecode(response.body);
@@ -41,17 +29,20 @@ class _NewsListState extends State<NewsList> {
           newsArticles = responseBody.map((article) {
             return {
               'id': article['id'] ?? '',
-              'imageUrl': article['imageUrl'] ?? '',
               'title': article['title'] ?? '',
               'date': article['date'] ?? '',
               'author': article['author'] ?? '',
+              'likes': article['likes'] ?? 0,
             };
           }).toList();
         });
+        print("news : $newsArticles");
       }
     } else {
       print('Failed to load news articles');
     }
+    } catch (error) {print("errored: $error");}
+    
   }
 
   @override
@@ -59,53 +50,35 @@ class _NewsListState extends State<NewsList> {
     return ListView.builder(
       itemCount: newsArticles.length,
       itemBuilder: (context, index) {
-        final isFirst = index == 0;
         final article = newsArticles[index];
-        return Column(
-          children: [
-            if (isFirst) WaterSpillImage(),
-            SizedBox(height: 16),
-            SizedBox(height: 16),
-            NewsCard(
-              imageName: imageNames[index % imageNames.length],
-              title: article['title'],
-              date: article['date'],
-              author: article['author'],
-              tip: waterSavingTips[index % waterSavingTips.length],
-            ),
-          ],
+        return NewsCard(
+          id: article['id'],
+          title: article['title'],
+          date: article['date'],
+          author: article['author'],
+          likes: article['likes'],
+          newsApiUrl: newsApiUrl,
         );
       },
     );
   }
 }
 
-class WaterSpillImage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Image.asset(
-      'images/phone.png',
-      width: 150,
-      height: 150,
-    );
-  }
-}
-
 class NewsCard extends StatelessWidget {
-  final String imageName;
+  final int id;
   final String title;
   final String date;
   final String author;
-  final String tip;
   final int likes;
+  final String newsApiUrl;
 
   NewsCard({
-    required this.imageName,
+    required this.id,
     required this.title,
     required this.date,
     required this.author,
-    required this.tip,
-    this.likes = 0,
+    required this.likes,
+    required this.newsApiUrl,
   });
 
   @override
@@ -118,18 +91,6 @@ class NewsCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12.0),
-                topRight: Radius.circular(12.0),
-              ),
-              child: Image.asset(
-                'images/$imageName',
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: 200,
-              ),
-            ),
             Padding(
               padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 4.0),
               child: Text(
@@ -144,13 +105,6 @@ class NewsCard extends StatelessWidget {
                 style: TextStyle(fontSize: 14, color: Colors.grey[600]),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(16.0, 4.0, 16.0, 12.0),
-              child: Text(
-                tip,
-                style: TextStyle(fontSize: 14, color: const Color.fromARGB(255, 0, 0, 0), fontStyle: FontStyle.italic),
-              ),
-            ),
             _buildButtons(context),
           ],
         ),
@@ -162,82 +116,89 @@ class NewsCard extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        LikeButton(likes: likes),
-        CommentButton(),
+        LikeButton(id: id, initialLikes: likes, newsApiUrl: newsApiUrl),
+        CommentButton(id: id, newsApiUrl: newsApiUrl),
       ],
     );
   }
 }
 
 class LikeButton extends StatefulWidget {
-  final int likes;
+  final int id;
+  final int initialLikes;
+  final String newsApiUrl;
 
-  LikeButton({required this.likes});
+  LikeButton({required this.id, required this.initialLikes, required this.newsApiUrl});
 
   @override
-  _LikeButtonState createState() => _LikeButtonState();
+  LikeButtonState createState() => LikeButtonState();
 }
+// ... (previous code remains the same)
 
-class _LikeButtonState extends State<LikeButton> {
+class LikeButtonState extends State<LikeButton> {
   bool _liked = false;
+  int _likes = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _likes = widget.initialLikes;
+  }
+
+  Future<void> likeArticle() async {
+    final response = await http.patch(Uri.parse('${widget.newsApiUrl}/${widget.id}/like'));
+
+    if (response.statusCode == 200) {
+      final responseBody = jsonDecode(response.body);
+      if (mounted) {
+        setState(() {
+          _likes = responseBody['likes'];
+        });
+      }
+    } else {
+      print('Failed to like article');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(
-        _liked ? Icons.favorite : Icons.favorite_border,
-        color: _liked ? Colors.red : null,
-      ),
-      onPressed: () {
-        setState(() {
-          _liked = !_liked;
-        });
-      },
+    return Column(
+      children: [
+        IconButton(
+          icon: Icon(
+            _liked ? Icons.favorite : Icons.favorite_border,
+            color: _liked ? Colors.red : null,
+          ),
+          onPressed: () {
+            setState(() {
+              _liked = !_liked;
+            });
+            likeArticle();
+          },
+          tooltip: 'Like',
+        ),
+        Text(_likes.toString()), // Add this line to display the number of likes
+      ],
     );
   }
 }
 
-class CommentButton extends StatefulWidget {
-  @override
-  _CommentButtonState createState() => _CommentButtonState();
-}
+// ... (remaining code remains the same)
 
-class _CommentButtonState extends State<CommentButton> {
-  void _showCommentDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Add your comment'),
-        content: TextField(
-          decoration: InputDecoration(hintText: 'Write your comment here...'),
-        ),
-        actions: <Widget>[
-          TextButton(
-            child: Text('Cancel'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          TextButton(
-            child: Text('Submit'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
+class CommentButton extends StatelessWidget {
+  final int id;
+  final String newsApiUrl;
+
+  CommentButton({required this.id, required this.newsApiUrl});
 
   @override
   Widget build(BuildContext context) {
     return IconButton(
       icon: Icon(Icons.comment),
       onPressed: () {
-        _showCommentDialog(context);
+        // Navigate to the comment page or handle the action here
       },
+      tooltip: 'Comment',
     );
   }
 }
