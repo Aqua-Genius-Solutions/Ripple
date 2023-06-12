@@ -5,5 +5,4 @@ const { getAllNews, likeNews, addComment } = require("../controllers/newsControl
 router.get("/", getAllNews);
 router.patch("/:id/like", likeNews);
 router.post("/:id/comment", addComment);
-
 module.exports = router;

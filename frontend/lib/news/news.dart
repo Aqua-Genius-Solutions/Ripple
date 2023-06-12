@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -86,7 +88,8 @@ class NewsCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
         elevation: 5,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,6 +106,13 @@ class NewsCard extends StatelessWidget {
               child: Text(
                 'By $author, $date',
                 style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(16.0, 4.0, 16.0, 12.0),
+              child: Text(
+                tip,
+                style: TextStyle(fontSize: 14, color: const Color.fromARGB(255, 0, 0, 0), fontStyle: FontStyle.italic),
               ),
             ),
             _buildButtons(context),
@@ -189,7 +199,34 @@ class CommentButton extends StatelessWidget {
   final int id;
   final String newsApiUrl;
 
-  CommentButton({required this.id, required this.newsApiUrl});
+class _CommentButtonState extends State<CommentButton> {
+  void _showCommentDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: Text('Add your comment'),
+        content: TextField(
+          decoration: InputDecoration(hintText: 'Write your comment here...'),
+        ),
+        actions: <Widget>[
+          TextButton(
+            child: Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          TextButton(
+            child: Text('Submit'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
