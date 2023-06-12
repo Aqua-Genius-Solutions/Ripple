@@ -40,4 +40,15 @@ const addBill = async (req, res) => {
   }
 };
 
-module.exports = { getBill, addBill };
+const getBillsByUser = async (req, res) => {
+  const uid = req.params.uid;
+  try {
+    const bills = await prisma.bill.findMany({ where: { userId: uid } });
+    res.status(200).json(bills);
+  } catch (error) {
+    console.error("Error adding bill:", error);
+    return res.status(500).json({ error: "Failed to add bill" });
+  }
+};
+
+module.exports = { getBill, addBill, getBillsByUser };

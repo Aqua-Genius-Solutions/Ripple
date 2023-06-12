@@ -13,6 +13,7 @@ class BillsScreen extends StatefulWidget {
 
 class _BillsScreenState extends State<BillsScreen> {
   List<Bill> bills = [];
+  Map<dynamic, dynamic> fullUser = {"name": "", "surename": ""};
 
   User? user = FirebaseAuth.instance.currentUser;
 
@@ -25,19 +26,23 @@ class _BillsScreenState extends State<BillsScreen> {
 
   Future<void> getUser() async {
     final response = await http.get(Uri.parse(
-        'https://ripple-4wg9.onrender.com/auth/profile/${user?.uid}'));
+        'https://50a8-165-51-211-51.ngrok-free.app/auth/getOne/1234'));
 
-    user = jsonDecode(response.body);
+    setState(() {
+      fullUser = jsonDecode(response.body);
+    });
   }
 
   Future<void> importBills() async {
-    final response = await http.get(Uri.parse(
-        'https://50a8-165-51-211-51.ngrok-free.app/stat/profile/1234'));
+    final response = await http.get(
+        Uri.parse('https://50a8-165-51-211-51.ngrok-free.app/stat/user/1234'));
 
     final List<dynamic> responseData = jsonDecode(response.body);
+    print(responseData);
 
-    final List<Bill> importedBills =
-        responseData.map((item) => Bill.fromJson(item)).toList();
+    final List<Bill> importedBills = responseData
+        .map((item) => Bill.fromJson(item as Map<String, dynamic>))
+        .toList();
     setState(() {
       bills = importedBills;
     });
@@ -106,7 +111,7 @@ class _BillsScreenState extends State<BillsScreen> {
                               Padding(
                                 padding: EdgeInsets.only(top: 14),
                                 child: Text(
-                                  '${user?.displayName}',
+                                  '${fullUser["name"]} ${fullUser["surname"]}',
                                   style: TextStyle(
                                     color: Colors.blueGrey,
                                     fontSize: 16,
@@ -123,8 +128,7 @@ class _BillsScreenState extends State<BillsScreen> {
                             Align(
                               alignment: Alignment.topRight,
                               child: Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 12.0, left: 42),
+                                padding: EdgeInsets.only(top: 16.0, left: 38),
                                 child: Image.asset(
                                   bill.paid
                                       ? 'icons/check.png'
@@ -133,23 +137,20 @@ class _BillsScreenState extends State<BillsScreen> {
                               ),
                             ),
                             Padding(
-                              padding: EdgeInsets.only(top: 20, left: 8),
+                              padding: EdgeInsets.only(top: 16),
                               child: ElevatedButton(
                                 style: ButtonStyle(
                                   fixedSize: MaterialStateProperty.all<Size>(
-                                    Size(100, 20),
+                                    Size(90, 20),
                                   ),
-                                  backgroundColor: MaterialStateProperty.all<
-                                      Color>(bill
-                                          .paid
-                                      ? Colors.green
-                                      : Colors
-                                          .blue), // Change button background color
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(bill.paid
+                                          ? Colors.green
+                                          : Colors.blue),
                                   shape: MaterialStateProperty.all<
                                       RoundedRectangleBorder>(
                                     RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                          10), // Change border radius
+                                      borderRadius: BorderRadius.circular(34.0),
                                     ),
                                   ),
                                 ),
@@ -158,11 +159,17 @@ class _BillsScreenState extends State<BillsScreen> {
                                     : () {
                                         // Redirect logic here
                                       },
-                                child: Text(
-                                  '${bill.price.toStringAsFixed(2)} TND',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
+                                child: Center(
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        '${bill.price.toStringAsFixed(2)} TND',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -191,7 +198,7 @@ class Bill {
   final DateTime startDate;
   final DateTime endDate;
   final String imageUrl;
-  final String userId;
+  final String uid;
 
   Bill({
     required this.id,
@@ -201,19 +208,19 @@ class Bill {
     required this.startDate,
     required this.endDate,
     required this.imageUrl,
-    required this.userId,
+    required this.uid,
   });
 
   factory Bill.fromJson(Map<String, dynamic> json) {
     return Bill(
       id: json['id'] as int,
-      price: json['price'] as double,
-      consumption: json['consumption'] as int,
-      paid: json['paid'] as bool,
-      startDate: DateTime.parse(json['startDate']),
-      endDate: DateTime.parse(json['endDate']),
-      imageUrl: json['imageUrl'] as String,
-      userId: json['userId'] as String,
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      consumption: json['consumption'] as int? ?? 0,
+      paid: json['paid'] as bool? ?? false,
+      startDate: DateTime.parse(json['startDate'] as String? ?? ''),
+      endDate: DateTime.parse(json['endDate'] as String? ?? ''),
+      imageUrl: json['imageUrl'] as String? ?? '',
+      uid: json['uid'] as String? ?? '',
     );
   }
 }
