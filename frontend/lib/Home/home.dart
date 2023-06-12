@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:namer_app/events/events.dart';
 
 class Event {
   final String author;
@@ -8,6 +9,7 @@ class Event {
   final int participants;
   final int likedBy;
   final String image;
+
   Event({
     required this.author,
     required this.date,
@@ -162,8 +164,6 @@ class _HomePageState extends State<HomePage> {
                       Container(
                         width: 150,
                         height: 70,
-                        // margin: EdgeInsets.symmetric(
-                        // horizontal: 16.0, vertical: 8.0),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
@@ -184,8 +184,6 @@ class _HomePageState extends State<HomePage> {
                       Container(
                         width: 150,
                         height: 70,
-                        // margin: EdgeInsets.symmetric(
-                        //     horizontal: 16.0, vertical: 8.0),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
@@ -204,7 +202,6 @@ class _HomePageState extends State<HomePage> {
                                 'images/paybill.png',
                                 width: 90,
                                 height: 90,
-                                // fit: BoxFit.cover,
                               ),
                             ),
                             SizedBox(width: 8.0),
@@ -254,105 +251,105 @@ class _HomePageState extends State<HomePage> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(12.0),
                       ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      child: Column(
                         children: [
-                          Expanded(
-                            flex: 3,
-                            child: Container(
-                              padding: EdgeInsets.all(16.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Center(
-                                    child: Text(
-                                      events[index].author,
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 20.0,
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                flex: 3,
+                                child: Container(
+                                  padding: EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Center(
+                                        child: Text(
+                                          events[index].author,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20.0,
+                                          ),
+                                        ),
                                       ),
+                                      SizedBox(height: 15.0),
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                            'images/calendar.png',
+                                            width: 30.0,
+                                            height: 30.0,
+                                          ),
+                                          SizedBox(width: 5.0),
+                                          Text(
+                                            events[index].date.substring(0, 10),
+                                            style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 0, 0, 0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 15.0),
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                            'images/heart.png',
+                                            width: 30.0,
+                                            height: 30.0,
+                                          ),
+                                          SizedBox(width: 5.0),
+                                          Text(
+                                            '${events[index].likedBy} likes',
+                                            style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 0, 0, 0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 15.0),
+                                      Row(
+                                        children: [
+                                          Image.asset(
+                                            'images/hands-up.png',
+                                            width: 30.0,
+                                            height: 30.0,
+                                          ),
+                                          SizedBox(width: 5.0),
+                                          Text(
+                                            '${events[index].participants} participants',
+                                            style: TextStyle(
+                                              color: const Color.fromARGB(
+                                                  255, 0, 0, 0),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 15.0),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                flex: 3,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      left: 16.0, top: 22.0, right: 25.0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(26.0),
+                                    child: Image.asset(
+                                      'images/exp.jpeg',
+                                      width: 120.0,
+                                      height: 150.0,
                                     ),
                                   ),
-                                  SizedBox(height: 15.0),
-                                  Row(
-                                    children: [
-                                      Image.asset(
-                                        'images/calendar.png',
-                                        width: 30.0,
-                                        height: 30.0,
-                                      ),
-                                      SizedBox(width: 5.0),
-                                      Text(
-                                        events[index].date.substring(0, 10),
-                                        style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 0, 0, 0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 15.0),
-                                  Row(
-                                    children: [
-                                      Image.asset(
-                                        'images/heart.png',
-                                        width: 30.0,
-                                        height: 30.0,
-                                      ),
-                                      SizedBox(width: 5.0),
-                                      Text(
-                                        '${events[index].likedBy} likes',
-                                        style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 0, 0, 0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 15.0),
-                                  Row(
-                                    children: [
-                                      Image.asset(
-                                        'images/hands-up.png',
-                                        width: 30.0,
-                                        height: 30.0,
-                                      ),
-                                      SizedBox(width: 5.0),
-                                      Text(
-                                        '${events[index].participants} participants',
-                                        style: TextStyle(
-                                          color: const Color.fromARGB(
-                                              255, 0, 0, 0),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  SizedBox(height: 15.0),
-                                ],
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            flex: 3,
-                            child: Padding(
-                              padding: EdgeInsets.only(
-                                  left: 16.0, top: 22.0, right: 25.0),
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(26.0),
-                                child: Image.asset(
-                                  'images/exp.jpeg',
-                                  width: 120.0,
-                                  height: 150.0,
                                 ),
-                                // Image.network(
-                                //   events[index].image,
-                                //   width: 100.0,
-                                //   height: 100.0,
-                                //   fit: BoxFit.cover,
-                                // ),
                               ),
-                            ),
+                            ],
                           ),
+                          SizedBox(height: 16.0),
                         ],
                       ),
                     );
@@ -360,7 +357,35 @@ class _HomePageState extends State<HomePage> {
                 ),
               ),
             ),
-            SizedBox(height: 16.0),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: EdgeInsets.only(bottom: 16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => EventPage()),
+                    );
+                  },
+                  child: Text(
+                    'See More',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 22, 56, 191),
+                      fontSize: 16.0,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 16.0),
+                    primary: Color.fromARGB(255, 255, 255, 255),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
