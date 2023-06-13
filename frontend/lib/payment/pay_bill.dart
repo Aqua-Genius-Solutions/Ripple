@@ -6,7 +6,7 @@ import 'package:flutter_credit_card/credit_card_brand.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'bills.dart';
+import '../classes.dart';
 
 class CreditCard {
   final int id;

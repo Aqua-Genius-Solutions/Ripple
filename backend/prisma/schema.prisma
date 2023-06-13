@@ -48,14 +48,13 @@ model News {
   LikedBy     User[]    @relation("UserLikedNews")
 }
 
-model Rewards {
-  id          Int    @id @default(autoincrement())
+model Reward {
+  id          Int      @id @default(autoincrement())
   name        String
   price       Int
   image       String
   description String
 }
-
 model CreditCard {
   id      Int      @id @default(autoincrement())
   number  String   @db.VarChar(16)

@@ -1,5 +1,4 @@
 // ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:namer_app/news/news.dart';
@@ -11,7 +10,8 @@ import 'auth/signup.dart';
 import 'auth/login.dart';
 import 'profile/profile.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'news/news.dart';
+import 'events/events.dart';
+import 'rewards/rewards_page.dart';
 
 void main() async {
   await dotenv.load();
@@ -174,9 +174,9 @@ class _LoginPageState extends State<LoginPage> {
 
   final List<Widget> _screens = [
     HomePage(),
-    ScreenTwo(),
+    RewardsPage(),
     NewsList(),
-    AddCard(),
+    EventPage(),
   ];
   @override
   Widget build(BuildContext context) {

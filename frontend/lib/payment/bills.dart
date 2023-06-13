@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:namer_app/payment/pay_bill.dart';
 
+import '../classes.dart';
+
 class BillsScreen extends StatefulWidget {
   @override
   _BillsScreenState createState() => _BillsScreenState();
@@ -193,41 +195,6 @@ class _BillsScreenState extends State<BillsScreen> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class Bill {
-  final int id;
-  final double price;
-  final int consumption;
-  final bool paid;
-  final DateTime startDate;
-  final DateTime endDate;
-  final String imageUrl;
-  final String uid;
-
-  Bill({
-    required this.id,
-    required this.price,
-    required this.consumption,
-    required this.paid,
-    required this.startDate,
-    required this.endDate,
-    required this.imageUrl,
-    required this.uid,
-  });
-
-  factory Bill.fromJson(Map<String, dynamic> json) {
-    return Bill(
-      id: json['id'] as int,
-      price: (json['price'] as num?)?.toDouble() ?? 0.0,
-      consumption: json['consumption'] as int? ?? 0,
-      paid: json['paid'] as bool? ?? false,
-      startDate: DateTime.parse(json['startDate'] as String? ?? ''),
-      endDate: DateTime.parse(json['endDate'] as String? ?? ''),
-      imageUrl: json['imageUrl'] as String? ?? '',
-      uid: json['uid'] as String? ?? '',
     );
   }
 }

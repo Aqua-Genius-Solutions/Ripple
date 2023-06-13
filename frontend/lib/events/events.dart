@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import "../classes.dart";
 
 class EventPage extends StatefulWidget {
   @override
@@ -373,35 +374,6 @@ class _EventPageState extends State<EventPage>
           ],
         ),
       ),
-    );
-  }
-}
-
-class Event {
-  final int id; // Add the id property
-  final String author;
-  final String date;
-  final int participants;
-  final int likedBy;
-  final String image;
-
-  Event({
-    required this.id, // Include the id parameter in the constructor
-    required this.author,
-    required this.date,
-    required this.participants,
-    required this.likedBy,
-    required this.image,
-  });
-
-  factory Event.fromJson(Map<String, dynamic> json) {
-    return Event(
-      id: json['id'] as int, // Initialize the id property from JSON
-      author: json['author'] as String,
-      date: json['date'] as String,
-      participants: int.tryParse(json['participants'].toString()) ?? 0,
-      likedBy: int.tryParse(json['likedBy'].toString()) ?? 0,
-      image: json['image'] as String,
     );
   }
 }

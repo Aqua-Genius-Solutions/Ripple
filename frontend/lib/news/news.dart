@@ -1,29 +1,16 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
 
 class NewsList extends StatefulWidget {
   @override
-  _NewsListState createState() => _NewsListState();
+  NewsListState createState() => NewsListState();
 }
 
-class _NewsListState extends State<NewsList> {
+class NewsListState extends State<NewsList> {
   List<Map<String, dynamic>> newsArticles = [];
-  List<String> waterSavingTips = [
-    "Every drop counts! Save water by turning off the tap while brushing your teeth or washing your hands.",
-    "Take shorter showers. Reducing your shower time by just a few minutes can save gallons of water.",
-    "Fix leaks promptly. A small leak can waste more than 3,000 gallons of water per year.",
-    "Water your plants wisely. Water your garden during the early morning or late evening to reduce evaporation.",
-    "Choose water-efficient appliances. Look for the WaterSense label when buying new appliances to save water and money on your water bill.",
-  ];
-
-  List<String> imageNames = [
-    'savewater.png',
-    'panda.jpg',
-    'planet.jpg',
-  ];
+  String newsApiUrl = 'https://ripple-4wg9.onrender.com/news';
 
   @override
   void initState() {
@@ -32,27 +19,74 @@ class _NewsListState extends State<NewsList> {
   }
 
   Future<void> fetchNewsArticles() async {
-    final response =
-        await http.get(Uri.parse('https://ripple-4wg9.onrender.com/news'));
+    try {
+      final response = await http.get(Uri.parse(newsApiUrl));
 
-    if (response.statusCode == 200) {
-      final List<dynamic> responseBody = await jsonDecode(response.body);
+      if (response.statusCode == 200) {
+        final List<dynamic> responseBody = jsonDecode(response.body);
 
-      if (mounted) {
-        setState(() {
-          newsArticles = responseBody.map((article) {
-            return {
-              'id': article['id'] ?? '',
-              'imageUrl': article['imageUrl'] ?? '',
-              'title': article['title'] ?? '',
-              'date': article['date'] ?? '',
-              'author': article['author'] ?? '',
-            };
-          }).toList();
-        });
+        if (mounted) {
+          setState(() {
+            newsArticles = responseBody.map((article) {
+              return {
+                'id': article['id'] ?? '',
+                'title': article['title'] ?? '',
+                'date': article['date'] ?? '',
+                'author': article['author'] ?? '',
+                'likes': article['likes'] ?? 0,
+                'comments': article['comments'] ?? 0,
+              };
+            }).toList();
+          });
+          print("news : $newsArticles");
+        }
+      } else {
+        print('Failed to load news articles');
       }
-    } else {
-      print('Failed to load news articles');
+    } catch (error) {
+      print("errored: $error");
+    }
+  }
+
+  Future<void> likeNewsArticle(int articleId) async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      print("No user is currently signed in");
+      return;
+    }
+
+    try {
+      final response = await http.put(
+        Uri.parse(
+            'https://ripple-4wg9.onrender.com/news/$articleId/like/${currentUser.uid}'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final dynamic responseData = json.decode(response.body);
+        final int numLikes = responseData['numLikes'] as int;
+
+        setState(() {
+          // Update the state with the updated number of likes
+          Map<String, dynamic> article = newsArticles[articleId - 1];
+
+          Map<String, dynamic> updatedArticle = {
+            'id': article['id'],
+            'title': article['title'],
+            'date': article['date'],
+            'author': article['author'],
+            'likes': numLikes,
+            'comments': article['comments'],
+          };
+
+          newsArticles[articleId - 1] = updatedArticle;
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('An error occurred: $error');
     }
   }
 
@@ -61,53 +95,38 @@ class _NewsListState extends State<NewsList> {
     return ListView.builder(
       itemCount: newsArticles.length,
       itemBuilder: (context, index) {
-        final isFirst = index == 0;
         final article = newsArticles[index];
-        return Column(
-          children: [
-            if (isFirst) WaterSpillImage(),
-            SizedBox(height: 16),
-            SizedBox(height: 16),
-            NewsCard(
-              imageName: imageNames[index % imageNames.length],
-              title: article['title'],
-              date: article['date'],
-              author: article['author'],
-              tip: waterSavingTips[index % waterSavingTips.length],
-            ),
-          ],
+        return NewsCard(
+          id: article['id'],
+          title: article['title'],
+          date: article['date'],
+          author: article['author'],
+          likes: article['likes'],
+          comments: article['comments'],
+          likeFunction: likeNewsArticle,
         );
       },
     );
   }
 }
 
-class WaterSpillImage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Image.asset(
-      'images/phone.png',
-      width: 150,
-      height: 150,
-    );
-  }
-}
-
 class NewsCard extends StatelessWidget {
-  final String imageName;
+  final int id;
   final String title;
   final String date;
   final String author;
-  final String tip;
   final int likes;
+  final int comments;
+  final Function(int) likeFunction;
 
   NewsCard({
-    required this.imageName,
+    required this.id,
     required this.title,
     required this.date,
     required this.author,
-    required this.tip,
-    this.likes = 0,
+    required this.likes,
+    required this.comments,
+    required this.likeFunction,
   });
 
   @override
@@ -115,24 +134,11 @@ class NewsCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Card(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
         elevation: 5,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(12.0),
-                topRight: Radius.circular(12.0),
-              ),
-              child: Image.asset(
-                'images/$imageName',
-                fit: BoxFit.cover,
-                width: double.infinity,
-                height: 200,
-              ),
-            ),
             Padding(
               padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 4.0),
               child: Text(
@@ -144,106 +150,70 @@ class NewsCard extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(16.0, 4.0, 16.0, 12.0),
               child: Text(
                 'By $author, $date',
-                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                style: TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(16.0, 4.0, 16.0, 12.0),
-              child: Text(
-                tip,
-                style: TextStyle(
-                    fontSize: 14,
-                    color: const Color.fromARGB(255, 0, 0, 0),
-                    fontStyle: FontStyle.italic),
-              ),
+            Divider(height: 1, thickness: 1, indent: 16, endIndent: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                LikeButton(
+                  likes: likes,
+                  onPressed: () => likeFunction(id),
+                ),
+                IconButton(
+                  icon: Icon(Icons.comment),
+                  onPressed: () {},
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 16.0),
+                  child: Text('$comments Comments'),
+                ),
+              ],
             ),
-            _buildButtons(context),
           ],
         ),
       ),
     );
   }
-
-  Widget _buildButtons(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        LikeButton(likes: likes),
-        CommentButton(),
-      ],
-    );
-  }
 }
-
 class LikeButton extends StatefulWidget {
   final int likes;
+  final VoidCallback onPressed;
 
-  LikeButton({required this.likes});
+  LikeButton({required this.likes, required this.onPressed});
 
   @override
   _LikeButtonState createState() => _LikeButtonState();
 }
 
 class _LikeButtonState extends State<LikeButton> {
-  bool _liked = false;
+  bool _isLiked = false;
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(
-        _liked ? Icons.favorite : Icons.favorite_border,
-        color: _liked ? Colors.red : null,
-      ),
-      onPressed: () {
-        setState(() {
-          _liked = !_liked;
-        });
-      },
-    );
-  }
-}
-
-class CommentButton extends StatefulWidget {
-  @override
-  _CommentButtonState createState() => _CommentButtonState();
-}
-
-class _CommentButtonState extends State<CommentButton> {
-  void _showCommentDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Add your comment'),
-          content: TextField(
-            decoration: InputDecoration(hintText: 'Write your comment here...'),
+    return Row(
+      children: [
+        IconButton(
+          icon: Icon(
+            _isLiked ? Icons.favorite : Icons.favorite_border,
+            color: _isLiked ? Colors.red : null,
           ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Submit'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
-  }
+          onPressed: () {
+            setState(() {
+              _isLiked = !_isLiked;
 
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      icon: Icon(Icons.comment),
-      onPressed: () {
-        _showCommentDialog(context);
-      },
+              if (_isLiked) {
+                widget.onPressed();
+              }
+            });
+          },
+        ),
+        Padding(
+          padding: EdgeInsets.only(left: 8.0),
+          child: Text('${widget.likes}'),
+        ),
+      ],
     );
   }
 }
