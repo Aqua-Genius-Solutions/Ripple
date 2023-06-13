@@ -3,7 +3,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:namer_app/auth/login.dart';
 import 'package:namer_app/main.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -19,6 +21,7 @@ class _CreateProfileState extends State<CreateProfileScreen> {
   final apiKey = '471624387993618';
   final apiSecret = 'awoFoWWM-9tqhtbU3uFXZD9Dm68';
   final uploadPreset = 'ripple';
+  final String apiUrl = dotenv.env["API_URL"]!;
 
   String profilePicURL = '';
 
@@ -38,8 +41,7 @@ class _CreateProfileState extends State<CreateProfileScreen> {
       // Handle empty fields error
       return;
     }
-    final profileUrl = Uri.parse(
-        'https://c664-41-225-237-233.ngrok-free.app/auth/profile/${user?.uid}');
+    final profileUrl = Uri.parse("$apiUrl/auth/profile/${user?.uid}");
     try {
       final response = await http.put(
         profileUrl,
@@ -58,7 +60,7 @@ class _CreateProfileState extends State<CreateProfileScreen> {
         print(responseData);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
+          MaterialPageRoute(builder: (context) => LoginScreen()),
         );
       } else {
         // Error handling for Prisma backend request
@@ -209,8 +211,7 @@ class _CreateProfileState extends State<CreateProfileScreen> {
             'endDate': newBill.endDate.toIso8601String(),
           };
 
-          final billRequest = await http.post(
-              Uri.parse("https://c664-41-225-237-233.ngrok-free.app/stat/add"),
+          final billRequest = await http.post(Uri.parse("$apiUrl/stat/add"),
               headers: {'Content-Type': 'application/json'},
               body: jsonEncode(billData));
           print("bill added : ${billRequest.body}");

@@ -14,9 +14,9 @@ class BillsScreen extends StatefulWidget {
 
 class _BillsScreenState extends State<BillsScreen> {
   List<Bill> bills = [];
-  Map<dynamic, dynamic> fullUser = {"name": "", "surename": ""};
+  Map<dynamic, dynamic> user = {"name": "", "surename": ""};
 
-  User? user = FirebaseAuth.instance.currentUser;
+  String? uid = FirebaseAuth.instance.currentUser?.uid;
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _BillsScreenState extends State<BillsScreen> {
         'https://c664-41-225-237-233.ngrok-free.app/auth/getOne/1234'));
 
     setState(() {
-      fullUser = jsonDecode(response.body);
+      user = jsonDecode(response.body);
     });
   }
 
@@ -112,7 +112,7 @@ class _BillsScreenState extends State<BillsScreen> {
                               Padding(
                                 padding: EdgeInsets.only(top: 14),
                                 child: Text(
-                                  '${fullUser["name"]} ${fullUser["surname"]}',
+                                  '${user["name"]} ${user["surname"]}',
                                   style: TextStyle(
                                     color: Colors.blueGrey,
                                     fontSize: 16,
@@ -163,7 +163,7 @@ class _BillsScreenState extends State<BillsScreen> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     PaymentScreen(
-                                                        fullUser: fullUser,
+                                                        user: user,
                                                         bill: bill)));
                                       },
                                 child: Center(

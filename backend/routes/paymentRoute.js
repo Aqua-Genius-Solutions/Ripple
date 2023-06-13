@@ -3,6 +3,6 @@ const { addCard, getCreditCards } = require("../controllers/paymentController");
 
 router.get("/user/:uid", getCreditCards);
 
-router.post("/", addCard);
+router.post("/add/:uid", addCard);
 
 module.exports = router;

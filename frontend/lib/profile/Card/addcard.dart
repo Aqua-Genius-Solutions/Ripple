@@ -1,6 +1,10 @@
+import 'dart:convert';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/credit_card_brand.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
+import 'package:http/http.dart' as http;
 
 class AppColors {
   static const cardBgColor = Color.fromARGB(195, 16, 142, 226);
@@ -32,6 +36,8 @@ class AddCardState extends State<AddCard> {
   bool useBackgroundImage = false;
   OutlineInputBorder? border;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  User? user = FirebaseAuth.instance.currentUser;
 
   @override
   void initState() {
@@ -197,9 +203,21 @@ class AddCardState extends State<AddCard> {
     );
   }
 
-  void _onValidate() {
+  void _onValidate() async {
     if (formKey.currentState!.validate()) {
       print('valid!');
+      try {
+        print("number $cardNumber,\n cvc $cvvCode,\n exp date $expiryDate");
+        final res = await http.post(
+            Uri.parse(
+                "https://6cbe-197-29-180-115.ngrok-free.app/payment/add/${user?.uid}"),
+            body: jsonEncode({"number": cardNumber, "CVC": cvvCode, "expDate": expiryDate}),
+            headers: {"Content-Type": "application/json"});
+
+        print("card added : ${res.body}");
+      } catch (error) {
+        print("error occured : $error");
+      }
     } else {
       print('invalid!');
     }

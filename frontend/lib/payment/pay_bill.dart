@@ -25,10 +25,10 @@ class CreditCard {
 }
 
 class PaymentScreen extends StatefulWidget {
-  final Map<dynamic, dynamic> fullUser;
+  final Map<dynamic, dynamic> user;
   final Bill bill;
 
-  PaymentScreen({required this.fullUser, required this.bill});
+  PaymentScreen({required this.user, required this.bill});
 
   @override
   _PaymentScreenState createState() => _PaymentScreenState();

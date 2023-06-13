@@ -1,24 +1,28 @@
 const prisma = require("../prisma/client");
 
 const addCard = async (req, res) => {
-  const { userId, number, CVC, expDate } = req.body;
+  const uid = req.params.uid;
 
   try {
+    console.log(req.body);
+    let { number, CVC, expDate } = req.body;
     const user = await prisma.user.findUnique({
-      where: { uid: userId },
+      where: { uid },
     });
 
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-
+    number = number.split(" ").join("");
+    console.log(number);
     const card = await prisma.creditCard.create({
       data: {
         number,
-        CVC,
-        expDate,
+        CVC: Number(CVC),
+        expDate: new Date(),
+        balance: Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000,
         owner: {
-          connect: { uid: userId },
+          connect: { uid },
         },
       },
     });
