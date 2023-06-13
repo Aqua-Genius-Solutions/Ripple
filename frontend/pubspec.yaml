@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.13.3
+  http: ^1.0.0
   english_words: ^4.0.0
   provider: ^6.0.0
   firebase_core: ^2.13.1
@@ -68,5 +68,20 @@ flutter:
     - images/heart1.png
     - images/agenda.png
     - images/backgroundd.jpg
+    - images/bag.jpeg
+    - images/bin.jpg
+    - images/book-water.jpg
+    - images/clock.jpg
+    - images/colapz.jpg
+    - images/cup.jpg
+    - images/douch.jpg
+    - images/f2.jpg
+    - images/gift cart.png
+    - images/meter.jpg
+    - images/portable.jpg
+    - images/safia.jpg
+    - images/shower-water.jpg
+    - images/toilet-bank.jpg
+    - images/toilet.jpg    
     - images/mastercard.png
     - images/arrow3.svg

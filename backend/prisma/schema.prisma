@@ -8,61 +8,69 @@ datasource db {
 }
 
 model User {
-  name               String
-  surname            String
-  email              String
-  address            String
-  NFM                Int
-  NormalConsp        Int
-  isPro              Boolean
-  Referrals          Int[]
-  Bubbles            Int
-  Reference          Int
-  isAdmin            Boolean
-  uid                String       @id @default("0")
-  Image              String
-  bills              Bill[]       @relation("UserBills")
-  creditCards        CreditCard[]
-  LikedEvents        Events[]     @relation("UserLikedEvents")
-  LikedNews          News[]       @relation("UserLikedNews")
-  ParticipatedEvents Events[]     @relation("UserParticipatedEvents")
+  name                          String
+  surname                       String
+  email                         String
+  address                       String
+  isPro                         Boolean
+  Referrals                     Int[]
+  Bubbles                       Int
+  isAdmin                       Boolean
+  uid                           String       @id @default("0")
+  Image                         String
+  NFM                           Int
+  NormalConsp                   Int
+  Bill                          Bill[]
+  creditCards                   CreditCard[]
+  LikedEvents                   Events[]     @relation("UserLikedEvents")
+  LikedNews                     News[]       @relation("UserLikedNews")
+  Events_UserParticipatedEvents Events[]     @relation("UserParticipatedEvents")
 }
 
 model Events {
-  id           Int      @id @default(autoincrement())
-  author       String
-  link         String
-  date         DateTime
-  image        String
-  LikedBy      User[]   @relation("UserLikedEvents")
-  participants User[]   @relation("UserParticipatedEvents")
+  id                          Int      @id @default(autoincrement())
+  link                        String
+  date                        DateTime
+  image                       String
+  title                       String
+  LikedBy                     User[]   @relation("UserLikedEvents")
+  User_UserParticipatedEvents User[]   @relation("UserParticipatedEvents")
 }
 
 model News {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   author      String
   description String
   link        String
   date        DateTime
   image       String
-  LikedBy     User[]   @relation("UserLikedNews")
+  comments    Comment[]
+  LikedBy     User[]    @relation("UserLikedNews")
 }
 
-model Rewards {
-  id          Int    @id @default(autoincrement())
+model Reward {
+  id          Int      @id @default(autoincrement())
   name        String
   price       Int
-  image       Int
-  description String
+  image       String   // Change data type to string
+  description String?
 }
-
 model CreditCard {
   id      Int      @id @default(autoincrement())
-  number  Int
+  number  String   @db.VarChar(16)
   CVC     Int
   expDate DateTime
   ownerId String
+  balance Int
   owner   User     @relation(fields: [ownerId], references: [uid])
+}
+
+model Comment {
+  id      Int    @id @default(autoincrement())
+  content String
+  author  String
+  newsId  Int
+  news    News   @relation(fields: [newsId], references: [id])
 }
 
 model Bill {
@@ -72,7 +80,7 @@ model Bill {
   paid        Boolean
   startDate   DateTime
   endDate     DateTime
-  imageUrl    String
   userId      String
-  user        User     @relation("UserBills", fields: [userId], references: [uid])
+  imageUrl    String
+  User        User     @relation(fields: [userId], references: [uid])
 }
