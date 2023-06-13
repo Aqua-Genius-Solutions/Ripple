@@ -81,20 +81,21 @@ class RewardsPageState extends State<RewardsPage> with SingleTickerProviderState
       ),
       body: Stack(
         children: [
-          AnimatedBuilder(
-            animation: _animationController,
-            builder: (BuildContext context, Widget? child) {
-              return CustomPaint(
-                painter: WaterWavePainter(
-                  waveAmplitude: 10,
-                  waveFrequency: 0.01,
-                  wavePhase: _animationController.value * 2 * pi,
-                  waveColor: const Color.fromARGB(255, 0, 133, 241)!,
-                ),
-                child: Container(),
-              );
-            },
-          ),
+        AnimatedBuilder(
+  animation: _animationController,
+  builder: (BuildContext context, Widget? child) {
+    return CustomPaint(
+      painter: WaterWavePainter(
+        waveAmplitude: 10,
+        waveFrequency: 0.01,
+        wavePhase: _animationController.value * 2 * pi,
+        waveColor: Color.fromARGB(255, 0, 133, 241), // Removed the '!' operator
+      ),
+      child: Container(),
+    );
+  },
+),
+
           LiquidPullToRefresh(
             onRefresh: handleRefresh,
             color: Color.fromARGB(255, 13, 184, 231),

@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:namer_app/news/news.dart';
 import 'package:namer_app/rewards/rewards_page.dart';
-import 'package:namer_app/news/news.dart';
 import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
@@ -10,7 +9,7 @@ import 'auth/signup.dart';
 import 'auth/login.dart';
 import 'profile/profile.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'news/news.dart';
+import 'events/events.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

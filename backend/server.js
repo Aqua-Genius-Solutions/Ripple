@@ -21,7 +21,8 @@ app.use("/events", eventRouter);
 app.use("/news", newsRouter);
 app.use("/auth", authRouter);
 app.use("/payment", paymentRouter);
-app.use("/rewards", rewardRouter);app.use("/stat", billRouter);
+app.use("/rewards", rewardRouter);
+app.use("/stat", billRouter);
 
 
 app.listen(3000, () => {
