@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
 
 class NewsList extends StatefulWidget {
   @override
@@ -47,6 +48,48 @@ class NewsListState extends State<NewsList> {
     }
   }
 
+  Future<void> likeNewsArticle(int articleId) async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      print("No user is currently signed in");
+      return;
+    }
+
+    try {
+      final response = await http.put(
+        Uri.parse(
+            'https://ripple-4wg9.onrender.com/news/$articleId/like/${currentUser.uid}'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final dynamic responseData = json.decode(response.body);
+        final int numLikes = responseData['numLikes'] as int;
+
+        setState(() {
+          // Update the state with the updated number of likes
+          Map<String, dynamic> article = newsArticles[articleId - 1];
+
+          Map<String, dynamic> updatedArticle = {
+            'id': article['id'],
+            'title': article['title'],
+            'date': article['date'],
+            'author': article['author'],
+            'likes': numLikes,
+            'comments': article['comments'],
+          };
+
+          newsArticles[articleId - 1] = updatedArticle;
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+      }
+    } catch (error) {
+      print('An error occurred: $error');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -60,7 +103,7 @@ class NewsListState extends State<NewsList> {
           author: article['author'],
           likes: article['likes'],
           comments: article['comments'],
-          newsApiUrl: newsApiUrl,
+          likeFunction: likeNewsArticle,
         );
       },
     );
@@ -73,8 +116,8 @@ class NewsCard extends StatelessWidget {
   final String date;
   final String author;
   final int likes;
-  final String newsApiUrl;
   final int comments;
+  final Function(int) likeFunction;
 
   NewsCard({
     required this.id,
@@ -82,8 +125,8 @@ class NewsCard extends StatelessWidget {
     required this.date,
     required this.author,
     required this.likes,
-    required this.newsApiUrl,
     required this.comments,
+    required this.likeFunction,
   });
 
   @override
@@ -107,118 +150,69 @@ class NewsCard extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(16.0, 4.0, 16.0, 12.0),
               child: Text(
                 'By $author, $date',
-                style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                style: TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ),
-            _buildButtons(context),
+            Divider(height: 1, thickness: 1, indent: 16, endIndent: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                LikeButton(
+                  likes: likes,
+                  onPressed: () => likeFunction(id),
+                ),
+                IconButton(
+                  icon: Icon(Icons.comment),
+                  onPressed: () {},
+                ),
+                Padding(
+                  padding: EdgeInsets.only(right: 16.0),
+                  child: Text('$comments Comments'),
+                ),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
-
-  Widget _buildButtons(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        LikeButton(id: id, initialLikes: likes, newsApiUrl: newsApiUrl),
-        CommentButton(id: id, initialComments: comments, newsApiUrl: newsApiUrl),
-      ],
-    );
-  }
 }
-
 class LikeButton extends StatefulWidget {
-  final int id;
-  final int initialLikes;
-  final String newsApiUrl;
+  final int likes;
+  final VoidCallback onPressed;
 
-  LikeButton({required this.id, required this.initialLikes, required this.newsApiUrl});
+  LikeButton({required this.likes, required this.onPressed});
 
   @override
-  LikeButtonState createState() => LikeButtonState();
+  _LikeButtonState createState() => _LikeButtonState();
 }
 
-class LikeButtonState extends State<LikeButton> {
-  bool _liked = false;
-  int _likes = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _likes = widget.initialLikes;
-  }
-
-  Future<void> likeArticle() async {
-    final response = await http.patch(Uri.parse('${widget.newsApiUrl}/${widget.id}/like'));
-
-    if (response.statusCode == 200) {
-      final responseBody = jsonDecode(response.body);
-      if (mounted) {
-        setState(() {
-          _likes = responseBody['likes'];
-        });
-      }
-    } else {
-      print('Failed to like article');
-    }
-  }
+class _LikeButtonState extends State<LikeButton> {
+  bool _isLiked = false;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       children: [
         IconButton(
           icon: Icon(
-            _liked ? Icons.favorite : Icons.favorite_border,
-            color: _liked ? Colors.red : null,
+            _isLiked ? Icons.favorite : Icons.favorite_border,
+            color: _isLiked ? Colors.red : null,
           ),
           onPressed: () {
             setState(() {
-              _liked = !_liked;
+              _isLiked = !_isLiked;
+
+              if (_isLiked) {
+                widget.onPressed();
+              }
             });
-            likeArticle();
           },
-          tooltip: 'Like',
         ),
-        Text(_likes.toString()), // Add this line to display the number of likes
-      ],
-    );
-  }
-}
-
-class CommentButton extends StatefulWidget {
-  final int id;
-  final int initialComments;
-  final String newsApiUrl;
-
-  CommentButton({required this.id, required this.initialComments, required this.newsApiUrl});
-
-  @override
-  CommentButtonState createState() => CommentButtonState();
-}
-
-class CommentButtonState extends State<CommentButton> {
-  int _comments = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    _comments = widget.initialComments;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        IconButton(
-          icon: Icon(Icons.comment),
-          onPressed: () {
-            // Navigate to the comment page or handle the action here
-          },
-          tooltip: 'Comment',
+        Padding(
+          padding: EdgeInsets.only(left: 8.0),
+          child: Text('${widget.likes}'),
         ),
-        Text(_comments.toString()), // Add this line to display the number of comments
       ],
     );
   }
