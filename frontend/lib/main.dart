@@ -74,7 +74,7 @@ class _WelcomePageState extends State<WelcomePage>
       if (status == AnimationStatus.completed) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SignInScreen()),
+          MaterialPageRoute(builder: (context) => LoginScreen()),
         );
       }
     });
@@ -159,6 +159,9 @@ class _WelcomePageState extends State<WelcomePage>
 }
 
 class LoginPage extends StatefulWidget {
+  final user;
+
+  LoginPage({required this.user});
   @override
   _LoginPageState createState() => _LoginPageState();
 }

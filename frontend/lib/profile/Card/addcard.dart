@@ -171,7 +171,7 @@ class AddCardState extends State<AddCard> {
                               ),
                               borderRadius: BorderRadius.circular(8),
                             ),
-                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            padding: EdgeInsets.symmetric(vertical: 15),
                             width: double.infinity,
                             alignment: Alignment.center,
                             child: Text(
