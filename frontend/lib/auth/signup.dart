@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'profile_creation.dart';
 
@@ -18,6 +19,7 @@ class _SignInScreenState extends State<SignInScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  final String apiUrl = dotenv.env["API_URL"]!;
 
   @override
   void initState() {
@@ -72,8 +74,7 @@ class _SignInScreenState extends State<SignInScreen> {
       // Authentication successful, do something
       print('User signed up: ${userCredential.user}');
 
-      final response = await http.post(
-          Uri.parse('https://75fe-197-27-42-196.ngrok-free.app/auth/signup'),
+      final response = await http.post(Uri.parse('$apiUrl/auth/signup'),
           body: jsonEncode({
             'uid': uid,
             'name': name,

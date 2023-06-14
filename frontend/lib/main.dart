@@ -1,8 +1,9 @@
 // ignore_for_file: library_private_types_in_public_api
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:namer_app/consumption/consumption.dart';
 import 'package:namer_app/news/news.dart';
-import 'package:namer_app/rewards/rewards_page.dart';
+import 'package:namer_app/payment/bills.dart';
 import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
@@ -11,12 +12,15 @@ import 'auth/login.dart';
 import 'profile/profile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'events/events.dart';
+import 'rewards/rewards_page.dart';
 import 'consumption/bar_graph.dart';
 import "chat/chat.dart";
 
 void main() async {
+  await dotenv.load();
+
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Firebase.initializeApp();
   runApp(MyApp());
 }
@@ -77,7 +81,7 @@ class _WelcomePageState extends State<WelcomePage>
       if (status == AnimationStatus.completed) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => SignInScreen()),
+          MaterialPageRoute(builder: (context) => LoginScreen()),
         );
       }
     });
@@ -162,6 +166,9 @@ class _WelcomePageState extends State<WelcomePage>
 }
 
 class LoginPage extends StatefulWidget {
+  final user;
+
+  LoginPage({required this.user});
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -173,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
     HomePage(),
     RewardsPage(),
     NewsList(),
-    ScreenFour(),
+    AddCard(),
   ];
   @override
   Widget build(BuildContext context) {

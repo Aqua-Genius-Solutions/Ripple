@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
 
 class NewsList extends StatefulWidget {
   @override
@@ -9,7 +11,7 @@ class NewsList extends StatefulWidget {
 
 class NewsListState extends State<NewsList> {
   List<Map<String, dynamic>> newsArticles = [];
-  String newsApiUrl = 'https://ripple-4wg9.onrender.com/news';
+  final String apiUrl = dotenv.env["API_URL"]!;
 
   @override
   void initState() {
@@ -19,7 +21,7 @@ class NewsListState extends State<NewsList> {
 
   Future<void> fetchNewsArticles() async {
     try {
-      final response = await http.get(Uri.parse(newsApiUrl));
+      final response = await http.get(Uri.parse("$apiUrl/news"));
 
       if (response.statusCode == 200) {
         final List<dynamic> responseBody = jsonDecode(response.body);
@@ -47,21 +49,23 @@ class NewsListState extends State<NewsList> {
     }
   }
 
-  Future<void> likeNewsArticle(int articleId, bool isUnliked) async {
+  Future<void> likeNewsArticle(int articleId) async {
+    User? currentUser = FirebaseAuth.instance.currentUser;
+
+    if (currentUser == null) {
+      print("No user is currently signed in");
+      return;
+    }
+
     try {
       final response = await http.put(
-        Uri.parse(
-            'https://ripple-4wg9.onrender.com/news/$articleId/like/cwBYjrcjxlTqBopYJMNryJsFJnv2'),
+        Uri.parse('$apiUrl/news/$articleId/like/${currentUser.uid}'),
         headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
         final dynamic responseData = json.decode(response.body);
-        int numLikes = responseData['numLikes'] as int;
-
-        if (isUnliked) {
-          numLikes -= 1;
-        }
+        final int numLikes = responseData['numLikes'] as int;
 
         setState(() {
           // Update the state with the updated number of likes
@@ -113,7 +117,7 @@ class NewsCard extends StatelessWidget {
   final String author;
   final int likes;
   final int comments;
-  final Function(int, bool) likeFunction;
+  final Function(int) likeFunction;
 
   NewsCard({
     required this.id,
@@ -130,7 +134,8 @@ class NewsCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
         elevation: 5,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,11 +160,15 @@ class NewsCard extends StatelessWidget {
               children: [
                 LikeButton(
                   likes: likes,
-                  onPressed: (isUnliked) => likeFunction(id, isUnliked),
+                  onPressed: () => likeFunction(id),
+                ),
+                IconButton(
+                  icon: Icon(Icons.comment),
+                  onPressed: () {},
                 ),
                 Padding(
-                  padding: EdgeInsets.only(right: 16.0, top: 4.0, bottom: 4.0),
-                  child: Text('$comments comments'),
+                  padding: EdgeInsets.only(right: 16.0),
+                  child: Text('$comments Comments'),
                 ),
               ],
             ),
@@ -169,10 +178,9 @@ class NewsCard extends StatelessWidget {
     );
   }
 }
-
 class LikeButton extends StatefulWidget {
   final int likes;
-  final Function(bool) onPressed;
+  final VoidCallback onPressed;
 
   LikeButton({required this.likes, required this.onPressed});
 
@@ -195,8 +203,11 @@ class _LikeButtonState extends State<LikeButton> {
           onPressed: () {
             setState(() {
               _isLiked = !_isLiked;
+
+              if (_isLiked) {
+                widget.onPressed();
+              }
             });
-            widget.onPressed(!_isLiked); // Pass the like status to the onPressed callback
           },
         ),
         Padding(

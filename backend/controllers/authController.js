@@ -1,5 +1,26 @@
 const prisma = require("../prisma/client");
 
+const getUsers = async (req, res) => {
+  try {
+    const users = await prisma.user.findMany();
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error retrieving users:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const getOne = async (req, res) => {
+  const uid = req.params.uid;
+  try {
+    const users = await prisma.user.findFirst({ where: { uid } });
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("Error retrieving users:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 const signup = async (req, res) => {
   const { name, surname, email, uid } = req.body;
   console.log(req.body);
@@ -22,12 +43,13 @@ const signup = async (req, res) => {
         name: name,
         surname: surname,
         email: email,
-        address: "123 Main St",
+        NFM: 0,
+        NormalConsp: 0,
+        address: "",
         isPro: false,
         Referrals: [],
         Bubbles: 0,
         Image: "",
-        Reference: 1,
         isAdmin: false,
         bills: { connect: [] },
         creditCards: { connect: [] },
@@ -45,26 +67,19 @@ const signup = async (req, res) => {
   }
 };
 
-const getUsers = async (req, res) => {
-  try {
-    const users = await prisma.user.findMany();
-    res.status(200).json(users);
-  } catch (error) {
-    console.error("Error retrieving users:", error);
-    res.status(500).json({ message: "Internal server error" });
-  }
-};
-
 const createProfile = async (req, res) => {
   const { uid } = req.params;
-  const { address, nfm } = req.body;
+  const { address, NFM, profilePicURL } = req.body;
+  const NormalConsp = NFM * 9;
   try {
     const user = await prisma.user.update({
       where: {
         uid: uid,
       },
-      data: { address, NFM: nfm },
+      data: { address, NFM, Image: profilePicURL, NormalConsp },
     });
+
+    res.status(200).json({ message: "User profile created", user });
   } catch (error) {
     console.error("Error creating profile:", error);
     res.status(500).json({ message: "Internal server error" });
@@ -107,4 +122,4 @@ async function getProUser(req, res) {
 
 
 
-module.exports = { signup, getUsers, createProfile,  getAdminUser , getProUser};
+module.exports = { signup, getUsers, createProfile,  getAdminUser , getProUser, getOne};
