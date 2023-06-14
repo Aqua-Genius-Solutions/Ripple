@@ -10,6 +10,7 @@ import 'auth/login.dart';
 import 'profile/profile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'events/events.dart';
+import "chat/chat.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -73,7 +74,7 @@ class _WelcomePageState extends State<WelcomePage>
       if (status == AnimationStatus.completed) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
+          MaterialPageRoute(builder: (context) => ChatPage()),
         );
       }
     });
@@ -195,6 +196,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
 class ScreenTwo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {

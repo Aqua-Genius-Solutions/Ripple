@@ -231,7 +231,7 @@ class _EventPageState extends State<EventPage>
                   itemCount: events.length,
                   itemBuilder: (context, index) {
                     return Container(
-                      margin: EdgeInsets.all(18.0),
+                      margin: EdgeInsets.all(40.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -262,26 +262,26 @@ class _EventPageState extends State<EventPage>
                                   right: 2.0,
                                   child: Container(
                                     decoration: BoxDecoration(
-                                      color: Color.fromARGB(255, 242, 247, 255),
+                                      color: Color.fromARGB(255, 70, 123, 247),
                                       borderRadius: BorderRadius.circular(6.0),
                                     ),
                                     padding: EdgeInsets.all(6.0),
                                     child: Row(
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-                                        Image.asset(
-                                          'images/agenda.png',
-                                          width: 18.0,
-                                          height: 18.0,
-                                        ),
+                                        // Image.asset(
+                                        //   'images/agenda.png',
+                                        //   width: 18.0,
+                                        //   height: 18.0,
+                                        // ),
                                         SizedBox(width: 4.0),
                                         Text(
                                           DateFormat.yMMMd().format(
                                             DateTime.parse(events[index].date),
                                           ),
                                           style: TextStyle(
-                                            color:
-                                                Color.fromARGB(255, 8, 78, 229),
+                                            color: Color.fromARGB(
+                                                255, 255, 255, 255),
                                             fontSize: 12.0,
                                           ),
                                         ),
