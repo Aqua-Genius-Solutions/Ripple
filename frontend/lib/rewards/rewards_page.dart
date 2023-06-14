@@ -4,6 +4,9 @@ import 'reward_item_widget.dart';
 import 'animated_dialog.dart';
 import 'water_wave_painter.dart';
 import 'dart:math';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+
 class RewardsPage extends StatefulWidget {
   @override
   RewardsPageState createState() => RewardsPageState();
@@ -18,7 +21,7 @@ class RewardsPageState extends State<RewardsPage> with SingleTickerProviderState
   @override
   void initState() {
     super.initState();
-    _fetchRewards();
+    fetchRewardsFromAPI();
 
     _animationController = AnimationController(
       duration: Duration(seconds: 2),
@@ -37,14 +40,21 @@ class RewardsPageState extends State<RewardsPage> with SingleTickerProviderState
     return await Future.delayed(Duration(seconds: 2));
   }
 
-  void _fetchRewards() {
-    items = [
-      RewardItem(imageUrl: 'images/planet.jpg', name: 'Planet', price: 10),
-      RewardItem(imageUrl: 'images/portable.jpg', name: 'Portable', price: 20),
-      // ... (add more items)
-    ];
-    setState(() {});
+  Future<void> fetchRewardsFromAPI() async {
+  try {
+    final response = await http.get(Uri.parse('https://ripple-4wg9.onrender.com/rewards'));
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonItems = json.decode(response.body);
+      items = jsonItems.map((item) => RewardItem.fromJson(item)).toList();
+      setState(() {});
+    } else {
+      throw Exception('Failed to load rewards from the API');
+    }
+  } catch (e) {
+    print('Error: $e');
+    // You can show an error message to the user or handle it differently here
   }
+}
 
   void _showAlert(BuildContext context, String message) {
     showGeneralDialog(
