@@ -209,7 +209,7 @@ class _CreateProfileState extends State<CreateProfileScreen> {
           };
 
           final billRequest = await http.post(
-              Uri.parse("https://75fe-197-27-42-196.ngrok-free.app/stat/add"),
+              Uri.parse("https://ripple-4wg9.onrender.com/stat/add"),
               headers: {'Content-Type': 'application/json'},
               body: jsonEncode(billData));
           print("bill added : ${billRequest.body}");
