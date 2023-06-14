@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:firebase_auth/firebase_auth.dart';
 
 class NewsList extends StatefulWidget {
   @override
@@ -48,24 +47,21 @@ class NewsListState extends State<NewsList> {
     }
   }
 
-  Future<void> likeNewsArticle(int articleId) async {
-    User? currentUser = FirebaseAuth.instance.currentUser;
-
-    if (currentUser == null) {
-      print("No user is currently signed in");
-      return;
-    }
-
+  Future<void> likeNewsArticle(int articleId, bool isUnliked) async {
     try {
       final response = await http.put(
         Uri.parse(
-            'https://ripple-4wg9.onrender.com/news/$articleId/like/${currentUser.uid}'),
+            'https://ripple-4wg9.onrender.com/news/$articleId/like/cwBYjrcjxlTqBopYJMNryJsFJnv2'),
         headers: {'Content-Type': 'application/json'},
       );
 
       if (response.statusCode == 200) {
         final dynamic responseData = json.decode(response.body);
-        final int numLikes = responseData['numLikes'] as int;
+        int numLikes = responseData['numLikes'] as int;
+
+        if (isUnliked) {
+          numLikes -= 1;
+        }
 
         setState(() {
           // Update the state with the updated number of likes
@@ -117,7 +113,7 @@ class NewsCard extends StatelessWidget {
   final String author;
   final int likes;
   final int comments;
-  final Function(int) likeFunction;
+  final Function(int, bool) likeFunction;
 
   NewsCard({
     required this.id,
@@ -159,15 +155,11 @@ class NewsCard extends StatelessWidget {
               children: [
                 LikeButton(
                   likes: likes,
-                  onPressed: () => likeFunction(id),
-                ),
-                IconButton(
-                  icon: Icon(Icons.comment),
-                  onPressed: () {},
+                  onPressed: (isUnliked) => likeFunction(id, isUnliked),
                 ),
                 Padding(
-                  padding: EdgeInsets.only(right: 16.0),
-                  child: Text('$comments Comments'),
+                  padding: EdgeInsets.only(right: 16.0, top: 4.0, bottom: 4.0),
+                  child: Text('$comments comments'),
                 ),
               ],
             ),
@@ -177,9 +169,10 @@ class NewsCard extends StatelessWidget {
     );
   }
 }
+
 class LikeButton extends StatefulWidget {
   final int likes;
-  final VoidCallback onPressed;
+  final Function(bool) onPressed;
 
   LikeButton({required this.likes, required this.onPressed});
 
@@ -202,11 +195,8 @@ class _LikeButtonState extends State<LikeButton> {
           onPressed: () {
             setState(() {
               _isLiked = !_isLiked;
-
-              if (_isLiked) {
-                widget.onPressed();
-              }
             });
+            widget.onPressed(!_isLiked); // Pass the like status to the onPressed callback
           },
         ),
         Padding(
