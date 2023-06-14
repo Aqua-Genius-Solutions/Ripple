@@ -60,8 +60,7 @@ async function participateInEvent(req, res) {
     console.log(updatedEventPar);
 
     const event = await prisma.events.findUnique({
-      where: { id: eventId },
-      // include: { participants: true },
+      where: { id: eventId }
     });
     console.log(event.participants);
     const numParticipants = event.participants.length;

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:namer_app/consumption/consumption.dart';
 import 'package:namer_app/news/news.dart';
+import 'package:namer_app/rewards/rewards_page.dart';
 import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
@@ -9,8 +10,9 @@ import 'auth/signup.dart';
 import 'auth/login.dart';
 import 'profile/profile.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'news/news.dart';
+import 'events/events.dart';
 import 'consumption/bar_graph.dart';
+import "chat/chat.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -169,7 +171,7 @@ class _LoginPageState extends State<LoginPage> {
 
   final List<Widget> _screens = [
     HomePage(),
-    ScreenTwo(),
+    RewardsPage(),
     NewsList(),
     ScreenFour(),
   ];

@@ -71,4 +71,40 @@ const createProfile = async (req, res) => {
   }
 };
 
-module.exports = { signup, getUsers, createProfile };
+async function getAdminUser(req, res) {
+  try {
+    const adminUser = await prisma.user.findFirst({
+      where: {
+        isAdmin: true
+      }
+    });
+
+    res.status(200).json(adminUser);
+  } catch (error) {
+    console.error('Error retrieving admin user:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function getProUser(req, res) {
+  try {
+    const proUser = await prisma.user.findFirst({
+      where: {
+        isPro: true
+      }
+    });
+
+    res.status(200).json(proUser);
+  } catch (error) {
+    console.error('Error retrieving Pro user:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+
+
+module.exports = { signup, getUsers, createProfile,  getAdminUser , getProUser};
