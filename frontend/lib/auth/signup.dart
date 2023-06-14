@@ -83,7 +83,6 @@ class _SignInScreenState extends State<SignInScreen> {
           }),
           headers: {"Content-Type": "application/json"});
       print("Respone received : ${response.body}");
-
       AwesomeNotifications().createNotification(
         content: NotificationContent(
           id: 1,
@@ -93,8 +92,7 @@ class _SignInScreenState extends State<SignInScreen> {
           body: "Congratulations you are now part of Ripple",
         ),
       );
-      
-      
+
       showDialog(
         context: context,
         builder: (BuildContext context) {
