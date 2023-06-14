@@ -1,5 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 import 'package:flutter/material.dart';
+import 'package:namer_app/consumption/consumption.dart';
 import 'package:namer_app/news/news.dart';
 import 'package:namer_app/rewards/rewards_page.dart';
 import 'profile/Card/addcard.dart';
@@ -10,10 +11,12 @@ import 'auth/login.dart';
 import 'profile/profile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'events/events.dart';
+import 'consumption/bar_graph.dart';
 import "chat/chat.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
   await Firebase.initializeApp();
   runApp(MyApp());
 }
@@ -74,7 +77,7 @@ class _WelcomePageState extends State<WelcomePage>
       if (status == AnimationStatus.completed) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ChatPage()),
+          MaterialPageRoute(builder: (context) => SignInScreen()),
         );
       }
     });
@@ -170,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
     HomePage(),
     RewardsPage(),
     NewsList(),
-    EventPage(),
+    ScreenFour(),
   ];
   @override
   Widget build(BuildContext context) {

@@ -1,7 +1,7 @@
 // ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
 import 'dart:convert';
-
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
@@ -19,7 +19,27 @@ class _SignInScreenState extends State<SignInScreen> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
+  @override
+  void initState() {
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+    super.initState();
+  }
+
   Future<void> signUp() async {
+    AwesomeNotifications().initialize(
+        null,
+        [
+          NotificationChannel(
+              channelKey: 'Basic_Channel',
+              channelName: 'Basic notifications',
+              channelDescription: 'Notification channel for basic test')
+        ],
+        debug: true);
+
     String name = nameController.text.trim();
     String surname = surnameController.text.trim();
     String email = emailController.text.trim();
@@ -63,6 +83,17 @@ class _SignInScreenState extends State<SignInScreen> {
           headers: {"Content-Type": "application/json"});
       print("Respone received : ${response.body}");
 
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: 1,
+          icon: 'images/rip2.png',
+          channelKey: 'Basic_Channel',
+          title: "Welcome to Ripple",
+          body: "Congratulations you are now part of Ripple",
+        ),
+      );
+      
+      
       showDialog(
         context: context,
         builder: (BuildContext context) {
