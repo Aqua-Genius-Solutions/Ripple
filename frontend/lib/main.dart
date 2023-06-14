@@ -12,6 +12,7 @@ import 'profile/profile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'events/events.dart';
 import 'rewards/rewards_page.dart';
+import "chat/chat.dart";
 
 void main() async {
   await dotenv.load();

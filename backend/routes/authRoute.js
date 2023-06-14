@@ -4,7 +4,11 @@ const {
   getUsers,
   createProfile,
   getOne,
+  getAdminUser,
+  getProUser,
 } = require("../controllers/authController");
+router.get("/pro", getProUser);
+router.get("/admin", getAdminUser);
 
 router.get("/getUsers", getUsers);
 router.get("/getOne/:uid", getOne);

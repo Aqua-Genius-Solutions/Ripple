@@ -52,8 +52,8 @@ model Reward {
   id          Int      @id @default(autoincrement())
   name        String
   price       Int
-  image       String
-  description String
+  image       String   // Change data type to string
+  description String?
 }
 model CreditCard {
   id      Int      @id @default(autoincrement())
@@ -74,13 +74,5 @@ model Bill {
   endDate     DateTime
   userId      String
   imageUrl    String
-  user        User     @relation("UserBills", fields: [userId], references: [uid])
-}
-
-model Comment {
-  id      Int    @id @default(autoincrement())
-  content String
-  author  String
-  newsId  Int
-  news    News   @relation(fields: [newsId], references: [id])
+  User        User     @relation(fields: [userId], references: [uid])
 }
