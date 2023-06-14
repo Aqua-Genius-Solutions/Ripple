@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:namer_app/events/events.dart';
 
@@ -36,11 +37,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Event> events = [];
+  final String apiUrl = dotenv.env["API_URL"]!;
 
   Future<void> fetchData() async {
     try {
       final response = await http.get(
-        Uri.parse('https://ripple-4wg9.onrender.com/events'),
+        Uri.parse('$apiUrl/events'),
       );
 
       if (response.statusCode == 200) {

@@ -60,7 +60,7 @@ class _CreateProfileState extends State<CreateProfileScreen> {
         print(responseData);
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
+          MaterialPageRoute(builder: (context) => LoginPage(user: user)),
         );
       } else {
         // Error handling for Prisma backend request

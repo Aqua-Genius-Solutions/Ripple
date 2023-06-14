@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
@@ -19,6 +20,8 @@ class _EventPageState extends State<EventPage>
   late Animation<double> _opacityAnimation;
   late Animation<Offset> _slideAnimation;
   double _skygoalLogoOpacity = 0;
+  final String apiUrl = dotenv.env["API_URL"]!;
+
   User? user = FirebaseAuth.instance.currentUser;
 
   @override
@@ -48,7 +51,7 @@ class _EventPageState extends State<EventPage>
   Future<void> fetchData() async {
     try {
       final response = await http.get(
-        Uri.parse('https://ripple-4wg9.onrender.com/events'),
+        Uri.parse('$apiUrl/events'),
       );
 
       if (response.statusCode == 200) {
@@ -77,14 +80,14 @@ class _EventPageState extends State<EventPage>
     print(user);
     try {
       final response = await http.put(
-        Uri.parse('https://ripple-4wg9.onrender.com/events/$eventId/like/1234'),
+        Uri.parse('$apiUrl/events/$eventId/like/1234'),
         headers: {'Content-Type': 'application/json'},
       );
       print(eventId);
       print(user?.uid);
       print(events);
       // print(
-      //     'https://ripple-4wg9.onrender.com/events/$eventId/like/${user?.uid}');
+      //     '$apiUrl/events/$eventId/like/${user?.uid}');
 
       if (response.statusCode == 200) {
         print(response);
@@ -120,15 +123,13 @@ class _EventPageState extends State<EventPage>
     print(user);
     try {
       final response = await http.put(
-        Uri.parse(
-            'https://ripple-4wg9.onrender.com/events/$eventId/part/123456'),
+        Uri.parse('$apiUrl/events/$eventId/part/123456'),
         headers: {'Content-Type': 'application/json'},
       );
       print(eventId);
       print(user?.uid);
       print(events);
-      print(
-          'https://ripple-4wg9.onrender.com/events/$eventId/part/${user?.uid}');
+      print('$apiUrl/events/$eventId/part/${user?.uid}');
 
       if (response.statusCode == 200) {
         print(response);
