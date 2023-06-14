@@ -44,16 +44,8 @@ model News {
   link        String
   date        DateTime
   image       String
-  Comment     Comment[]
+  comments    Comment[]
   LikedBy     User[]    @relation("UserLikedNews")
-}
-
-model Reward {
-  id          Int    @id @default(autoincrement())
-  name        String
-  price       Int
-  image       String
-  description String
 }
 
 model CreditCard {
@@ -64,14 +56,6 @@ model CreditCard {
   ownerId String
   balance Int
   owner   User     @relation(fields: [ownerId], references: [uid])
-}
-
-model Comment {
-  id      Int    @id @default(autoincrement())
-  content String
-  author  String
-  newsId  Int
-  news    News   @relation(fields: [newsId], references: [id])
 }
 
 model Bill {
@@ -91,5 +75,13 @@ model Comment {
   content String
   author  String
   newsId  Int
-  News    News   @relation(fields: [newsId], references: [id])
+  news    News   @relation(fields: [newsId], references: [id])
+}
+
+model Rewards {
+  id          Int    @id @default(autoincrement())
+  name        String
+  price       Int
+  image       String
+  description String
 }
