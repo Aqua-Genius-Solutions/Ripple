@@ -48,7 +48,7 @@ model News {
   LikedBy     User[]    @relation("UserLikedNews")
 }
 
-model Rewards {
+model Reward {
   id          Int    @id @default(autoincrement())
   name        String
   price       Int
@@ -64,6 +64,14 @@ model CreditCard {
   ownerId String
   balance Int
   owner   User     @relation(fields: [ownerId], references: [uid])
+}
+
+model Comment {
+  id      Int    @id @default(autoincrement())
+  content String
+  author  String
+  newsId  Int
+  news    News   @relation(fields: [newsId], references: [id])
 }
 
 model Bill {

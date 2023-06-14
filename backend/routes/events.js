@@ -10,4 +10,4 @@ router.put("/:eventId/part/:userId", participateInEvent);
 
 
 
-module.exports = router; 
+module.exports = router;    

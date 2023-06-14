@@ -8,6 +8,8 @@ const eventRouter = require("./routes/events");
 const newsRouter = require("./routes/newsRoute");
 const authRouter = require("./routes/authRoute");
 const paymentRouter = require("./routes/paymentRoute");
+const rewardRouter = require("./routes/rewardRoute");
+const billRouter = require ("./routes/bill");
 
 const app = express();
 
@@ -20,6 +22,8 @@ app.use("/events", eventRouter);
 app.use("/news", newsRouter);
 app.use("/auth", authRouter);
 app.use("/payment", paymentRouter);
+app.use("/rewards", rewardRouter);
+app.use("/stat", billRouter);
 
 
 app.listen(3000, () => {
