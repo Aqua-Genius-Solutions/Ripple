@@ -155,47 +155,47 @@ class _BarChartWidgetState extends State<BarChartWidget> {
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                     child: ListView.builder(
-  itemCount: 6, // Number of smaller containers
-  itemBuilder: (context, index) {
-    List<String> imagePaths = [
-      'images/tip1.png',
-      'images/tip2.png',
-      'images/tip3.png',
-      'images/tip4.png',
-      'images/tip5.png',
-      'images/tip6.png'
-    ];
+                        itemCount: 6, // Number of smaller containers
+                        itemBuilder: (context, index) {
+                          List<String> imagePaths = [
+                            'images/tip1.png',
+                            'images/tip2.png',
+                            'images/tip3.png',
+                            'images/tip4.png',
+                            'images/tip5.png',
+                            'images/tip6.png'
+                          ];
 
-    return Container(
-      margin: EdgeInsets.all(10.0),
-      width: 200.0,
-      height: 120.0,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.0),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            flex: 3,
-            child: Padding(
-              padding: EdgeInsets.only(left: 15.0, top: 12.0, right: 15.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(26.0),
-                child: Image.asset(
-                  imagePaths[index],
-                  width: 200.0,
-                  height: 200.0,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  },
-),
+                          return Container(
+                            margin: EdgeInsets.all(10.0),
+                            width: 200.0,
+                            height: 120.0,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 3,
+                                  child: Padding(
+                                    padding: EdgeInsets.only(left: 15.0, top: 12.0, right: 15.0),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(26.0),
+                                      child: Image.asset(
+                                        imagePaths[index],
+                                        width: 200.0,
+                                        height: 200.0,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ],
                 ),

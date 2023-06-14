@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:namer_app/consumption/bar_graph.dart';
 import 'package:namer_app/events/events.dart';
+import 'package:namer_app/consumption/consumption.dart';
 
 class Event {
   final String author;
@@ -138,8 +140,7 @@ class _HomePageState extends State<HomePage> {
                   Container(
                     width: 140,
                     height: 170,
-                    margin:
-                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
@@ -151,10 +152,19 @@ class _HomePageState extends State<HomePage> {
                       ),
                       borderRadius: BorderRadius.circular(12.0),
                     ),
-                    child: Image.asset(
-                      'images/statt.png',
-                      width: 50,
-                      height: 30,
+                    child: GestureDetector(
+                      onTap: () {
+                        // Perform navigation to another page here
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => BarChartWidget()),
+                        );
+                      },
+                      child: Image.asset(
+                        'images/waterC.png',
+                        width: 50,
+                        height: 30,
+                      ),
                     ),
                   ),
                   // Container 2 (Right)

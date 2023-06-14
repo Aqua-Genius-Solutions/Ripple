@@ -1,5 +1,4 @@
 // ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:namer_app/consumption/consumption.dart';
 import 'package:namer_app/news/news.dart';
@@ -15,6 +14,7 @@ import 'consumption/bar_graph.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
   await Firebase.initializeApp();
   runApp(MyApp());
 }
@@ -75,7 +75,7 @@ class _WelcomePageState extends State<WelcomePage>
       if (status == AnimationStatus.completed) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => BarChartWidget()),
+          MaterialPageRoute(builder: (context) => SignInScreen()),
         );
       }
     });
