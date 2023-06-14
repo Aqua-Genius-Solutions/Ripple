@@ -5,32 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:namer_app/consumption/bar_graph.dart';
 import 'package:namer_app/events/events.dart';
 import 'package:namer_app/consumption/consumption.dart';
-
-class Event {
-  final String author;
-  final String date;
-  final int participants;
-  final int likedBy;
-  final String image;
-
-  Event({
-    required this.author,
-    required this.date,
-    required this.participants,
-    required this.likedBy,
-    required this.image,
-  });
-
-  factory Event.fromJson(Map<String, dynamic> json) {
-    return Event(
-      author: json['author'] as String,
-      date: json['date'] as String,
-      participants: int.tryParse(json['participants'].toString()) ?? 0,
-      likedBy: int.tryParse(json['likedBy'].toString()) ?? 0,
-      image: json['image'] as String,
-    );
-  }
-}
+import 'package:namer_app/payment/bills.dart';
+import "../classes.dart";
 
 class HomePage extends StatefulWidget {
   @override
@@ -142,7 +118,8 @@ class _HomePageState extends State<HomePage> {
                   Container(
                     width: 140,
                     height: 170,
-                    margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
@@ -156,10 +133,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: GestureDetector(
                       onTap: () {
-                        // Perform navigation to another page here
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => BarChartWidget()),
+                          MaterialPageRoute(
+                              builder: (context) => BarChartWidget()),
                         );
                       },
                       child: Image.asset(
@@ -187,10 +164,19 @@ class _HomePageState extends State<HomePage> {
                           ),
                           borderRadius: BorderRadius.circular(12.0),
                         ),
-                        child: Image.asset(
-                          'images/medd.png',
-                          width: 50,
-                          height: 20,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BarChartWidget()),
+                            );
+                          },
+                          child: Image.asset(
+                            'images/medd.png',
+                            width: 50,
+                            height: 30,
+                          ),
                         ),
                       ),
                       Container(
@@ -210,12 +196,20 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                           children: [
                             Expanded(
+                                child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => BillsScreen()),
+                                );
+                              },
                               child: Image.asset(
                                 'images/paybill.png',
                                 width: 90,
                                 height: 90,
                               ),
-                            ),
+                            )),
                             SizedBox(width: 8.0),
                           ],
                         ),

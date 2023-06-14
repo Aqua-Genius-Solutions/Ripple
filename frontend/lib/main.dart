@@ -20,7 +20,7 @@ void main() async {
   await dotenv.load();
 
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Firebase.initializeApp();
   runApp(MyApp());
 }
@@ -180,7 +180,7 @@ class _LoginPageState extends State<LoginPage> {
     HomePage(),
     RewardsPage(),
     NewsList(),
-    ScreenFour(),
+    AddCard(),
   ];
   @override
   Widget build(BuildContext context) {

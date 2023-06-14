@@ -178,7 +178,6 @@ class NewsCard extends StatelessWidget {
     );
   }
 }
-
 class LikeButton extends StatefulWidget {
   final int likes;
   final VoidCallback onPressed;

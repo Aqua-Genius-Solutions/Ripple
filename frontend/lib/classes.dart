@@ -30,7 +30,7 @@ class Event {
 
 //Bills
 class Bill {
-  final int id;
+  final String id;
   final double price;
   final int consumption;
   final bool paid;
@@ -52,9 +52,9 @@ class Bill {
 
   factory Bill.fromJson(Map<String, dynamic> json) {
     return Bill(
-      id: json['id'] as int,
-      price: (json['price'] as num?)?.toDouble() ?? 0.0,
-      consumption: json['consumption'] as int? ?? 0,
+      id: int.parse(json['id']) as String? ?? "",
+      price: double.parse(json["price"]),
+      consumption: int.parse(json['consumption']),
       paid: json['paid'] as bool? ?? false,
       startDate: DateTime.parse(json['startDate'] as String? ?? ''),
       endDate: DateTime.parse(json['endDate'] as String? ?? ''),

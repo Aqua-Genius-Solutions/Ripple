@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:namer_app/payment/pay_bill.dart';
 
@@ -19,6 +20,7 @@ class _BillsScreenState extends State<BillsScreen> {
   Map<dynamic, dynamic> user = {"name": "", "surename": ""};
 
   String? uid = FirebaseAuth.instance.currentUser?.uid;
+  final String apiUrl = dotenv.env["API_URL"]!;
 
   @override
   void initState() {
@@ -28,8 +30,7 @@ class _BillsScreenState extends State<BillsScreen> {
   }
 
   Future<void> getUser() async {
-    final response = await http.get(Uri.parse(
-        'https://c664-41-225-237-233.ngrok-free.app/auth/getOne/1234'));
+    final response = await http.get(Uri.parse('$apiUrl/auth/getOne/$uid'));
 
     setState(() {
       user = jsonDecode(response.body);
@@ -37,10 +38,9 @@ class _BillsScreenState extends State<BillsScreen> {
   }
 
   Future<void> importBills() async {
-    final response = await http.get(
-        Uri.parse('https://c664-41-225-237-233.ngrok-free.app/stat/user/1234'));
+    final response = await http.get(Uri.parse('$apiUrl/stat/user/$uid'));
 
-    final List<dynamic> responseData = jsonDecode(response.body);
+    final List<dynamic> responseData = jsonDecode(response.body);  
     print(responseData);
 
     final List<Bill> importedBills = responseData
