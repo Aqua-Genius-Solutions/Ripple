@@ -73,7 +73,7 @@ const createProfile = async (req, res) => {
 
 async function getAdminUser(req, res) {
   try {
-    const adminUser = await prisma.user.findFirst({
+    const adminUser = await prisma.user.findMany({
       where: {
         isAdmin: true
       }
@@ -90,7 +90,7 @@ async function getAdminUser(req, res) {
 
 async function getProUser(req, res) {
   try {
-    const proUser = await prisma.user.findFirst({
+    const proUser = await prisma.user.findMany({
       where: {
         isPro: true
       }
