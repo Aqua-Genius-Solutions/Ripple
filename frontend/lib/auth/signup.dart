@@ -1,9 +1,10 @@
 // ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
 import 'dart:convert';
-
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'profile_creation.dart';
 
@@ -18,8 +19,29 @@ class _SignInScreenState extends State<SignInScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  final String apiUrl = dotenv.env["API_URL"]!;
+
+  @override
+  void initState() {
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+    super.initState();
+  }
 
   Future<void> signUp() async {
+    AwesomeNotifications().initialize(
+        null,
+        [
+          NotificationChannel(
+              channelKey: 'Basic_Channel',
+              channelName: 'Basic notifications',
+              channelDescription: 'Notification channel for basic test')
+        ],
+        debug: true);
+
     String name = nameController.text.trim();
     String surname = surnameController.text.trim();
     String email = emailController.text.trim();
@@ -52,8 +74,7 @@ class _SignInScreenState extends State<SignInScreen> {
       // Authentication successful, do something
       print('User signed up: ${userCredential.user}');
 
-      final response = await http.post(
-          Uri.parse('https://a181-41-225-237-233.ngrok-free.app/auth/signup'),
+      final response = await http.post(Uri.parse('$apiUrl/auth/signup'),
           body: jsonEncode({
             'uid': uid,
             'name': name,
@@ -62,6 +83,15 @@ class _SignInScreenState extends State<SignInScreen> {
           }),
           headers: {"Content-Type": "application/json"});
       print("Respone received : ${response.body}");
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: 1,
+          icon: 'images/rip2.png',
+          channelKey: 'Basic_Channel',
+          title: "Welcome to Ripple",
+          body: "Congratulations you are now part of Ripple",
+        ),
+      );
 
       showDialog(
         context: context,

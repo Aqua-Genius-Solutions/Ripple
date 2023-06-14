@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -10,7 +11,7 @@ class NewsList extends StatefulWidget {
 
 class NewsListState extends State<NewsList> {
   List<Map<String, dynamic>> newsArticles = [];
-  String newsApiUrl = 'https://ripple-4wg9.onrender.com/news';
+  final String apiUrl = dotenv.env["API_URL"]!;
 
   @override
   void initState() {
@@ -20,7 +21,7 @@ class NewsListState extends State<NewsList> {
 
   Future<void> fetchNewsArticles() async {
     try {
-      final response = await http.get(Uri.parse(newsApiUrl));
+      final response = await http.get(Uri.parse("$apiUrl/news"));
 
       if (response.statusCode == 200) {
         final List<dynamic> responseBody = jsonDecode(response.body);
@@ -58,8 +59,7 @@ class NewsListState extends State<NewsList> {
 
     try {
       final response = await http.put(
-        Uri.parse(
-            'https://ripple-4wg9.onrender.com/news/$articleId/like/${currentUser.uid}'),
+        Uri.parse('$apiUrl/news/$articleId/like/${currentUser.uid}'),
         headers: {'Content-Type': 'application/json'},
       );
 
@@ -134,7 +134,8 @@ class NewsCard extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
         elevation: 5,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,20 +1,5 @@
 import 'package:flutter/material.dart';
-
-class RewardItem {
-  final String imageUrl;
-  final String name;
-  final int price;
-
-  RewardItem({required this.imageUrl, required this.name, required this.price});
-
-  factory RewardItem.fromJson(Map<String, dynamic> json) {
-    return RewardItem(
-      imageUrl: json['imageUrl'],
-      name: json['name'],
-      price: json['price'],
-    );
-  }
-}
+import "../classes.dart";
 
 class RewardItemWidget extends StatelessWidget {
   final RewardItem rewardItem;
