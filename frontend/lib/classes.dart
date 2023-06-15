@@ -1,7 +1,7 @@
 // Events
 class Event {
   final int id; // Add the id property
-  final String author;
+  final String title;
   final String date;
   final int participants;
   final int likedBy;
@@ -9,21 +9,22 @@ class Event {
 
   Event({
     required this.id, // Include the id parameter in the constructor
-    required this.author,
+    required this.title,
     required this.date,
     required this.participants,
     required this.likedBy,
     required this.image,
   });
 
-  factory Event.fromJson(Map<String, dynamic> json) {
+  factory Event.fromJson(Map<String, dynamic> event) {
+    print(event["id"].runtimeType);
     return Event(
-      id: json['id'] as int, // Initialize the id property from JSON
-      author: json['author'] as String,
-      date: json['date'] as String,
-      participants: int.tryParse(json['participants'].toString()) ?? 0,
-      likedBy: int.tryParse(json['likedBy'].toString()) ?? 0,
-      image: json['image'] as String,
+      id: event['id'],
+      title: event['title'] as String,
+      date: event['date'] as String? ?? '',
+      participants: event['participants'].length ?? 0,
+      likedBy: event['LikedBy'].length ?? 0,
+      image: event['image'] as String,
     );
   }
 }

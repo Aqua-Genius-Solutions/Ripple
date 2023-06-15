@@ -1,26 +1,19 @@
 // ignore_for_file: library_private_types_in_public_api
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:namer_app/consumption/consumption.dart';
 import 'package:namer_app/news/news.dart';
-import 'package:namer_app/payment/bills.dart';
 import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
-import 'auth/signup.dart';
 import 'auth/login.dart';
-import 'profile/profile.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'events/events.dart';
 import 'rewards/rewards_page.dart';
-import 'consumption/bar_graph.dart';
 import "chat/chat.dart";
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 void main() async {
   await dotenv.load();
-
   WidgetsFlutterBinding.ensureInitialized();
-
   await Firebase.initializeApp();
   runApp(MyApp());
 }
@@ -46,6 +39,35 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _firebaseMessaging.getToken().then((token) {
+      print('FCM Token: $token');
+    });
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(message.notification?.title ?? ''),
+          content: Text(message.notification?.body ?? ''),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -81,7 +103,7 @@ class _WelcomePageState extends State<WelcomePage>
       if (status == AnimationStatus.completed) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => ChatPage()),
+          MaterialPageRoute(builder: (context) => EventPage()),
         );
       }
     });

@@ -56,9 +56,17 @@ class _EventPageState extends State<EventPage>
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        print(data);
 
         List<Event> mappedEvents = [];
         for (var event in data) {
+          print(event["id"].runtimeType);
+          print(event["title"].runtimeType);
+          print(event["image"].runtimeType);
+          print(event["date"].runtimeType);
+          print("${event['LikedBy'].runtimeType} ${event['LikedBy']}");
+          print(
+              "${event['participants'].runtimeType} ${event['participants']}");
           mappedEvents.add(Event.fromJson(event));
         }
         print(mappedEvents);
@@ -80,7 +88,7 @@ class _EventPageState extends State<EventPage>
     print(user);
     try {
       final response = await http.put(
-        Uri.parse('$apiUrl/events/$eventId/like/1234'),
+        Uri.parse('$apiUrl/events/$eventId/like/${user?.uid}'),
         headers: {'Content-Type': 'application/json'},
       );
       print(eventId);
@@ -97,12 +105,11 @@ class _EventPageState extends State<EventPage>
         print(numLikes);
 
         setState(() {
-          // Update the state with the updated number of likes
           Event event = events[eventId - 1];
 
           Event updatedEvent = Event(
             id: event.id,
-            author: event.author,
+            title: event.title,
             date: event.date,
             participants: event.participants,
             likedBy: numLikes,
@@ -123,7 +130,7 @@ class _EventPageState extends State<EventPage>
     print(user);
     try {
       final response = await http.put(
-        Uri.parse('$apiUrl/events/$eventId/part/123456'),
+        Uri.parse('$apiUrl/events/$eventId/part/${user?.uid}'),
         headers: {'Content-Type': 'application/json'},
       );
       print(eventId);
@@ -144,7 +151,7 @@ class _EventPageState extends State<EventPage>
 
           Event updatedEvent = Event(
             id: event.id,
-            author: event.author,
+            title: event.title,
             date: event.date,
             participants: numParticipants,
             likedBy: event.likedBy,
@@ -300,7 +307,7 @@ class _EventPageState extends State<EventPage>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  events[index].author,
+                                  events[index].title,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20.0,
