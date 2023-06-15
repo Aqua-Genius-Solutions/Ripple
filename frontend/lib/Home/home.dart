@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:namer_app/consumption/bar_graph.dart';
 import 'package:namer_app/events/events.dart';
 import 'package:namer_app/consumption/consumption.dart';
 import 'package:namer_app/payment/bills.dart';
@@ -374,20 +373,19 @@ class _HomePageState extends State<HomePage> {
                       MaterialPageRoute(builder: (context) => EventPage()),
                     );
                   },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ), backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 16.0),
+                  ),
                   child: Text(
                     'See More',
                     style: TextStyle(
                       color: Color.fromARGB(255, 22, 56, 191),
                       fontSize: 16.0,
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 16.0),
-                    primary: Color.fromARGB(255, 255, 255, 255),
                   ),
                 ),
               ),

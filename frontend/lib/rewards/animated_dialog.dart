@@ -22,15 +22,15 @@ class AnimatedDialog extends StatelessWidget {
       actions: <Widget>[
         TextButton(
           onPressed: onOkPressed,
-          child: Text(
-            'OK',
-            style: TextStyle(color: Colors.white), // White text color
-          ),
           style: TextButton.styleFrom(
             backgroundColor: Colors.blue[300], // Water-like button color
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5),
             ),
+          ),
+          child: Text(
+            'OK',
+            style: TextStyle(color: Colors.white), // White text color
           ),
         ),
       ],

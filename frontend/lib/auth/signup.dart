@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'profile_creation.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';  
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -29,6 +30,10 @@ class _SignInScreenState extends State<SignInScreen> {
       }
     });
     super.initState();
+  } 
+
+    void subscribeToAllUsers() {
+    FirebaseMessaging.instance.subscribeToTopic('all_users');
   }
 
   Future<void> signUp() async {
@@ -83,15 +88,17 @@ class _SignInScreenState extends State<SignInScreen> {
           }),
           headers: {"Content-Type": "application/json"});
       print("Respone received : ${response.body}");
+
+       subscribeToAllUsers();
       AwesomeNotifications().createNotification(
         content: NotificationContent(
           id: 1,
-          icon: 'images/rip2.png',
           channelKey: 'Basic_Channel',
           title: "Welcome to Ripple",
-          body: "Congratulations you are now part of Ripple",
+          body: "Congratulations $name, you are now part of Ripple",
         ),
       );
+      
 
       showDialog(
         context: context,
