@@ -13,7 +13,15 @@ const getUsers = async (req, res) => {
 const getOne = async (req, res) => {
   const uid = req.params.uid;
   try {
-    const users = await prisma.user.findFirst({ where: { uid } });
+    const users = await prisma.user.findFirst({
+      where: { uid },
+      include: {
+        LikedEvents: true,
+        LikedNews: true,
+        bills: true,
+        creditCards: true,
+      },
+    });
     res.status(200).json(users);
   } catch (error) {
     console.error("Error retrieving users:", error);
@@ -90,14 +98,14 @@ async function getAdminUser(req, res) {
   try {
     const adminUser = await prisma.user.findMany({
       where: {
-        isAdmin: true
-      }
+        isAdmin: true,
+      },
     });
 
     res.status(200).json(adminUser);
   } catch (error) {
-    console.error('Error retrieving admin user:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error retrieving admin user:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   } finally {
     await prisma.$disconnect();
   }
@@ -107,19 +115,24 @@ async function getProUser(req, res) {
   try {
     const proUser = await prisma.user.findMany({
       where: {
-        isPro: true
-      }
+        isPro: true,
+      },
     });
 
     res.status(200).json(proUser);
   } catch (error) {
-    console.error('Error retrieving Pro user:', error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error("Error retrieving Pro user:", error);
+    res.status(500).json({ error: "Internal Server Error" });
   } finally {
     await prisma.$disconnect();
   }
 }
 
-
-
-module.exports = { signup, getUsers, createProfile,  getAdminUser , getProUser, getOne};
+module.exports = {
+  signup,
+  getUsers,
+  createProfile,
+  getAdminUser,
+  getProUser,
+  getOne,
+};

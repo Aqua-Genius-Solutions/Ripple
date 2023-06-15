@@ -1,7 +1,9 @@
 const prisma = require("../prisma/client");
 
 const getEvents = async (req, res) => {
-  const events = await prisma.events.findMany();
+  const events = await prisma.events.findMany({
+    include: { LikedBy: true, participants: true },
+  });
   res.json(events);
   console.log(events);
 };
@@ -24,7 +26,9 @@ async function likeEvent(req, res) {
 
     console.log(event);
 
-    const userLikedEvent = event.LikedBy.find((likedByUser) => likedByUser.uid === userId);
+    const userLikedEvent = event.LikedBy.find(
+      (likedByUser) => likedByUser.uid === userId
+    );
 
     if (userLikedEvent) {
       const updatedEvent = await prisma.events.update({
@@ -33,7 +37,7 @@ async function likeEvent(req, res) {
       });
       console.log(updatedEvent);
       const numLikes = event.LikedBy ? event.LikedBy.length - 1 : 0;
-      res.json({ message: 'Event disliked successfully', numLikes });
+      res.json({ message: "Event disliked successfully", numLikes });
     } else {
       const updatedEvent = await prisma.events.update({
         where: { id: eventId },
@@ -41,16 +45,15 @@ async function likeEvent(req, res) {
       });
       console.log(updatedEvent);
       const numLikes = event.LikedBy ? event.LikedBy.length + 1 : 1;
-      res.json({ message: 'Event liked successfully', numLikes });
+      res.json({ message: "Event liked successfully", numLikes });
     }
   } catch (error) {
-    console.error('An error occurred:', error);
-    res.status(500).json({ error: 'An error occurred while liking/disliking the event' });
+    console.error("An error occurred:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while liking/disliking the event" });
   }
 }
-
-
-
 
 async function participateInEvent(req, res) {
   const eventId = parseInt(req.params.eventId);
@@ -79,13 +82,16 @@ async function participateInEvent(req, res) {
       data: { participatedEvents: user.participatedEvents },
     });
 
-    res.json({ message: 'Participated in event successfully', numParticipants });
+    res.json({
+      message: "Participated in event successfully",
+      numParticipants,
+    });
   } catch (error) {
-    console.error('An error occurred:', error);
-    res.status(500).json({ error: 'An error occurred while participating in the event' });
+    console.error("An error occurred:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while participating in the event" });
   }
 }
 
-
-
-module.exports = {likeEvent, participateInEvent,  getEvents };
+module.exports = { likeEvent, participateInEvent, getEvents };

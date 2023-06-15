@@ -17,7 +17,7 @@ class BillsScreen extends StatefulWidget {
 
 class _BillsScreenState extends State<BillsScreen> {
   List<Bill> bills = [];
-  Map<dynamic, dynamic> user = {"name": "", "surename": ""};
+  Map<dynamic, dynamic> user = {};
 
   String? uid = FirebaseAuth.instance.currentUser?.uid;
   final String apiUrl = dotenv.env["API_URL"]!;
@@ -40,11 +40,11 @@ class _BillsScreenState extends State<BillsScreen> {
   Future<void> importBills() async {
     final response = await http.get(Uri.parse('$apiUrl/stat/user/$uid'));
 
-    final List<dynamic> responseData = jsonDecode(response.body);  
+    final List<dynamic> responseData = jsonDecode(response.body);
     print(responseData);
 
     final List<Bill> importedBills = responseData
-        .map((item) => Bill.fromJson(item as Map<String, dynamic>))
+        .map((item) => Bill.fromJson(item as Map<dynamic, dynamic>))
         .toList();
     setState(() {
       bills = importedBills;
