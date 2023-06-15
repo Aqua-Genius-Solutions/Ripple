@@ -10,6 +10,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'rewards/rewards_page.dart';
 import "chat/chat.dart";
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'events/events.dart';
 
 void main() async {
   await dotenv.load();
@@ -169,7 +170,7 @@ class _WelcomePageState extends State<WelcomePage>
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => ProfileScreen()),
+                    MaterialPageRoute(builder: (context) => EventPage()),
                   );
                 },
                 child: Padding(
