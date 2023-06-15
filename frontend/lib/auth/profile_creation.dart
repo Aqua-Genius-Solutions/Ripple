@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:namer_app/auth/login.dart';
 import 'package:namer_app/main.dart';
 import 'package:image_picker/image_picker.dart';
 
