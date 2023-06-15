@@ -5,6 +5,7 @@ import 'package:namer_app/news/news.dart';
 import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
+import 'auth/login.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'rewards/rewards_page.dart';
 import "chat/chat.dart";
