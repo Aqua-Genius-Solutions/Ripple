@@ -132,13 +132,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 16.0),
               // Login Button
               InkResponse(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ProfileScreen()),
-                  );
-                },
+                onTap: login,
                 child: Image.asset(
                   'images/arrow-blue.png',
                   width: 60,

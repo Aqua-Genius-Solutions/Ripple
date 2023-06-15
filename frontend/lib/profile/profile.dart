@@ -29,14 +29,33 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final String apiUrl = dotenv.env["API_URL"]!;
 
   bool isNewsFetched = false;
+  bool isEventsFetched = false;
+  Map<dynamic, dynamic> user = {};
 
   List<Map<String, dynamic>> newsArticles = [];
+  List<Map<String, dynamic>> events = [];
 
   List<String> imageNames = [];
   List<String> waterSavingTips = [];
 
+  String? uid = FirebaseAuth.instance.currentUser?.uid;
+
+  @override
+  void initState() {
+    super.initState();
+    getUser();
+  }
+
+  Future<void> getUser() async {
+    final response = await http.get(Uri.parse('$apiUrl/auth/getOne/$uid'));
+
+    setState(() {
+      user = jsonDecode(response.body);
+    });
+  }
+
   Future<List<dynamic>> fetchNewsArticles() async {
-    final response = await http.get(Uri.parse('$apiUrl/news'));
+    final response = await http.get(Uri.parse('$apiUrl/news/user/$uid'));
     if (response.statusCode == 200) {
       final List<dynamic> responseBody = await jsonDecode(response.body);
       print(responseBody);
@@ -56,6 +75,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
       return newsArticles.toList();
     } else {
       throw Exception('Failed to fetch news articles');
+    }
+  }
+
+  Future<List<dynamic>> fetchEvents() async {
+    final response = await http.get(Uri.parse('$apiUrl/events/user/$uid'));
+    if (response.statusCode == 200) {
+      final List<dynamic> responseBody = await jsonDecode(response.body);
+      print(responseBody);
+      setState(() {
+        events = responseBody.map((event) {
+          return {
+            'id': event['id'] ?? '',
+            'image': event['image'] ?? '',
+            'title': event['title'] ?? '',
+            'date': event['date'] ?? '',
+            'link': event['link'] ?? '',
+          };
+        }).toList();
+        isEventsFetched = true;
+      });
+
+      return events.toList();
+    } else {
+      throw Exception('Failed to fetch events');
     }
   }
 
@@ -204,16 +247,58 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             TabBar(
               tabs: [
-                Tab(text: 'Liked Events'),
-                Tab(text: 'Liked News'),
-                Tab(text: 'Profile Editing'),
+                Tab(
+                    child: Text(
+                  'Liked Events',
+                  style: TextStyle(color: Colors.blueGrey),
+                )),
+                Tab(
+                    child: Text(
+                  'Liked News',
+                  style: TextStyle(color: Colors.blueGrey),
+                )),
+                Tab(
+                    child: Text(
+                  'Profile Editing',
+                  style: TextStyle(color: Colors.blueGrey),
+                )),
               ],
             ),
             Expanded(
               child: TabBarView(
                 children: [
-                  Center(
-                    child: Text('Liked Events'),
+                  FutureBuilder<List<dynamic>>(
+                    future: !isEventsFetched ? fetchEvents() : null,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Error: ${snapshot.error}'),
+                        );
+                      } else {
+                        return ListView.builder(
+                          itemCount: events.length,
+                          itemBuilder: (context, index) {
+                            final event = events[index];
+                            return Column(
+                              children: [
+                                SizedBox(height: 16),
+                                EventCard(
+                                  id: event['id'],
+                                  link: event['link'],
+                                  date: DateTime.parse(event['date']),
+                                  image: event['image'],
+                                  title: event['title'],
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
                   ),
                   FutureBuilder<List<dynamic>>(
                     future: !isNewsFetched ? fetchNewsArticles() : null,
@@ -456,6 +541,38 @@ class NewsCard extends StatelessWidget {
           Text(
             tip,
             style: TextStyle(fontSize: 14),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class EventCard extends StatelessWidget {
+  final int id;
+  final String link;
+  final DateTime date;
+  final String image;
+  final String title;
+
+  const EventCard({
+    Key? key,
+    required this.id,
+    required this.link,
+    required this.date,
+    required this.image,
+    required this.title,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Column(
+        children: <Widget>[
+          Image.network(image),
+          ListTile(
+            title: Text(title),
+            subtitle: Text(date.toString()),
           ),
         ],
       ),

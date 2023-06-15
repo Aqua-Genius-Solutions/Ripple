@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:namer_app/events/events.dart';
 import 'package:namer_app/consumption/consumption.dart';
 import 'package:namer_app/payment/bills.dart';
+import 'package:namer_app/profile/profile.dart';
 import "../classes.dart";
 
 class HomePage extends StatefulWidget {
@@ -84,9 +85,17 @@ class _HomePageState extends State<HomePage> {
                       height: 60.0,
                       child: Padding(
                         padding: EdgeInsets.only(right: 20, top: 16.0),
-                        child: CircleAvatar(
-                          backgroundImage: AssetImage('images/unnamed.jpg'),
-                          radius: 15.0,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProfileScreen()));
+                          },
+                          child: CircleAvatar(
+                            backgroundImage: AssetImage('images/unnamed.jpg'),
+                            radius: 15.0,
+                          ),
                         ),
                       ),
                     ),
@@ -376,7 +385,8 @@ class _HomePageState extends State<HomePage> {
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.0),
-                    ), backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                    ),
+                    backgroundColor: Color.fromARGB(255, 255, 255, 255),
                     padding:
                         EdgeInsets.symmetric(horizontal: 30.0, vertical: 16.0),
                   ),
