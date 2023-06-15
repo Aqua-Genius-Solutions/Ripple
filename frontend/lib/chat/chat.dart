@@ -41,6 +41,8 @@ class _ChatPageState extends State<ChatPage> {
     const chatId = 'chat';
     final senderId = _currentUser?["uid"];
     final senderName = _currentUser?["name"];
+    final senderSurname = _currentUser?["surname"];
+
     final timestamp = DateTime.now().toUtc();
     print("Message sent to $senderId");
 
@@ -52,6 +54,7 @@ class _ChatPageState extends State<ChatPage> {
           .add({
         'senderId': senderId,
         'senderName': senderName,
+        'senderSurname': senderSurname,
         'messageText': messageText,
         'timestamp': timestamp,
       });
@@ -110,15 +113,50 @@ class _ChatPageState extends State<ChatPage> {
                     final message =
                         messages[index].data() as Map<String, dynamic>;
                     final text = message['messageText'] as String?;
-                    final senderId = message['senderId'] as String?;
+                    final senderName = message['senderName'] as String?;
+                    final senderSurname = message['senderSurname'] as String?;
+                    final isCurrentUser =
+                        message['senderId'] == _currentUser?["uid"];
 
-                    if (senderId == _currentUser?["uid"]) {
-                      return Container();
-                    }
+                    // Determine the alignment based on whether the message is from the current user or another user
+                    final alignment = isCurrentUser
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start;
 
-                    return ListTile(
-                      title: Text(text ?? ''),
-                      subtitle: Text(senderId ?? ''),
+                    return Padding(
+                      padding:
+                          EdgeInsets.symmetric(vertical: 4.0, horizontal: 8.0),
+                      child: Column(
+                        crossAxisAlignment: alignment,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 8.0, horizontal: 16.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16.0),
+                              color: isCurrentUser
+                                  ? Color.fromARGB(255, 13, 183, 226)
+                                  : Color.fromARGB(255, 132, 223,
+                                      246), // Same color as your messages
+                            ),
+                            child: Text(
+                              text ?? '',
+                              style: TextStyle(
+                                color: isCurrentUser
+                                    ? Color.fromARGB(255, 0, 0, 0)
+                                    : Colors.black,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 4.0),
+                          Text(
+                            senderName ?? '',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
                     );
                   },
                 );
@@ -153,4 +191,11 @@ class _ChatPageState extends State<ChatPage> {
       ),
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    title: 'Chat App',
+    home: ChatPage(),
+  ));
 }
