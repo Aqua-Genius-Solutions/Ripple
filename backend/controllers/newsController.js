@@ -41,17 +41,5 @@ const likeNews = async (req, res) => {
   }
 };
 
-const addComment = async (req, res) => {
-  const { id } = req.params;
-  const { content, author } = req.body;
-  const comment = await prisma.comment.create({
-    data: {
-      content,
-      author,
-      news: { connect: { id: parseInt(id) } },
-    },
-  });
-  res.json(comment);
-};
 
-module.exports = { getAllNews, likeNews, addComment };
+module.exports = { getAllNews, likeNews };
