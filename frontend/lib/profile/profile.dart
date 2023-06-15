@@ -58,7 +58,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final response = await http.get(Uri.parse('$apiUrl/news/user/$uid'));
     if (response.statusCode == 200) {
       final List<dynamic> responseBody = await jsonDecode(response.body);
-      print(responseBody);
       setState(() {
         newsArticles = responseBody.map((article) {
           return {
@@ -279,6 +278,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           child: Text('Error: ${snapshot.error}'),
                         );
                       } else {
+                        if (events.isEmpty) {
+                          return Center(
+                            child: Text("You haven't liked any events yet"),
+                          );
+                        }
                         return ListView.builder(
                           itemCount: events.length,
                           itemBuilder: (context, index) {
