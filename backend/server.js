@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const prisma = require("./prisma/client");
 
 const userRouter = require("./routes/route");
 const eventRouter = require("./routes/events");
@@ -9,7 +10,7 @@ const newsRouter = require("./routes/newsRoute");
 const authRouter = require("./routes/authRoute");
 const paymentRouter = require("./routes/paymentRoute");
 const rewardRouter = require("./routes/rewardRoute");
-const billRouter = require ("./routes/bill");
+const billRouter = require("./routes/bill");
 
 const app = express();
 
@@ -25,6 +26,15 @@ app.use("/payment", paymentRouter);
 app.use("/rewards", rewardRouter);
 app.use("/stat", billRouter);
 
+app.put("/:uid", async (req, res) => {
+  const uid = req.params.uid;
+  try {
+    await prisma.user.update({ where: { uid }, data: { isPro: true } });
+    res.json(await prisma.user.findFirst({ where: { uid } }));
+  } catch (error) {
+    res.json(error);
+  }
+});
 
 app.listen(3000, () => {
   console.log("Server is running on http://localhost:3000");

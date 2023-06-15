@@ -1,5 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+import 'dart:convert';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:namer_app/main.dart';
+import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -9,6 +15,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  Map<dynamic, dynamic> user = {"name": "", "surename": ""};
+  final String apiUrl = dotenv.env["API_URL"]!;
 
   Future<void> login() async {
     String email = emailController.text.trim();
@@ -25,8 +33,14 @@ class _LoginScreenState extends State<LoginScreen> {
         email: email,
         password: password,
       );
-      // Authentication successful
-      print('User logged in: ${userCredential.user}');
+
+      final response = await http
+          .get(Uri.parse('$apiUrl/auth/getOne/${userCredential.user?.uid}'));
+      print(response.body);
+
+      setState(() {
+        user = jsonDecode(response.body);
+      });
 
       // Show success dialog
       showDialog(
@@ -46,6 +60,9 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         },
       );
+
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => LoginPage(user: user)));
     } on FirebaseAuthException catch (e) {
       // Handle authentication error
       print('Failed to log in: $e');
@@ -86,7 +103,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               // Logo
               Image.asset(
-                'images/logggo-transformed.png',
+                'images/rip2.png',
                 width: 210,
                 height: 210,
               ),

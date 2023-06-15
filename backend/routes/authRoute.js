@@ -3,13 +3,15 @@ const {
   signup,
   getUsers,
   createProfile,
-  getAdminUser , getProUser
+  getOne,
+  getAdminUser,
+  getProUser,
 } = require("../controllers/authController");
 router.get("/pro", getProUser);
 router.get("/admin", getAdminUser);
 
 router.get("/getUsers", getUsers);
-
+router.get("/getOne/:uid", getOne);
 
 router.post("/login");
 router.post("/signup", signup);
