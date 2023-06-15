@@ -10,7 +10,8 @@ const newsRouter = require("./routes/newsRoute");
 const authRouter = require("./routes/authRoute");
 const paymentRouter = require("./routes/paymentRoute");
 const rewardRouter = require("./routes/rewardRoute");
-const billRouter = require("./routes/bill");
+const billRouter = require ("./routes/bill")
+const profileRouter = require("./routes/profileRoute");
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use("/auth", authRouter);
 app.use("/payment", paymentRouter);
 app.use("/rewards", rewardRouter);
 app.use("/stat", billRouter);
+app.use("/profile", profileRouter);
 
 app.put("/:uid", async (req, res) => {
   const uid = req.params.uid;

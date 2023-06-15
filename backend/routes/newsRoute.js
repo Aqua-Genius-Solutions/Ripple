@@ -5,6 +5,5 @@ const { getAllNews, likeNews, addComment } = require("../controllers/newsControl
 router.put('/:newsId/like/:userId', likeNews);
 router.get("/", getAllNews);
 // router.patch("/:id/like", likeNews); // This line is commented out, so it won't affect your routes.
-router.post("/:id/comment", addComment);
 
 module.exports = router;
