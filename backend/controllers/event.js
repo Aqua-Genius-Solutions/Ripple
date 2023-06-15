@@ -1,7 +1,9 @@
 const prisma = require("../prisma/client");
 
 const getEvents = async (req, res) => {
-  const events = await prisma.events.findMany();
+  const events = await prisma.events.findMany({
+    include: { LikedBy: true, participants: true },
+  });
   res.json(events);
   console.log(events);
 };
@@ -38,10 +40,10 @@ async function likeEvent(req, res) {
       data: { LikedEvents: user.LikedEvents },
     });
 
-    res.json({ message: 'Event liked successfully', numLikes });
+    res.json({ message: "Event liked successfully", numLikes });
   } catch (error) {
-    console.error('An error occurred:', error);
-    res.status(500).json({ error: 'An error occurred while liking the event' });
+    console.error("An error occurred:", error);
+    res.status(500).json({ error: "An error occurred while liking the event" });
   }
 }
 async function participateInEvent(req, res) {
@@ -60,7 +62,7 @@ async function participateInEvent(req, res) {
     console.log(updatedEventPar);
 
     const event = await prisma.events.findUnique({
-      where: { id: eventId }
+      where: { id: eventId },
     });
     console.log(event.participants);
     const numParticipants = event.participants.length;
@@ -70,12 +72,16 @@ async function participateInEvent(req, res) {
       data: { participatedEvents: user.participatedEvents },
     });
 
-    res.json({ message: 'Participated in event successfully', numParticipants });
+    res.json({
+      message: "Participated in event successfully",
+      numParticipants,
+    });
   } catch (error) {
-    console.error('An error occurred:', error);
-    res.status(500).json({ error: 'An error occurred while participating in the event' });
+    console.error("An error occurred:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while participating in the event" });
   }
 }
 
-
-module.exports = {likeEvent, participateInEvent,  getEvents };
+module.exports = { likeEvent, participateInEvent, getEvents };

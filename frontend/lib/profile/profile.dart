@@ -2,9 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:namer_app/consumption/bar_graph.dart';
+import 'package:namer_app/consumption/consumption.dart';
+import 'package:namer_app/payment/bills.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -22,6 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final uploadPreset = 'ripple';
 
   String profilePicURL = '';
+  final String apiUrl = dotenv.env["API_URL"]!;
 
   bool isNewsFetched = false;
 
@@ -31,7 +36,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List<String> waterSavingTips = [];
 
   Future<List<dynamic>> fetchNewsArticles() async {
-    final response = await http.get(Uri.parse('http://localhost:3000/news/'));
+    final response = await http.get(Uri.parse('$apiUrl/news'));
     if (response.statusCode == 200) {
       final List<dynamic> responseBody = await jsonDecode(response.body);
       print(responseBody);
@@ -98,7 +103,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
         final response = await http.put(
-          Uri.parse('http://localhost:3000/profile/${user.uid}'),
+          Uri.parse('$apiUrl/auth/getOne/${user.uid}'),
           body: jsonEncode({
             'Name': name,
             'Lastname': lastname,
@@ -170,10 +175,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
       );
     }
-  }
-
-  void navigateToPayment() {
-    // Navigate to the payment component
   }
 
   @override
@@ -362,14 +363,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Expanded(
                   child: TextButton(
                     onPressed: () {
-                      // Navigate to stats component
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BarChartWidget()));
                     },
                     child: Text('Stats'),
                   ),
                 ),
                 Expanded(
                   child: TextButton(
-                    onPressed: navigateToPayment,
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BillsScreen()));
+                    },
                     child: Text('Payment'),
                   ),
                 ),
