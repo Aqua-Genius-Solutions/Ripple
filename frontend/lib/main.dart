@@ -169,7 +169,7 @@ class _WelcomePageState extends State<WelcomePage>
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
+                    MaterialPageRoute(builder: (context) => ProfileScreen()),
                   );
                 },
                 child: Padding(

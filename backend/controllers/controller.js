@@ -1,7 +1,9 @@
 const prisma = require("../prisma/client");
 
 const getUsers = async (req, res) => {
+  const email = req.query.email;
   const users = await prisma.user.findMany({
+    where: { email },
     include: {
       LikedEvents: true,
       LikedNews: true,
