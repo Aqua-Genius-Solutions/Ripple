@@ -64,28 +64,35 @@ async function participateInEvent(req, res) {
       where: { uid: userId.toString() },
     });
 
-    const updatedEventPar = await prisma.events.update({
-      where: { id: eventId },
-      data: { participants: { connect: { uid: userId.toString() } } },
-    });
-    console.log(updatedEventPar);
-
     const event = await prisma.events.findFirst({
       where: { id: eventId },
       include: { participants: true },
     });
-    console.log(event.participants);
-    const numParticipants = event.participants.length;
 
-    await prisma.user.update({
-      where: { uid: userId.toString() },
-      data: { participatedEvents: user.participatedEvents },
-    });
+    const userParticipatedEvent = event.participants.find(
+      (participatedByUser) => participatedByUser.uid === userId
+    );
 
-    res.json({
-      message: "Participated in event successfully",
-      numParticipants,
-    });
+    if (userParticipatedEvent) {
+      const updatedEventPar = await prisma.events.update({
+        where: { id: eventId },
+        data: { participants: { disconnect: { uid: userId.toString() } } },
+      });
+      console.log(updatedEventPar);
+      const numParticipants = event.participants ? event.participants.length - 1 : 0;
+      res.json({ message: "Event dis-participated successfully", numParticipants });
+    } else {
+      const updatedEventPar = await prisma.events.update({
+        where: { id: eventId },
+        data: { participants: { connect: { uid: userId.toString() } } },
+      });
+      console.log(updatedEventPar);
+      const numParticipants = event.participants ? event.participants.length + 1 : 1;
+      res.json({
+        message: "Participated in event successfully",
+        numParticipants,
+      });
+    }
   } catch (error) {
     console.error("An error occurred:", error);
     res
