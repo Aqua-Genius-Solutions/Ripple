@@ -13,10 +13,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'events/events.dart';
 import 'consumption/bar_graph.dart';
 import "chat/chat.dart";
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
   await Firebase.initializeApp();
   runApp(MyApp());
 }
@@ -42,6 +42,38 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  
+
+  @override
+  void initState() {
+    super.initState();
+
+    _firebaseMessaging.getToken().then((token) {
+      print('FCM Token: $token');
+      // Store the device token in the user's data in the Prisma database
+      // You can make an API call to your backend and update the user's device token there
+    });
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text(message.notification?.title ?? ''),
+          content: Text(message.notification?.body ?? ''),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('OK'),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
