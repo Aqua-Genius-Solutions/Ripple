@@ -271,7 +271,7 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Center(
                                         child: Text(
-                                          events[index].author,
+                                          events[index].title,
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20.0,
