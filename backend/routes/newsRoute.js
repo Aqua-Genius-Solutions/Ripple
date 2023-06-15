@@ -3,11 +3,11 @@ const router = express.Router();
 const {
   getAllNews,
   likeNews,
-  getUserLikedEvents,
+  getUserLikedNews,
 } = require("../controllers/newsController");
 
 router.get("/", getAllNews);
-router.get("/user/:uid", getUserLikedEvents);
+router.get("/user/:uid", getUserLikedNews);
 
 router.put("/:newsId/like/:userId", likeNews);
 

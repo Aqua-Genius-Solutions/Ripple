@@ -94,4 +94,23 @@ async function participateInEvent(req, res) {
   }
 }
 
-module.exports = { likeEvent, participateInEvent, getEvents };
+const getUserLikedEvents = async (req, res) => {
+  const uid = req.params.uid;
+  try {
+    const user = await prisma.user.findFirst({
+      where: { uid },
+      include: { LikedEvents: true },
+    });
+    res.status(200).json(user?.LikedEvents);
+  } catch (error) {
+    console.error("An error occurred:", error);
+    res.status(500).json({ error: "An error occurred while liking the news" });
+  }
+};
+
+module.exports = {
+  likeEvent,
+  participateInEvent,
+  getEvents,
+  getUserLikedEvents,
+};

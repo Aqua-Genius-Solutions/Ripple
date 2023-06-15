@@ -41,7 +41,7 @@ const likeNews = async (req, res) => {
   }
 };
 
-const getUserLikedEvents = async (req, res) => {
+const getUserLikedNews = async (req, res) => {
   const uid = req.params.uid;
   try {
     const user = await prisma.user.findFirst({
@@ -55,4 +55,4 @@ const getUserLikedEvents = async (req, res) => {
   }
 };
 
-module.exports = { getAllNews, likeNews, getUserLikedEvents };
+module.exports = { getAllNews, likeNews, getUserLikedNews };
