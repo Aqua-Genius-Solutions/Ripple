@@ -35,7 +35,6 @@ class NewsListState extends State<NewsList> {
                 'date': article['date'] ?? '',
                 'author': article['author'] ?? '',
                 'likes': article['likes'] ?? 0,
-                'comments': article['comments'] ?? 0,
               };
             }).toList();
           });
@@ -77,7 +76,6 @@ class NewsListState extends State<NewsList> {
             'date': article['date'],
             'author': article['author'],
             'likes': numLikes,
-            'comments': article['comments'],
           };
 
           newsArticles[articleId - 1] = updatedArticle;
@@ -102,7 +100,6 @@ class NewsListState extends State<NewsList> {
           date: article['date'],
           author: article['author'],
           likes: article['likes'],
-          comments: article['comments'],
           likeFunction: likeNewsArticle,
         );
       },
@@ -116,7 +113,6 @@ class NewsCard extends StatelessWidget {
   final String date;
   final String author;
   final int likes;
-  final int comments;
   final Function(int) likeFunction;
 
   NewsCard({
@@ -125,7 +121,6 @@ class NewsCard extends StatelessWidget {
     required this.date,
     required this.author,
     required this.likes,
-    required this.comments,
     required this.likeFunction,
   });
 
@@ -165,10 +160,6 @@ class NewsCard extends StatelessWidget {
                 IconButton(
                   icon: Icon(Icons.comment),
                   onPressed: () {},
-                ),
-                Padding(
-                  padding: EdgeInsets.only(right: 16.0),
-                  child: Text('$comments Comments'),
                 ),
               ],
             ),
