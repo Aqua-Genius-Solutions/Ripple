@@ -81,7 +81,7 @@ class _WelcomePageState extends State<WelcomePage>
       if (status == AnimationStatus.completed) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => LoginScreen()),
+          MaterialPageRoute(builder: (context) => ChatPage()),
         );
       }
     });

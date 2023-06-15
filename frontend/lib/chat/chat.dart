@@ -25,7 +25,7 @@ class _ChatPageState extends State<ChatPage> {
   Future<void> getCurrentUser() async {
     final User? user = _auth.currentUser;
     final response = await http.get(Uri.parse(
-        'https://a181-41-225-237-233.ngrok-free.app/auth/getOne/${user?.uid}'));
+        'https://8151-41-225-237-233.ngrok-free.app/auth/getOne/${user?.uid}'));
 
     print("response received : ${response.body}");
     setState(() {
