@@ -162,7 +162,7 @@ class _BarChartWidgetState extends State<BarChartWidget> {
                             'images/tip2.png',
                             'images/tip3.png',
                             'images/tip4.png',
-                            'images/tip5.png',
+                            'images/tip7.png',
                             'images/tip6.png'
                           ];
 
