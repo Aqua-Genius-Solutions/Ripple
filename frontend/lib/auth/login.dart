@@ -5,11 +5,6 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:namer_app/main.dart';
-
-import 'package:namer_app/main.dart';
-import 'package:http/http.dart' as http;
-import '../profile/profile.dart';
 
 import 'package:namer_app/main.dart';
 import 'package:http/http.dart' as http;
@@ -95,11 +90,8 @@ class _LoginScreenState extends State<LoginScreen> {
         },
       );
     }
-  Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()), // iii@iiii.ii wawawa
-        );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
