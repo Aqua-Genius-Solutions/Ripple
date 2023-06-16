@@ -7,25 +7,34 @@ datasource db {
   url      = "postgres://root:rAjdVxvQihwqnR2w0zLH5PM1CqFO90oE@dpg-chsfo2grddl1j5vqcfgg-a.oregon-postgres.render.com/ripple"
 }
 
-model User {
-  name               String
-  surname            String
-  email              String
-  address            String
-  isPro              Boolean
-  Referrals          Int[]
-  Bubbles            Int
-  isAdmin            Boolean
-  uid                String       @id @default("0")
-  Image              String
-  NFM                Int
-  NormalConsp        Int
-  bills              Bill[]       @relation("UserBills")
-  creditCards        CreditCard[]
-  LikedEvents        Events[]     @relation("UserLikedEvents")
-  LikedNews          News[]       @relation("UserLikedNews")
-  ParticipatedEvents Events[]     @relation("UserParticipatedEvents")
-  rank                Int?  
+model Bill {
+  id          Int      @id @default(autoincrement())
+  price       Decimal
+  consumption Int
+  paid        Boolean
+  startDate   DateTime
+  endDate     DateTime
+  userId      String
+  imageUrl    String
+  User        User     @relation(fields: [userId], references: [uid])
+}
+
+model Comment {
+  id      Int    @id @default(autoincrement())
+  content String
+  author  String
+  newsId  Int
+  News    News   @relation(fields: [newsId], references: [id])
+}
+
+model CreditCard {
+  id      Int      @id @default(autoincrement())
+  number  String   @db.VarChar(16)
+  CVC     Int
+  expDate DateTime
+  ownerId String
+  balance Int
+  User    User     @relation(fields: [ownerId], references: [uid])
 }
 
 model Events {
@@ -45,38 +54,8 @@ model News {
   link        String
   date        DateTime
   image       String
-  comments    Comment[]
-  LikedBy     User[]    @relation("UserLikedNews")
-}
-
-model CreditCard {
-  id      Int      @id @default(autoincrement())
-  number  String   @db.VarChar(16)
-  CVC     Int
-  expDate DateTime
-  ownerId String
-  balance Int
-  owner   User     @relation(fields: [ownerId], references: [uid])
-}
-
-model Bill {
-  id          Int      @id @default(autoincrement())
-  price       Decimal
-  consumption Int
-  paid        Boolean
-  startDate   DateTime
-  endDate     DateTime
-  userId      String
-  imageUrl    String
-  user        User     @relation("UserBills", fields: [userId], references: [uid])
-}
-
-model Comment {
-  id      Int    @id @default(autoincrement())
-  content String
-  author  String
-  newsId  Int
-  news    News   @relation(fields: [newsId], references: [id])
+  Comment     Comment[]
+  User        User[]    @relation("UserLikedNews")
 }
 
 model Rewards {
@@ -85,4 +64,24 @@ model Rewards {
   price       Int
   image       String
   description String
+}
+
+model User {
+  name               String
+  surname            String
+  email              String
+  address            String
+  isPro              Boolean
+  Referrals          Int[]
+  Bubbles            Int
+  isAdmin            Boolean
+  uid                String       @id @default("0")
+  Image              String
+  NFM                Int
+  NormalConsp        Int
+  Bill               Bill[]
+  CreditCard         CreditCard[]
+  LikedEvents        Events[]     @relation("UserLikedEvents")
+  News               News[]       @relation("UserLikedNews")
+  participatedEvents Events[]     @relation("UserParticipatedEvents")
 }

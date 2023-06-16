@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
-import 'Card/addcard.dart';
-
+import 'package:namer_app/consumption/bar_graph.dart';
+import 'package:namer_app/consumption/consumption.dart';
+import 'package:namer_app/payment/bills.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -15,77 +17,103 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController lastnameController = TextEditingController();
   TextEditingController addressController = TextEditingController();
-  TextEditingController cvcController = TextEditingController();
-  TextEditingController nbFamMemController = TextEditingController();
-  File? _image;
+  final cloudName = "dszx3pd6j";
+  final apiKey = '471624387993618';
+  final apiSecret = 'awoFoWWM-9tqhtbU3uFXZD9Dm68';
+  final uploadPreset = 'ripple';
 
-  Future<void> _selectImage(ImageSource source) async {
-    PermissionStatus cameraPermission = await Permission.camera.status;
-    PermissionStatus photoLibraryPermission = await Permission.photos.status;
+  String profilePicURL = '';
+  final String apiUrl = dotenv.env["API_URL"]!;
 
-    if (!cameraPermission.isGranted) {
-      cameraPermission = await Permission.camera.request();
-    }
+  bool isNewsFetched = false;
 
-    if (!photoLibraryPermission.isGranted) {
-      photoLibraryPermission = await Permission.photos.request();
-    }
+  List<Map<String, dynamic>> newsArticles = [];
 
-    if (cameraPermission.isGranted && photoLibraryPermission.isGranted) {
-      final pickedImage = await ImagePicker().pickImage(source: source);
+  List<String> imageNames = [];
+  List<String> waterSavingTips = [];
 
-      if (pickedImage != null) {
-        setState(() {
-          _image = File(pickedImage.path);
-        });
-      }
+  Future<List<dynamic>> fetchNewsArticles() async {
+    final response = await http.get(Uri.parse('$apiUrl/news'));
+    if (response.statusCode == 200) {
+      final List<dynamic> responseBody = await jsonDecode(response.body);
+      print(responseBody);
+      setState(() {
+        newsArticles = responseBody.map((article) {
+          return {
+            'id': article['id'] ?? '',
+            'imageUrl': article['imageUrl'] ?? '',
+            'title': article['title'] ?? '',
+            'date': article['date'] ?? '',
+            'author': article['author'] ?? '',
+          };
+        }).toList();
+        isNewsFetched = true;
+      });
+
+      return newsArticles.toList();
     } else {
-      // Handle the case where permissions are not granted
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Permission Denied'),
-            content: Text('Please grant camera and photo library permissions.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
+      throw Exception('Failed to fetch news articles');
+    }
+  }
+
+  Future<void> uploadImage(ImageSource source) async {
+    final picker = ImagePicker();
+    final pickedImage = await picker.pickImage(source: source);
+
+    if (pickedImage != null) {
+      final imageBytes = await pickedImage.readAsBytes();
+
+      String base64Image = base64Encode(imageBytes);
+
+      final url =
+          Uri.parse('https://api.cloudinary.com/v1_1/$cloudName/image/upload');
+
+      final response = await http.post(
+        url,
+        body: {
+          'file': 'data:image/jpeg;base64,$base64Image',
+          'upload_preset': uploadPreset,
+          'api_key': apiKey,
+          'timestamp': DateTime.now().millisecondsSinceEpoch.toString(),
         },
       );
+
+      if (response.statusCode == 200) {
+        final responseData = jsonDecode(response.body);
+        String imageUrl = responseData['secure_url'];
+        print("Image upload successful : $imageUrl");
+        setState(() {
+          profilePicURL = imageUrl;
+        });
+      } else {
+        print('Failed to upload image: ${response.body}');
+      }
     }
   }
 
   void updateProfile() async {
+    String name = nameController.text.trim();
+    String lastname = lastnameController.text.trim();
     String address = addressController.text.trim();
-    int cvc = int.tryParse(cvcController.text) ?? 0;
-    int nbFamMem = int.tryParse(nbFamMemController.text) ?? 0;
 
     try {
       User? user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        // Update the user's profile in your Prisma backend
         final response = await http.put(
-          Uri.parse('http://localhost:3000/auth/profile/${user.uid}'),
+          Uri.parse('$apiUrl/auth/getOne/${user.uid}'),
           body: jsonEncode({
-            'address': address,
-            'CVC': cvc,
-            'NbFamMem': nbFamMem,
-            // Add any additional fields you want to update
+            'Name': name,
+            'Lastname': lastname,
+            'Address': address,
           }),
           headers: {"Content-Type": "application/json"},
         );
 
         if (response.statusCode == 200) {
-          // Request to Prisma backend successful
           final responseData = response.body;
-          // Process the response data as needed
           print(responseData);
           showDialog(
             context: context,
@@ -105,7 +133,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
             },
           );
         } else {
-          // Error handling for Prisma backend request
           print(
               'Prisma backend request failed with status: ${response.statusCode}');
           showDialog(
@@ -113,7 +140,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             builder: (BuildContext context) {
               return AlertDialog(
                 title: Text('Error'),
-                content: Text('Failed to update profile. Please try again.'),
+                content:
+                    Text('Failed to update the profile. Please try again.'),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -128,7 +156,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }
       }
     } catch (error) {
-      // Exception handling
       print('An error occurred: $error');
       showDialog(
         context: context,
@@ -150,17 +177,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  void navigateToPayment() {
-    // Navigate to the payment component
-  }
-
-  void navigateToAddCard() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => AddCard()),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -171,15 +187,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
         length: 3,
         child: Column(
           children: [
-            // Profile Picture in Header
             Padding(
               padding: EdgeInsets.all(16.0),
               child: CircleAvatar(
                 radius: 40,
-                backgroundImage: AssetImage('images/unnamed.jpg'),
+                backgroundImage: profilePicURL.isNotEmpty
+                    ? NetworkImage(profilePicURL)
+                    : null,
+                child: profilePicURL.isEmpty
+                    ? Text(
+                        'Add a photo',
+                        style: TextStyle(fontSize: 12.0),
+                      )
+                    : null,
               ),
             ),
-            // Tabs
             TabBar(
               tabs: [
                 Tab(text: 'Liked Events'),
@@ -190,25 +212,115 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Expanded(
               child: TabBarView(
                 children: [
-                  // Liked Events component
-                  // Render the events that the user liked
                   Center(
                     child: Text('Liked Events'),
                   ),
-                  // Liked News component
-                  // Render the news that the user liked
-                  Center(
-                    child: Text('Liked News'),
+                  FutureBuilder<List<dynamic>>(
+                    future: !isNewsFetched ? fetchNewsArticles() : null,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasError) {
+                        return Center(
+                          child: Text('Error: ${snapshot.error}'),
+                        );
+                      } else {
+                        return ListView.builder(
+                          itemCount: newsArticles.length,
+                          itemBuilder: (context, index) {
+                            final article = newsArticles[index];
+                            final imageName = imageNames.isNotEmpty
+                                ? imageNames[index % imageNames.length]
+                                : '';
+                            final tip = waterSavingTips.isNotEmpty
+                                ? waterSavingTips[
+                                    index % waterSavingTips.length]
+                                : '';
+                            return Column(
+                              children: [
+                                SizedBox(height: 16),
+                                NewsCard(
+                                  imageName: imageName,
+                                  title: article['title'],
+                                  date: article['date'],
+                                  author: article['author'],
+                                  tip: tip,
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
                   ),
-                  // Profile Editing component
-                  // Render the form for editing user profile
                   SingleChildScrollView(
                     child: Padding(
                       padding: EdgeInsets.all(16.0),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Address Input
+                          GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Upload Picture'),
+                                    content: Text('Select source:'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+                                          await uploadImage(
+                                              ImageSource.gallery);
+                                        },
+                                        child: Text('Gallery'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () async {
+                                          Navigator.of(context).pop();
+                                          await uploadImage(ImageSource.camera);
+                                        },
+                                        child: Text('Camera'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            },
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(width: 2.0, color: Colors.blue),
+                                borderRadius: BorderRadius.circular(50.0),
+                              ),
+                              child: Icon(
+                                Icons.add_a_photo,
+                                size: 48,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ),
+                          TextField(
+                            controller: nameController,
+                            decoration: InputDecoration(
+                              labelText: 'Name',
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
+                          SizedBox(height: 8.0),
+                          TextField(
+                            controller: lastnameController,
+                            decoration: InputDecoration(
+                              labelText: 'Surname',
+                              border: OutlineInputBorder(),
+                            ),
+                          ),
+                          SizedBox(height: 8.0),
                           TextField(
                             controller: addressController,
                             decoration: InputDecoration(
@@ -216,31 +328,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               border: OutlineInputBorder(),
                             ),
                           ),
-                          SizedBox(height: 8.0),
-
-                          // CVC Input
-                          TextField(
-                            controller: cvcController,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              labelText: 'CVC',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          SizedBox(height: 8.0),
-
-                          // Number of Family Members Input
-                          TextField(
-                            controller: nbFamMemController,
-                            keyboardType: TextInputType.number,
-                            decoration: InputDecoration(
-                              labelText: 'Number of Family Members',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
                           SizedBox(height: 16.0),
-
-                          // Add a Card Section
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -251,15 +339,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              InkWell(
-                                onTap: navigateToAddCard,
-                                child: Icon(Icons.add),
-                              ),
                             ],
                           ),
                           SizedBox(height: 8.0),
-
-                          // Update Profile Button
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -269,31 +351,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               ),
                             ],
                           ),
-
-                          // Add Image Selection Section
-                          SizedBox(height: 16.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () =>
-                                    _selectImage(ImageSource.gallery),
-                                child: Text('Select from Gallery'),
-                              ),
-                              SizedBox(width: 8.0),
-                              ElevatedButton(
-                                onPressed: () =>
-                                    _selectImage(ImageSource.camera),
-                                child: Text('Take a Photo'),
-                              ),
-                            ],
-                          ),
-
-                          // Display Selected Image
-                          if (_image != null) ...[
-                            SizedBox(height: 16.0),
-                            Image.file(_image!),
-                          ],
                         ],
                       ),
                     ),
@@ -301,20 +358,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ),
-            // Navigation buttons
             Row(
               children: [
                 Expanded(
                   child: TextButton(
                     onPressed: () {
-                      // Navigate to stats component
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BarChartWidget()));
                     },
                     child: Text('Stats'),
                   ),
                 ),
                 Expanded(
                   child: TextButton(
-                    onPressed: navigateToPayment,
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => BillsScreen()));
+                    },
                     child: Text('Payment'),
                   ),
                 ),
@@ -327,2319 +391,74 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-
-// import 'dart:convert';
-// import 'dart:io';
-
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:permission_handler/permission_handler.dart';
-// import 'Card/addcard.dart';
-// // import 'package:flutter_icons/flutter_icons.dart';
-
-// class ProfileScreen extends StatefulWidget {
-//   @override
-//   _ProfileScreenState createState() => _ProfileScreenState();
-// }
-
-// class _ProfileScreenState extends State<ProfileScreen> {
-//   TextEditingController addressController = TextEditingController();
-//   TextEditingController cvcController = TextEditingController();
-//   TextEditingController nbFamMemController = TextEditingController();
-//   File? _image;
-
-//   Future<void> _selectImage(ImageSource source) async {
-//     PermissionStatus cameraPermission = await Permission.camera.status;
-//     PermissionStatus photoLibraryPermission = await Permission.photos.status;
-
-//     if (!cameraPermission.isGranted) {
-//       cameraPermission = await Permission.camera.request();
-//     }
-
-//     if (!photoLibraryPermission.isGranted) {
-//       photoLibraryPermission = await Permission.photos.request();
-//     }
-
-//     if (cameraPermission.isGranted && photoLibraryPermission.isGranted) {
-//       final pickedImage = await ImagePicker().pickImage(source: source);
-
-//       if (pickedImage != null) {
-//         setState(() {
-//           _image = File(pickedImage.path);
-//         });
-//       }
-//     } else {
-//       // Handle the case where permissions are not granted
-//       showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text('Permission Denied'),
-//             content: Text('Please grant camera and photo library permissions.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text('OK'),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   void updateProfile() async {
-//     String address = addressController.text.trim();
-//     int cvc = int.tryParse(cvcController.text) ?? 0;
-//     int nbFamMem = int.tryParse(nbFamMemController.text) ?? 0;
-
-//     try {
-//       User? user = FirebaseAuth.instance.currentUser;
-//       if (user != null) {
-//         // Update the user's profile in your Prisma backend
-//         final response = await http.put(
-//           Uri.parse('http://localhost:3000/auth/profile/${user.uid}'),
-//           body: jsonEncode({
-//             'address': address,
-//             'CVC': cvc,
-//             'NbFamMem': nbFamMem,
-//             // Add any additional fields you want to update
-//           }),
-//           headers: {"Content-Type": "application/json"},
-//         );
-
-//         if (response.statusCode == 200) {
-//           // Request to Prisma backend successful
-//           final responseData = response.body;
-//           // Process the response data as needed
-//           print(responseData);
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return AlertDialog(
-//                 title: Text('Success'),
-//                 content: Text('Profile updated successfully!'),
-//                 actions: [
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                     child: Text('OK'),
-//                   ),
-//                 ],
-//               );
-//             },
-//           );
-//         } else {
-//           // Error handling for Prisma backend request
-//           print(
-//               'Prisma backend request failed with status: ${response.statusCode}');
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return AlertDialog(
-//                 title: Text('Error'),
-//                 content: Text('Failed to update profile. Please try again.'),
-//                 actions: [
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                     child: Text('OK'),
-//                   ),
-//                 ],
-//               );
-//             },
-//           );
-//         }
-//       }
-//     } catch (error) {
-//       // Exception handling
-//       print('An error occurred: $error');
-//       showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text('Error'),
-//             content: Text('An error occurred. Please try again.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text('OK'),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   void navigateToPayment() {
-//     // Navigate to the payment component
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Profile'),
-//       ),
-//       body: DefaultTabController(
-//         length: 3,
-//         child: Column(
-//           children: [
-//             // Profile Picture in Header
-//             Padding(
-//               padding: EdgeInsets.all(16.0),
-//               child: CircleAvatar(
-//                 radius: 40,
-//                 backgroundImage: AssetImage('images/unnamed.jpg'),
-//               ),
-//             ),
-//             // Tabs
-//             TabBar(
-//               tabs: [
-//                 Tab(text: 'Liked Events'),
-//                 Tab(text: 'Liked News'),
-//                 Tab(text: 'Profile Editing'),
-//               ],
-//             ),
-//             Expanded(
-//               child: TabBarView(
-//                 children: [
-//                   // Liked Events component
-//                   // Render the events that the user liked
-//                   Center(
-//                     child: Text('Liked Events'),
-//                   ),
-//                   // Liked News component
-//                   // Render the news that the user liked
-//                   Center(
-//                     child: Text('Liked News'),
-//                   ),
-//                   // Profile Editing component
-//                   // Render the form for editing user profile
-//                   SingleChildScrollView(
-//                     child: Padding(
-//                       padding: EdgeInsets.all(16.0),
-//                       child: Column(
-//                         mainAxisAlignment: MainAxisAlignment.center,
-//                         children: [
-//                           // Address Input
-//                           TextField(
-//                             controller: addressController,
-//                             decoration: InputDecoration(
-//                               labelText: 'Address',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 8.0),
-
-//                           // CVC Input
-//                           TextField(
-//                             controller: cvcController,
-//                             keyboardType: TextInputType.number,
-//                             decoration: InputDecoration(
-//                               labelText: 'CVC',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 8.0),
-
-//                           // Number of Family Members Input
-//                           TextField(
-//                             controller: nbFamMemController,
-//                             keyboardType: TextInputType.number,
-//                             decoration: InputDecoration(
-//                               labelText: 'Number of Family Members',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 16.0),
-
-//                           // Add a Card Section
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                             children: [
-//                               Text(
-//                                 'Add a Card',
-//                                 style: TextStyle(
-//                                   fontSize: 16.0,
-//                                   fontWeight: FontWeight.bold,
-//                                 ),
-//                               ),
-//                               // Icon(
-//                               //   FlutterIcons.credit_card_plus_mco,
-//                               //   size: 24.0,
-//                               // ),
-//                             ],
-//                           ),
-//                           SizedBox(height: 8.0),
-
-//                           // Update Profile Button
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: [
-//                               ElevatedButton(
-//                                 onPressed: updateProfile,
-//                                 child: Text('Update Profile'),
-//                               ),
-//                             ],
-//                           ),
-
-//                           // Add Image Selection Section
-//                           SizedBox(height: 16.0),
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: [
-//                               ElevatedButton(
-//                                 onPressed: () =>
-//                                     _selectImage(ImageSource.gallery),
-//                                 child: Text('Select from Gallery'),
-//                               ),
-//                               SizedBox(width: 8.0),
-//                               ElevatedButton(
-//                                 onPressed: () =>
-//                                     _selectImage(ImageSource.camera),
-//                                 child: Text('Take a Photo'),
-//                               ),
-//                             ],
-//                           ),
-
-//                           // Display Selected Image
-//                           if (_image != null) ...[
-//                             SizedBox(height: 16.0),
-//                             Image.file(_image!),
-//                           ],
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             // Navigation buttons
-//             Row(
-//               children: [
-//                 Expanded(
-//                   child: TextButton(
-//                     onPressed: () {
-//                       // Navigate to stats component
-//                     },
-//                     child: Text('Stats'),
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: TextButton(
-//                     onPressed: navigateToPayment,
-//                     child: Text('Payment'),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// import 'dart:convert';
-
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:permission_handler/permission_handler.dart';
-// import 'package:flutter_svg/flutter_svg.dart';
-
-// class ProfileScreen extends StatefulWidget {
-//   @override
-//   _ProfileScreenState createState() => _ProfileScreenState();
-// }
-
-// class _ProfileScreenState extends State<ProfileScreen> {
-//   TextEditingController addressController = TextEditingController();
-//   TextEditingController cvcController = TextEditingController();
-//   TextEditingController nbFamMemController = TextEditingController();
-//   File? _image;
-
-//   Future<void> _selectImage(ImageSource source) async {
-//     PermissionStatus cameraPermission = await Permission.camera.status;
-//     PermissionStatus photoLibraryPermission = await Permission.photos.status;
-
-//     if (!cameraPermission.isGranted) {
-//       cameraPermission = await Permission.camera.request();
-//     }
-
-//     if (!photoLibraryPermission.isGranted) {
-//       photoLibraryPermission = await Permission.photos.request();
-//     }
-
-//     if (cameraPermission.isGranted && photoLibraryPermission.isGranted) {
-//       final pickedImage = await ImagePicker().pickImage(source: source);
-
-//       if (pickedImage != null) {
-//         setState(() {
-//           _image = File(pickedImage.path);
-//         });
-//       }
-//     } else {
-//       // Handle the case where permissions are not granted
-//       showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text('Permission Denied'),
-//             content: Text('Please grant camera and photo library permissions.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text('OK'),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   void updateProfile() async {
-//     String address = addressController.text.trim();
-//     int cvc = int.tryParse(cvcController.text) ?? 0;
-//     int nbFamMem = int.tryParse(nbFamMemController.text) ?? 0;
-
-//     try {
-//       User? user = FirebaseAuth.instance.currentUser;
-//       if (user != null) {
-//         // Update the user's profile in your Prisma backend
-//         final response = await http.put(
-//           Uri.parse('http://localhost:3000/auth/profile/${user.uid}'),
-//           body: jsonEncode({
-//             'address': address,
-//             'CVC': cvc,
-//             'NbFamMem': nbFamMem,
-//             // Add any additional fields you want to update
-//           }),
-//           headers: {"Content-Type": "application/json"},
-//         );
-
-//         if (response.statusCode == 200) {
-//           // Request to Prisma backend successful
-//           final responseData = response.body;
-//           // Process the response data as needed
-//           print(responseData);
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return AlertDialog(
-//                 title: Text('Success'),
-//                 content: Text('Profile updated successfully!'),
-//                 actions: [
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                     child: Text('OK'),
-//                   ),
-//                 ],
-//               );
-//             },
-//           );
-//         } else {
-//           // Error handling for Prisma backend request
-//           print(
-//               'Prisma backend request failed with status: ${response.statusCode}');
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return AlertDialog(
-//                 title: Text('Error'),
-//                 content: Text('Failed to update profile. Please try again.'),
-//                 actions: [
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                     child: Text('OK'),
-//                   ),
-//                 ],
-//               );
-//             },
-//           );
-//         }
-//       }
-//     } catch (error) {
-//       // Exception handling
-//       print('An error occurred: $error');
-//       showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text('Error'),
-//             content: Text('An error occurred. Please try again.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text('OK'),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   void navigateToPayment() {
-//     // Navigate to the payment component
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Profile'),
-//       ),
-//       body: DefaultTabController(
-//         length: 3,
-//         child: Column(
-//           children: [
-//             // Profile Picture in Header
-//             Padding(
-//               padding: EdgeInsets.all(16.0),
-//               child: CircleAvatar(
-//                 radius: 40,
-//                 backgroundImage: AssetImage('images/unnamed.jpg'),
-//               ),
-//             ),
-//             // Tabs
-//             TabBar(
-//               tabs: [
-//                 Tab(text: 'Liked Events'),
-//                 Tab(text: 'Liked News'),
-//                 Tab(text: 'Profile Editing'),
-//               ],
-//             ),
-//             Expanded(
-//               child: TabBarView(
-//                 children: [
-//                   // Liked Events component
-//                   // Render the events that the user liked
-//                   Center(
-//                     child: Text('Liked Events'),
-//                   ),
-//                   // Liked News component
-//                   // Render the news that the user liked
-//                   Center(
-//                     child: Text('Liked News'),
-//                   ),
-//                   // Profile Editing component
-//                   // Render the form for editing user profile
-//                   SingleChildScrollView(
-//                     child: Padding(
-//                       padding: EdgeInsets.all(16.0),
-//                       child: Column(
-//                         mainAxisAlignment: MainAxisAlignment.center,
-//                         children: [
-//                           // Address Input
-//                           TextField(
-//                             controller: addressController,
-//                             decoration: InputDecoration(
-//                               labelText: 'Address',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 8.0),
-
-//                           // CVC Input
-//                           TextField(
-//                             controller: cvcController,
-//                             keyboardType: TextInputType.number,
-//                             decoration: InputDecoration(
-//                               labelText: 'CVC',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 8.0),
-
-//                           // Number of Family Members Input
-//                           TextField(
-//                             controller: nbFamMemController,
-//                             keyboardType: TextInputType.number,
-//                             decoration: InputDecoration(
-//                               labelText: 'Number of Family Members',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 16.0),
-
-//                           // Add a Card Section
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                             children: [
-//                               Text(
-//                                 'Add a Card',
-//                                 style: TextStyle(
-//                                   fontSize: 16.0,
-//                                   fontWeight: FontWeight.bold,
-//                                 ),
-//                               ),
-//                               SvgPicture.asset(
-//                                 'icons/credit_card_plus.svg',
-//                                 height: 24.0,
-//                               ),
-//                             ],
-//                           ),
-//                           SizedBox(height: 8.0),
-
-//                           // Update Profile Button
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: [
-//                               ElevatedButton(
-//                                 onPressed: updateProfile,
-//                                 child: Text('Update Profile'),
-//                               ),
-//                             ],
-//                           ),
-
-//                           // Add Image Selection Section
-//                           SizedBox(height: 16.0),
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: [
-//                               ElevatedButton(
-//                                 onPressed: () =>
-//                                     _selectImage(ImageSource.gallery),
-//                                 child: Text('Select from Gallery'),
-//                               ),
-//                               SizedBox(width: 8.0),
-//                               ElevatedButton(
-//                                 onPressed: () =>
-//                                     _selectImage(ImageSource.camera),
-//                                 child: Text('Take a Photo'),
-//                               ),
-//                             ],
-//                           ),
-
-//                           // Display Selected Image
-//                           if (_image != null) ...[
-//                             SizedBox(height: 16.0),
-//                             Image.file(_image!),
-//                           ],
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             // Navigation buttons
-//             Row(
-//               children: [
-//                 Expanded(
-//                   child: TextButton(
-//                     onPressed: () {
-//                       // Navigate to stats component
-//                     },
-//                     child: Text('Stats'),
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: TextButton(
-//                     onPressed: navigateToPayment,
-//                     child: Text('Payment'),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
-
-
-
-
-// import 'dart:convert';
-// import 'dart:io';
-
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:permission_handler/permission_handler.dart';
-
-// class ProfileScreen extends StatefulWidget {
-//   @override
-//   _ProfileScreenState createState() => _ProfileScreenState();
-// }
-
-// class _ProfileScreenState extends State<ProfileScreen> {
-//   TextEditingController addressController = TextEditingController();
-//   TextEditingController cvcController = TextEditingController();
-//   TextEditingController nbFamMemController = TextEditingController();
-//   File? _image;
-
-//   Future<void> _selectImage(ImageSource source) async {
-//     PermissionStatus cameraPermission = await Permission.camera.status;
-//     PermissionStatus photoLibraryPermission = await Permission.photos.status;
-
-//     if (!cameraPermission.isGranted) {
-//       cameraPermission = await Permission.camera.request();
-//     }
-
-//     if (!photoLibraryPermission.isGranted) {
-//       photoLibraryPermission = await Permission.photos.request();
-//     }
-
-//     if (cameraPermission.isGranted && photoLibraryPermission.isGranted) {
-//       final pickedImage = await ImagePicker().pickImage(source: source);
-
-//       if (pickedImage != null) {
-//         setState(() {
-//           _image = File(pickedImage.path);
-//         });
-//       }
-//     } else {
-//       // Handle the case where permissions are not granted
-//       showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text('Permission Denied'),
-//             content: Text('Please grant camera and photo library permissions.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text('OK'),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   void updateProfile() async {
-//     String address = addressController.text.trim();
-//     int cvc = int.tryParse(cvcController.text) ?? 0;
-//     int nbFamMem = int.tryParse(nbFamMemController.text) ?? 0;
-
-//     try {
-//       User? user = FirebaseAuth.instance.currentUser;
-//       if (user != null) {
-//         // Update the user's profile in your Prisma backend
-//         final response = await http.put(
-//           Uri.parse('http://localhost:3000/auth/profile/${user.uid}'),
-//           body: jsonEncode({
-//             'address': address,
-//             'CVC': cvc,
-//             'NbFamMem': nbFamMem,
-//             // Add any additional fields you want to update
-//           }),
-//           headers: {"Content-Type": "application/json"},
-//         );
-
-//         if (response.statusCode == 200) {
-//           // Request to Prisma backend successful
-//           final responseData = response.body;
-//           // Process the response data as needed
-//           print(responseData);
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return AlertDialog(
-//                 title: Text('Success'),
-//                 content: Text('Profile updated successfully!'),
-//                 actions: [
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                     child: Text('OK'),
-//                   ),
-//                 ],
-//               );
-//             },
-//           );
-//         } else {
-//           // Error handling for Prisma backend request
-//           print(
-//               'Prisma backend request failed with status: ${response.statusCode}');
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return AlertDialog(
-//                 title: Text('Error'),
-//                 content: Text('Failed to update profile. Please try again.'),
-//                 actions: [
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                     child: Text('OK'),
-//                   ),
-//                 ],
-//               );
-//             },
-//           );
-//         }
-//       }
-//     } catch (error) {
-//       // Exception handling
-//       print('An error occurred: $error');
-//       showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text('Error'),
-//             content: Text('An error occurred. Please try again.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text('OK'),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   void navigateToPayment() {
-//     // Navigate to the payment component
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Profile'),
-//       ),
-//       body: DefaultTabController(
-//         length: 3,
-//         child: Column(
-//           children: [
-//             // Profile Picture in Header
-//             Padding(
-//               padding: EdgeInsets.all(16.0),
-//               child: CircleAvatar(
-//                 radius: 40,
-//                 backgroundImage: AssetImage('images/unnamed.jpg'),
-//               ),
-//             ),
-//             // Tabs
-//             TabBar(
-//               tabs: [
-//                 Tab(text: 'Liked Events'),
-//                 Tab(text: 'Liked News'),
-//                 Tab(text: 'Profile Editing'),
-//               ],
-//             ),
-//             Expanded(
-//               child: TabBarView(
-//                 children: [
-//                   // Liked Events component
-//                   // Render the events that the user liked
-//                   Center(
-//                     child: Text('Liked Events'),
-//                   ),
-//                   // Liked News component
-//                   // Render the news that the user liked
-//                   Center(
-//                     child: Text('Liked News'),
-//                   ),
-//                   // Profile Editing component
-//                   // Render the form for editing user profile
-//                   SingleChildScrollView(
-//                     child: Padding(
-//                       padding: EdgeInsets.all(16.0),
-//                       child: Column(
-//                         mainAxisAlignment: MainAxisAlignment.center,
-//                         children: [
-//                           // Address Input
-//                           TextField(
-//                             controller: addressController,
-//                             decoration: InputDecoration(
-//                               labelText: 'Address',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 8.0),
-
-//                           // CVC Input
-//                           TextField(
-//                             controller: cvcController,
-//                             keyboardType: TextInputType.number,
-//                             decoration: InputDecoration(
-//                               labelText: 'CVC',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 8.0),
-
-//                           // Number of Family Members Input
-//                           TextField(
-//                             controller: nbFamMemController,
-//                             keyboardType: TextInputType.number,
-//                             decoration: InputDecoration(
-//                               labelText: 'Number of Family Members',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 16.0),
-
-//                           // Update Profile Button
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: [
-//                               ElevatedButton(
-//                                 onPressed: updateProfile,
-//                                 child: Text('Update Profile'),
-//                               ),
-//                             ],
-//                           ),
-
-//                           // Add Image Selection Section
-//                           SizedBox(height: 16.0),
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: [
-//                               ElevatedButton(
-//                                 onPressed: () => _selectImage(ImageSource.gallery),
-//                                 child: Text('Select from Gallery'),
-//                               ),
-//                               SizedBox(width: 8.0),
-//                               ElevatedButton(
-//                                 onPressed: () => _selectImage(ImageSource.camera),
-//                                 child: Text('Take a Photo'),
-//                               ),
-//                             ],
-//                           ),
-
-//                           // Display Selected Image
-//                           if (_image != null) ...[
-//                             SizedBox(height: 16.0),
-//                             Image.file(_image!),
-//                           ],
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             // Navigation buttons
-//             Row(
-//               children: [
-//                 Expanded(
-//                   child: TextButton(
-//                     onPressed: () {
-//                       // Navigate to stats component
-//                     },
-//                     child: Text('Stats'),
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: TextButton(
-//                     onPressed: navigateToPayment,
-//                     child: Text('Payment'),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
-
-
-
-
-// import 'dart:convert';
-// import 'dart:io';
-
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:permission_handler/permission_handler.dart';
-
-// class ProfileScreen extends StatefulWidget {
-//   @override
-//   _ProfileScreenState createState() => _ProfileScreenState();
-// }
-
-// class _ProfileScreenState extends State<ProfileScreen> {
-//   TextEditingController addressController = TextEditingController();
-//   TextEditingController cvcController = TextEditingController();
-//   TextEditingController nbFamMemController = TextEditingController();
-//   File? _image;
-
-//   Future<void> _selectImage(ImageSource source) async {
-//     PermissionStatus cameraPermission = await Permission.camera.status;
-//     PermissionStatus photoLibraryPermission = await Permission.photos.status;
-
-//     if (!cameraPermission.isGranted) {
-//       cameraPermission = await Permission.camera.request();
-//     }
-
-//     if (!photoLibraryPermission.isGranted) {
-//       photoLibraryPermission = await Permission.photos.request();
-//     }
-
-//     if (cameraPermission.isGranted && photoLibraryPermission.isGranted) {
-//       final pickedImage = await ImagePicker().pickImage(source: source);
-
-//       if (pickedImage != null) {
-//         setState(() {
-//           _image = File(pickedImage.path);
-//         });
-//       }
-//     } else {
-//       // Handle the case where permissions are not granted
-//       showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text('Permission Denied'),
-//             content: Text('Please grant camera and photo library permissions.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text('OK'),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   void updateProfile() async {
-//     String address = addressController.text.trim();
-//     int cvc = int.tryParse(cvcController.text) ?? 0;
-//     int nbFamMem = int.tryParse(nbFamMemController.text) ?? 0;
-
-//     try {
-//       User? user = FirebaseAuth.instance.currentUser;
-//       if (user != null) {
-//         // Update the user's profile in your Prisma backend
-//         final response = await http.put(
-//           Uri.parse('http://localhost:3000/auth/profile/${user.uid}'),
-//           body: jsonEncode({
-//             'address': address,
-//             'CVC': cvc,
-//             'NbFamMem': nbFamMem,
-//             // Add any additional fields you want to update
-//           }),
-//           headers: {"Content-Type": "application/json"},
-//         );
-
-//         if (response.statusCode == 200) {
-//           // Request to Prisma backend successful
-//           final responseData = response.body;
-//           // Process the response data as needed
-//           print(responseData);
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return AlertDialog(
-//                 title: Text('Success'),
-//                 content: Text('Profile updated successfully!'),
-//                 actions: [
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                     child: Text('OK'),
-//                   ),
-//                 ],
-//               );
-//             },
-//           );
-//         } else {
-//           // Error handling for Prisma backend request
-//           print(
-//               'Prisma backend request failed with status: ${response.statusCode}');
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return AlertDialog(
-//                 title: Text('Error'),
-//                 content: Text('Failed to update profile. Please try again.'),
-//                 actions: [
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                     child: Text('OK'),
-//                   ),
-//                 ],
-//               );
-//             },
-//           );
-//         }
-//       }
-//     } catch (error) {
-//       // Exception handling
-//       print('An error occurred: $error');
-//       showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text('Error'),
-//             content: Text('An error occurred. Please try again.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text('OK'),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Profile'),
-//       ),
-//       body: DefaultTabController(
-//         length: 3,
-//         child: Column(
-//           children: [
-//             // Profile Picture in Header
-//             Padding(
-//               padding: EdgeInsets.all(16.0),
-//               child: CircleAvatar(
-//                 radius: 40,
-//                 backgroundImage: AssetImage('images/unnamed.jpg'),
-//               ),
-//             ),
-//             // Tabs
-//             TabBar(
-//               tabs: [
-//                 Tab(text: 'Liked Events'),
-//                 Tab(text: 'Liked News'),
-//                 Tab(text: 'Profile Editing'),
-//               ],
-//             ),
-//             Expanded(
-//               child: TabBarView(
-//                 children: [
-//                   // Liked Events component
-//                   // Render the events that the user liked
-//                   Center(
-//                     child: Text('Liked Events'),
-//                   ),
-//                   // Liked News component
-//                   // Render the news that the user liked
-//                   Center(
-//                     child: Text('Liked News'),
-//                   ),
-//                   // Profile Editing component
-//                   // Render the form for editing user profile
-//                   SingleChildScrollView(
-//                     child: Padding(
-//                       padding: EdgeInsets.all(16.0),
-//                       child: Column(
-//                         mainAxisAlignment: MainAxisAlignment.center,
-//                         children: [
-//                           // Address Input
-//                           TextField(
-//                             controller: addressController,
-//                             decoration: InputDecoration(
-//                               labelText: 'Address',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 8.0),
-
-//                           // CVC Input
-//                           TextField(
-//                             controller: cvcController,
-//                             keyboardType: TextInputType.number,
-//                             decoration: InputDecoration(
-//                               labelText: 'CVC',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 8.0),
-
-//                           // Number of Family Members Input
-//                           TextField(
-//                             controller: nbFamMemController,
-//                             keyboardType: TextInputType.number,
-//                             decoration: InputDecoration(
-//                               labelText: 'Number of Family Members',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 16.0),
-
-//                           // Update Profile Button
-//                           ElevatedButton(
-//                             onPressed: updateProfile,
-//                             child: Text('Update Profile'),
-//                           ),
-
-//                           // Add Image Selection Section
-//                           SizedBox(height: 16.0),
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: [
-//                               ElevatedButton(
-//                                 onPressed: () =>
-//                                     _selectImage(ImageSource.gallery),
-//                                 child: Text('Select from Gallery'),
-//                               ),
-//                               SizedBox(width: 8.0),
-//                               ElevatedButton(
-//                                 onPressed: () =>
-//                                     _selectImage(ImageSource.camera),
-//                                 child: Text('Take a Photo'),
-//                               ),
-//                             ],
-//                           ),
-
-//                           // Display Selected Image
-//                           if (_image != null) ...[
-//                             SizedBox(height: 16.0),
-//                             Image.file(_image!),
-//                           ],
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             // Navigation buttons
-//             Row(
-//               children: [
-//                 Expanded(
-//                   child: TextButton(
-//                     onPressed: () {
-//                       // Navigate to stats component
-//                     },
-//                     child: Text('Stats'),
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: TextButton(
-//                     onPressed: () {
-//                       // Navigate to payment component
-//                     },
-//                     child: Text('Payment'),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
-
-// import 'dart:convert';
-// import 'dart:io';
-
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:permission_handler/permission_handler.dart';
-
-// class ProfileScreen extends StatefulWidget {
-//   @override
-//   _ProfileScreenState createState() => _ProfileScreenState();
-// }
-
-// class _ProfileScreenState extends State<ProfileScreen> {
-//   TextEditingController addressController = TextEditingController();
-//   TextEditingController cvcController = TextEditingController();
-//   TextEditingController nbFamMemController = TextEditingController();
-//   TextEditingController creditCardController = TextEditingController();
-//   File? _image;
-
-//   Future<void> _selectImage(ImageSource source) async {
-//     PermissionStatus cameraPermission = await Permission.camera.status;
-//     PermissionStatus photoLibraryPermission = await Permission.photos.status;
-
-//     if (!cameraPermission.isGranted) {
-//       cameraPermission = await Permission.camera.request();
-//     }
-
-//     if (!photoLibraryPermission.isGranted) {
-//       photoLibraryPermission = await Permission.photos.request();
-//     }
-
-//     if (cameraPermission.isGranted && photoLibraryPermission.isGranted) {
-//       final pickedImage = await ImagePicker().pickImage(source: source);
-
-//       if (pickedImage != null) {
-//         setState(() {
-//           _image = File(pickedImage.path);
-//         });
-//       }
-//     } else {
-//       // Handle the case where permissions are not granted
-//       showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text('Permission Denied'),
-//             content: Text('Please grant camera and photo library permissions.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text('OK'),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   void updateProfile() async {
-//     String address = addressController.text.trim();
-//     int cvc = int.tryParse(cvcController.text) ?? 0;
-//     int nbFamMem = int.tryParse(nbFamMemController.text) ?? 0;
-//     String creditCard = creditCardController.text.trim();
-
-//     try {
-//       User? user = FirebaseAuth.instance.currentUser;
-//       if (user != null) {
-//         // Update the user's profile in your Prisma backend
-//         final response = await http.put(
-//           Uri.parse('http://localhost:3000/auth/profile/${user.uid}'),
-//           body: jsonEncode({
-//             'address': address,
-//             'CVC': cvc,
-//             'NbFamMem': nbFamMem,
-//             'creditCard': creditCard,
-//             // Add any additional fields you want to update
-//           }),
-//           headers: {"Content-Type": "application/json"},
-//         );
-
-//         if (response.statusCode == 200) {
-//           // Request to Prisma backend successful
-//           final responseData = response.body;
-//           // Process the response data as needed
-//           print(responseData);
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return AlertDialog(
-//                 title: Text('Success'),
-//                 content: Text('Profile updated successfully!'),
-//                 actions: [
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                     child: Text('OK'),
-//                   ),
-//                 ],
-//               );
-//             },
-//           );
-//         } else {
-//           // Error handling for Prisma backend request
-//           print(
-//               'Prisma backend request failed with status: ${response.statusCode}');
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return AlertDialog(
-//                 title: Text('Error'),
-//                 content: Text('Failed to update profile. Please try again.'),
-//                 actions: [
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                     child: Text('OK'),
-//                   ),
-//                 ],
-//               );
-//             },
-//           );
-//         }
-//       }
-//     } catch (error) {
-//       // Exception handling
-//       print('An error occurred: $error');
-//       showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text('Error'),
-//             content: Text('An error occurred. Please try again.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text('OK'),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Profile'),
-//       ),
-//       body: DefaultTabController(
-//         length: 3,
-//         child: Column(
-//           children: [
-//             // Profile Picture in Header
-//             Padding(
-//               padding: EdgeInsets.all(16.0),
-//               child: CircleAvatar(
-//                 radius: 40,
-//                 backgroundImage: AssetImage('images/unnamed.jpg'),
-//               ),
-//             ),
-//             // Tabs
-//             TabBar(
-//               tabs: [
-//                 Tab(text: 'Liked Events'),
-//                 Tab(text: 'Liked News'),
-//                 Tab(text: 'Profile Editing'),
-//               ],
-//             ),
-//             Expanded(
-//               child: TabBarView(
-//                 children: [
-//                   // Liked Events component
-//                   // Render the events that the user liked
-//                   Center(
-//                     child: Text('Liked Events'),
-//                   ),
-//                   // Liked News component
-//                   // Render the news that the user liked
-//                   Center(
-//                     child: Text('Liked News'),
-//                   ),
-//                   // Profile Editing component
-//                   // Render the form for editing user profile
-//                   SingleChildScrollView(
-//                     child: Padding(
-//                       padding: EdgeInsets.all(16.0),
-//                       child: Column(
-//                         mainAxisAlignment: MainAxisAlignment.center,
-//                         children: [
-//                           // Address Input
-//                           TextField(
-//                             controller: addressController,
-//                             decoration: InputDecoration(
-//                               labelText: 'Address',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 8.0),
-
-//                           // Number of Family Members Input
-//                           TextField(
-//                             controller: nbFamMemController,
-//                             keyboardType: TextInputType.number,
-//                             decoration: InputDecoration(
-//                               labelText: 'Number of Family Members',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 8.0),
-
-//                           // Credit Card Input
-//                           TextField(
-//                             controller: creditCardController,
-//                             decoration: InputDecoration(
-//                               labelText: 'Credit Card',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 8.0),
-
-//                           // CVC Input
-//                           TextField(
-//                             controller: cvcController,
-//                             keyboardType: TextInputType.number,
-//                             decoration: InputDecoration(
-//                               labelText: 'CVC',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 16.0),
-
-//                           // Update Profile Button
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: [
-//                               ElevatedButton(
-//                                 onPressed: updateProfile,
-//                                 child: Text('Update Profile'),
-//                               ),
-//                             ],
-//                           ),
-
-//                           // Add Image Selection Section
-//                           SizedBox(height: 16.0),
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: [
-//                               ElevatedButton(
-//                                 onPressed: () => _selectImage(ImageSource.gallery),
-//                                 child: Text('Select from Gallery'),
-//                               ),
-//                               SizedBox(width: 8.0),
-//                               ElevatedButton(
-//                                 onPressed: () => _selectImage(ImageSource.camera),
-//                                 child: Text('Take a Photo'),
-//                               ),
-//                             ],
-//                           ),
-
-//                           // Display Selected Image
-//                           if (_image != null) ...[
-//                             SizedBox(height: 16.0),
-//                             Image.file(_image!),
-//                           ],
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             // Navigation buttons
-//             Row(
-//               children: [
-//                 Expanded(
-//                   child: TextButton(
-//                     onPressed: () {
-//                       // Navigate to stats component
-//                     },
-//                     child: Text('Stats'),
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: TextButton(
-//                     onPressed: () {
-//                       // Navigate to payment component
-//                     },
-//                     child: Text('Payment'),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
-
-
-
-
-// // ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
-
-// import 'dart:convert';
-// import 'dart:io';
-
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:permission_handler/permission_handler.dart';
-
-// class ProfileScreen extends StatefulWidget {
-//   @override
-//   _ProfileScreenState createState() => _ProfileScreenState();
-// }
-
-// class _ProfileScreenState extends State<ProfileScreen> {
-//   TextEditingController addressController = TextEditingController();
-//   TextEditingController cvcController = TextEditingController();
-//   TextEditingController nbFamMemController = TextEditingController();
-//   File? _image;
-
-//   Future<void> _selectImage(ImageSource source) async {
-//     PermissionStatus cameraPermission = await Permission.camera.status;
-//     PermissionStatus photoLibraryPermission = await Permission.photos.status;
-
-//     if (!cameraPermission.isGranted) {
-//       cameraPermission = await Permission.camera.request();
-//     }
-
-//     if (!photoLibraryPermission.isGranted) {
-//       photoLibraryPermission = await Permission.photos.request();
-//     }
-
-//     if (cameraPermission.isGranted && photoLibraryPermission.isGranted) {
-//       final pickedImage = await ImagePicker().pickImage(source: source);
-
-//       if (pickedImage != null) {
-//         setState(() {
-//           _image = File(pickedImage.path);
-//         });
-//       }
-//     } else {
-//       // Handle the case where permissions are not granted
-//       showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text('Permission Denied'),
-//             content: Text('Please grant camera and photo library permissions.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text('OK'),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   void updateProfile() async {
-//     String address = addressController.text.trim();
-//     int cvc = int.tryParse(cvcController.text) ?? 0;
-//     int nbFamMem = int.tryParse(nbFamMemController.text) ?? 0;
-
-//     try {
-//       User? user = FirebaseAuth.instance.currentUser;
-//       if (user != null) {
-//         // Update the user's profile in your Prisma backend
-//         final response = await http.put(
-//           Uri.parse('http://localhost:3000/auth/profile/${user.uid}'),
-//           body: jsonEncode({
-//             'address': address,
-//             'CVC': cvc,
-//             'NbFamMem': nbFamMem,
-//             // Add any additional fields you want to update
-//           }),
-//           headers: {"Content-Type": "application/json"},
-//         );
-
-//         if (response.statusCode == 200) {
-//           // Request to Prisma backend successful
-//           final responseData = response.body;
-//           // Process the response data as needed
-//           print(responseData);
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return AlertDialog(
-//                 title: Text('Success'),
-//                 content: Text('Profile updated successfully!'),
-//                 actions: [
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                     child: Text('OK'),
-//                   ),
-//                 ],
-//               );
-//             },
-//           );
-//         } else {
-//           // Error handling for Prisma backend request
-//           print(
-//               'Prisma backend request failed with status: ${response.statusCode}');
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return AlertDialog(
-//                 title: Text('Error'),
-//                 content: Text('Failed to update profile. Please try again.'),
-//                 actions: [
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                     child: Text('OK'),
-//                   ),
-//                 ],
-//               );
-//             },
-//           );
-//         }
-//       }
-//     } catch (error) {
-//       // Exception handling
-//       print('An error occurred: $error');
-//       showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text('Error'),
-//             content: Text('An error occurred. Please try again.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text('OK'),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Profile'),
-//       ),
-//       body: DefaultTabController(
-//         length: 3,
-//         child: Column(
-//           children: [
-//             // Profile Picture in Header
-//             Padding(
-//               padding: EdgeInsets.all(16.0),
-//               child: CircleAvatar(
-//                 radius: 40,
-//                 backgroundImage: AssetImage('images/unnamed.jpg'),
-//               ),
-//             ),
-//             // Tabs
-//             TabBar(
-//               tabs: [
-//                 Tab(text: 'Liked Events'),
-//                 Tab(text: 'Liked News'),
-//                 Tab(text: 'Profile Editing'),
-//               ],
-//             ),
-//             Expanded(
-//               child: TabBarView(
-//                 children: [
-//                   // Liked Events component
-//                   // Render the events that the user liked
-//                   Center(
-//                     child: Text('Liked Events'),
-//                   ),
-//                   // Liked News component
-//                   // Render the news that the user liked
-//                   Center(
-//                     child: Text('Liked News'),
-//                   ),
-//                   // Profile Editing component
-//                   // Render the form for editing user profile
-//                   SingleChildScrollView(
-//                     child: Padding(
-//                       padding: EdgeInsets.all(16.0),
-//                       child: Column(
-//                         mainAxisAlignment: MainAxisAlignment.center,
-//                         children: [
-//                           // Address Input
-//                           TextField(
-//                             controller: addressController,
-//                             decoration: InputDecoration(
-//                               labelText: 'Address',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 8.0),
-
-//                           // CVC Input
-//                           TextField(
-//                             controller: cvcController,
-//                             keyboardType: TextInputType.number,
-//                             decoration: InputDecoration(
-//                               labelText: 'CVC',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 8.0),
-
-//                           // Number of Family Members Input
-//                           TextField(
-//                             controller: nbFamMemController,
-//                             keyboardType: TextInputType.number,
-//                             decoration: InputDecoration(
-//                               labelText: 'Number of Family Members',
-//                               border: OutlineInputBorder(),
-//                             ),
-//                           ),
-//                           SizedBox(height: 16.0),
-
-//                           // Update Profile Button
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: [
-//                               ElevatedButton(
-//                                 onPressed: updateProfile,
-//                                 child: Text('Update Profile'),
-//                               ),
-//                             ],
-//                           ),
-
-//                           // Add Image Selection Section
-//                           SizedBox(height: 16.0),
-//                           Row(
-//                             mainAxisAlignment: MainAxisAlignment.center,
-//                             children: [
-//                               ElevatedButton(
-//                                 onPressed: () => _selectImage(ImageSource.gallery),
-//                                 child: Text('Select from Gallery'),
-//                               ),
-//                               SizedBox(width: 8.0),
-//                               ElevatedButton(
-//                                 onPressed: () => _selectImage(ImageSource.camera),
-//                                 child: Text('Take a Photo'),
-//                               ),
-//                             ],
-//                           ),
-
-//                           // Display Selected Image
-//                           if (_image != null) ...[
-//                             SizedBox(height: 16.0),
-//                             Image.file(_image!),
-//                           ],
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//                 ],
-//               ),
-//             ),
-//             // Navigation buttons
-//             Row(
-//               children: [
-//                 Expanded(
-//                   child: TextButton(
-//                     onPressed: () {
-//                       // Navigate to stats component
-//                     },
-//                     child: Text('Stats'),
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: TextButton(
-//                     onPressed: () {
-//                       // Navigate to payment component
-//                     },
-//                     child: Text('Payment'),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
-
-
-
-
-//version l masta 
-// // ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
-
-// import 'dart:convert';
-// import 'dart:io';
-
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:image_picker/image_picker.dart';
-// import 'package:permission_handler/permission_handler.dart';
-
-// class ProfileScreen extends StatefulWidget {
-//   @override
-//   _ProfileScreenState createState() => _ProfileScreenState();
-// }
-
-// class _ProfileScreenState extends State<ProfileScreen> {
-//   TextEditingController addressController = TextEditingController();
-//   TextEditingController cvcController = TextEditingController();
-//   TextEditingController nbFamMemController = TextEditingController();
-//   File? _image;
-
-//   Future<void> _selectImage(ImageSource source) async {
-//     PermissionStatus cameraPermission = await Permission.camera.status;
-//     PermissionStatus photoLibraryPermission =
-//         await Permission.photos.status;
-
-//     if (!cameraPermission.isGranted) {
-//       cameraPermission = await Permission.camera.request();
-//     }
-
-//     if (!photoLibraryPermission.isGranted) {
-//       photoLibraryPermission = await Permission.photos.request();
-//     }
-
-//     if (cameraPermission.isGranted && photoLibraryPermission.isGranted) {
-//       final pickedImage = await ImagePicker().pickImage(source: source);
-
-//       if (pickedImage != null) {
-//         setState(() {
-//           _image = File(pickedImage.path);
-//         });
-//       }
-//     } else {
-//       // Handle the case where permissions are not granted
-//       showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text('Permission Denied'),
-//             content: Text('Please grant camera and photo library permissions.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text('OK'),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   void updateProfile() async {
-//     String address = addressController.text.trim();
-//     int cvc = int.tryParse(cvcController.text) ?? 0;
-//     int nbFamMem = int.tryParse(nbFamMemController.text) ?? 0;
-
-//     try {
-//       User? user = FirebaseAuth.instance.currentUser;
-//       if (user != null) {
-//         // Update the user's profile in your Prisma backend
-//         final response = await http.put(
-//           Uri.parse('http://localhost:3000/auth/profile/${user.uid}'),
-//           body: jsonEncode({
-//             'address': address,
-//             'CVC': cvc,
-//             'NbFamMem': nbFamMem,
-//             // Add any additional fields you want to update
-//           }),
-//           headers: {"Content-Type": "application/json"},
-//         );
-
-//         if (response.statusCode == 200) {
-//           // Request to Prisma backend successful
-//           final responseData = response.body;
-//           // Process the response data as needed
-//           print(responseData);
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return AlertDialog(
-//                 title: Text('Success'),
-//                 content: Text('Profile updated successfully!'),
-//                 actions: [
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                     child: Text('OK'),
-//                   ),
-//                 ],
-//               );
-//             },
-//           );
-//         } else {
-//           // Error handling for Prisma backend request
-//           print(
-//               'Prisma backend request failed with status: ${response.statusCode}');
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return AlertDialog(
-//                 title: Text('Error'),
-//                 content: Text('Failed to update profile. Please try again.'),
-//                 actions: [
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                     child: Text('OK'),
-//                   ),
-//                 ],
-//               );
-//             },
-//           );
-//         }
-//       }
-//     } catch (error) {
-//       // Exception handling
-//       print('An error occurred: $error');
-//       showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text('Error'),
-//             content: Text('An error occurred. Please try again.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text('OK'),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Profile'),
-//       ),
-//       body: SingleChildScrollView(
-//         child: Padding(
-//           padding: EdgeInsets.all(16.0),
-//           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               // Address Input
-//               TextField(
-//                 controller: addressController,
-//                 decoration: InputDecoration(
-//                   labelText: 'Address',
-//                   border: OutlineInputBorder(),
-//                 ),
-//               ),
-//               SizedBox(height: 8.0),
-
-//               // CVC Input
-//               TextField(
-//                 controller: cvcController,
-//                 keyboardType: TextInputType.number,
-//                 decoration: InputDecoration(
-//                   labelText: 'CVC',
-//                   border: OutlineInputBorder(),
-//                 ),
-//               ),
-//               SizedBox(height: 8.0),
-
-//               // Number of Family Members Input
-//               TextField(
-//                 controller: nbFamMemController,
-//                 keyboardType: TextInputType.number,
-//                 decoration: InputDecoration(
-//                   labelText: 'Number of Family Members',
-//                   border: OutlineInputBorder(),
-//                 ),
-//               ),
-//               SizedBox(height: 16.0),
-
-//               // Update Profile Button
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   ElevatedButton(
-//                     onPressed: updateProfile,
-//                     child: Text('Update Profile'),
-//                   ),
-//                 ],
-//               ),
-
-//               // Add Image Selection Section
-//               SizedBox(height: 16.0),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   ElevatedButton(
-//                     onPressed: () => _selectImage(ImageSource.gallery),
-//                     child: Text('Select from Gallery'),
-//                   ),
-//                   SizedBox(width: 8.0),
-//                   ElevatedButton(
-//                     onPressed: () => _selectImage(ImageSource.camera),
-//                     child: Text('Take a Photo'),
-//                   ),
-//                 ],
-//               ),
-
-//               // Display Selected Image
-//               if (_image != null) ...[
-//                 SizedBox(height: 16.0),
-//                 Image.file(_image!),
-//               ],
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
-
-
-
-
-
-
-
-
-// import 'dart:convert';
-// import 'dart:io';
-
-// import 'package:flutter/material.dart';
-// import 'package:http/http.dart' as http;
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:image_picker/image_picker.dart';
-
-// class ProfileScreen extends StatefulWidget {
-//   @override
-//   _ProfileScreenState createState() => _ProfileScreenState();
-// }
-
-// class _ProfileScreenState extends State<ProfileScreen> {
-//   TextEditingController addressController = TextEditingController();
-//   TextEditingController cvcController = TextEditingController();
-//   TextEditingController nbFamMemController = TextEditingController();
-//   File? _image;
-
-//   Future<void> _selectImage(ImageSource source) async {
-//     final pickedImage = await ImagePicker().pickImage(source: source);
-
-//     if (pickedImage != null) {
-//       setState(() {
-//         _image = File(pickedImage.path);
-//       });
-//     }
-//   }
-
-//   void updateProfile() async {
-//     String address = addressController.text.trim();
-//     int cvc = int.tryParse(cvcController.text) ?? 0;
-//     int nbFamMem = int.tryParse(nbFamMemController.text) ?? 0;
-
-//     try {
-//       User? user = FirebaseAuth.instance.currentUser;
-//       if (user != null) {
-//         // Update the user's profile in your Prisma backend
-//         final response = await http.put(
-//           Uri.parse('http://localhost:3000/auth/profile/${user.uid}'),
-//           body: jsonEncode({
-//             'address': address,
-//             'CVC': cvc,
-//             'NbFamMem': nbFamMem,
-//             // Add any additional fields you want to update
-//           }),
-//           headers: {"Content-Type": "application/json"},
-//         );
-
-//         if (response.statusCode == 200) {
-//           // Request to Prisma backend successful
-//           final responseData = response.body;
-//           // Process the response data as needed
-//           print(responseData);
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return AlertDialog(
-//                 title: Text('Success'),
-//                 content: Text('Profile updated successfully!'),
-//                 actions: [
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                     child: Text('OK'),
-//                   ),
-//                 ],
-//               );
-//             },
-//           );
-//         } else {
-//           // Error handling for Prisma backend request
-//           print(
-//               'Prisma backend request failed with status: ${response.statusCode}');
-//           showDialog(
-//             context: context,
-//             builder: (BuildContext context) {
-//               return AlertDialog(
-//                 title: Text('Error'),
-//                 content: Text('Failed to update profile. Please try again.'),
-//                 actions: [
-//                   TextButton(
-//                     onPressed: () {
-//                       Navigator.of(context).pop();
-//                     },
-//                     child: Text('OK'),
-//                   ),
-//                 ],
-//               );
-//             },
-//           );
-//         }
-//       }
-//     } catch (error) {
-//       // Exception handling
-//       print('An error occurred: $error');
-//       showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text('Error'),
-//             content: Text('An error occurred. Please try again.'),
-//             actions: [
-//               TextButton(
-//                 onPressed: () {
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text('OK'),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Profile'),
-//       ),
-//       body: SingleChildScrollView(
-//         child: Padding(
-//           padding: EdgeInsets.all(16.0),
-//           child: Column(
-//             mainAxisAlignment: MainAxisAlignment.center,
-//             children: [
-//               // Address Input
-//               TextField(
-//                 controller: addressController,
-//                 decoration: InputDecoration(
-//                   labelText: 'Address',
-//                   border: OutlineInputBorder(),
-//                 ),
-//               ),
-//               SizedBox(height: 8.0),
-
-//               // CVC Input
-//               TextField(
-//                 controller: cvcController,
-//                 keyboardType: TextInputType.number,
-//                 decoration: InputDecoration(
-//                   labelText: 'CVC',
-//                   border: OutlineInputBorder(),
-//                 ),
-//               ),
-//               SizedBox(height: 8.0),
-
-//               // Number of Family Members Input
-//               TextField(
-//                 controller: nbFamMemController,
-//                 keyboardType: TextInputType.number,
-//                 decoration: InputDecoration(
-//                   labelText: 'Number of Family Members',
-//                   border: OutlineInputBorder(),
-//                 ),
-//               ),
-//               SizedBox(height: 16.0),
-
-//               // Update Profile Button
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   ElevatedButton(
-//                     onPressed: updateProfile,
-//                     child: Text('Update Profile'),
-//                   ),
-//                 ],
-//               ),
-
-//               // Add Image Selection Section
-//               SizedBox(height: 16.0),
-//               Row(
-//                 mainAxisAlignment: MainAxisAlignment.center,
-//                 children: [
-//                   ElevatedButton(
-//                     onPressed: () => _selectImage(ImageSource.gallery),
-//                     child: Text('Select from Gallery'),
-//                   ),
-//                   SizedBox(width: 8.0),
-//                   ElevatedButton(
-//                     onPressed: () => _selectImage(ImageSource.camera),
-//                     child: Text('Take a Photo'),
-//                   ),
-//                 ],
-//               ),
-
-//               // Display Selected Image
-//               if (_image != null) ...[
-//                 SizedBox(height: 16.0),
-//                 Image.file(_image!),
-//               ],
-//             ],
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
+class NewsCard extends StatelessWidget {
+  final String imageName;
+  final String title;
+  final String date;
+  final String author;
+  final String tip;
+
+  const NewsCard({
+    Key? key,
+    required this.imageName,
+    required this.title,
+    required this.date,
+    required this.author,
+    required this.tip,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            offset: Offset(0, 2),
+            blurRadius: 4,
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Image.asset(
+            'assets/images/$imageName',
+            width: double.infinity,
+            height: 160,
+            fit: BoxFit.cover,
+          ),
+          SizedBox(height: 16),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          SizedBox(height: 8),
+          Row(
+            children: [
+              Icon(Icons.calendar_today, size: 16),
+              SizedBox(width: 4),
+              Text(date),
+              SizedBox(width: 16),
+              Icon(Icons.person, size: 16),
+              SizedBox(width: 4),
+              Text(author),
+            ],
+          ),
+          SizedBox(height: 16),
+          Text(
+            tip,
+            style: TextStyle(fontSize: 14),
+          ),
+        ],
+      ),
+    );
+  }
+}

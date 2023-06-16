@@ -1,35 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
-import 'package:namer_app/consumption/bar_graph.dart';
 import 'package:namer_app/events/events.dart';
 import 'package:namer_app/consumption/consumption.dart';
-
-class Event {
-  final String author;
-  final String date;
-  final int participants;
-  final int likedBy;
-  final String image;
-
-  Event({
-    required this.author,
-    required this.date,
-    required this.participants,
-    required this.likedBy,
-    required this.image,
-  });
-
-  factory Event.fromJson(Map<String, dynamic> json) {
-    return Event(
-      author: json['author'] as String,
-      date: json['date'] as String,
-      participants: int.tryParse(json['participants'].toString()) ?? 0,
-      likedBy: int.tryParse(json['likedBy'].toString()) ?? 0,
-      image: json['image'] as String,
-    );
-  }
-}
+import 'package:namer_app/payment/bills.dart';
+import "../classes.dart";
 
 class HomePage extends StatefulWidget {
   @override
@@ -38,11 +14,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Event> events = [];
+  final String apiUrl = dotenv.env["API_URL"]!;
 
   Future<void> fetchData() async {
     try {
       final response = await http.get(
-        Uri.parse('https://ripple-4wg9.onrender.com/events'),
+        Uri.parse('$apiUrl/events'),
       );
 
       if (response.statusCode == 200) {
@@ -140,7 +117,8 @@ class _HomePageState extends State<HomePage> {
                   Container(
                     width: 140,
                     height: 170,
-                    margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
@@ -154,10 +132,10 @@ class _HomePageState extends State<HomePage> {
                     ),
                     child: GestureDetector(
                       onTap: () {
-                        // Perform navigation to another page here
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => BarChartWidget()),
+                          MaterialPageRoute(
+                              builder: (context) => BarChartWidget()),
                         );
                       },
                       child: Image.asset(
@@ -185,10 +163,19 @@ class _HomePageState extends State<HomePage> {
                           ),
                           borderRadius: BorderRadius.circular(12.0),
                         ),
-                        child: Image.asset(
-                          'images/medd.png',
-                          width: 50,
-                          height: 20,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BarChartWidget()),
+                            );
+                          },
+                          child: Image.asset(
+                            'images/medd.png',
+                            width: 50,
+                            height: 30,
+                          ),
                         ),
                       ),
                       Container(
@@ -208,12 +195,20 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                           children: [
                             Expanded(
+                                child: GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => BillsScreen()),
+                                );
+                              },
                               child: Image.asset(
                                 'images/paybill.png',
                                 width: 90,
                                 height: 90,
                               ),
-                            ),
+                            )),
                             SizedBox(width: 8.0),
                           ],
                         ),
@@ -276,7 +271,7 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Center(
                                         child: Text(
-                                          events[index].author,
+                                          events[index].title,
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20.0,
@@ -378,20 +373,19 @@ class _HomePageState extends State<HomePage> {
                       MaterialPageRoute(builder: (context) => EventPage()),
                     );
                   },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ), backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 16.0),
+                  ),
                   child: Text(
                     'See More',
                     style: TextStyle(
                       color: Color.fromARGB(255, 22, 56, 191),
                       fontSize: 16.0,
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 30.0, vertical: 16.0),
-                    primary: Color.fromARGB(255, 255, 255, 255),
                   ),
                 ),
               ),

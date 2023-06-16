@@ -1,4 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 const getAllNews = async (req, res) => {
@@ -34,24 +34,21 @@ const likeNews = async (req, res) => {
       data: { LikedNews: user.LikedNews },
     });
 
-    res.json({ message: 'News liked successfully', numLikes });
+    res.json({ message: "News liked successfully", numLikes });
   } catch (error) {
-    console.error('An error occurred:', error);
-    res.status(500).json({ error: 'An error occurred while liking the news' });
+    console.error("An error occurred:", error);
+    res.status(500).json({ error: "An error occurred while liking the news" });
   }
 };
 
-const addComment = async (req, res) => {
-  const { id } = req.params;
-  const { content, author } = req.body;
-  const comment = await prisma.comment.create({
-    data: {
-      content,
-      author,
-      news: { connect: { id: parseInt(id) } },
-    },
-  });
-  res.json(comment);
+const getUserLikedEvents = async (req, res) => {
+  const uid = req.params.uid;
+  try {
+    
+  } catch (error) {
+    console.error("An error occurred:", error);
+    res.status(500).json({ error: "An error occurred while liking the news" });
+  }
 };
 
-module.exports = { getAllNews, likeNews, addComment };
+module.exports = { getAllNews, likeNews };

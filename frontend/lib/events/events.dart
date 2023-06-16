@@ -2,10 +2,12 @@
 
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import "../classes.dart";
 
 class EventPage extends StatefulWidget {
   @override
@@ -18,6 +20,8 @@ class _EventPageState extends State<EventPage>
   late Animation<double> _opacityAnimation;
   late Animation<Offset> _slideAnimation;
   double _skygoalLogoOpacity = 0;
+  final String apiUrl = dotenv.env["API_URL"]!;
+
   User? user = FirebaseAuth.instance.currentUser;
 
   @override
@@ -47,14 +51,22 @@ class _EventPageState extends State<EventPage>
   Future<void> fetchData() async {
     try {
       final response = await http.get(
-        Uri.parse('https://ripple-4wg9.onrender.com/events'),
+        Uri.parse('$apiUrl/events'),
       );
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
+        print(data);
 
         List<Event> mappedEvents = [];
         for (var event in data) {
+          print(event["id"].runtimeType);
+          print(event["title"].runtimeType);
+          print(event["image"].runtimeType);
+          print(event["date"].runtimeType);
+          print("${event['LikedBy'].runtimeType} ${event['LikedBy']}");
+          print(
+              "${event['participants'].runtimeType} ${event['participants']}");
           mappedEvents.add(Event.fromJson(event));
         }
         print(mappedEvents);
@@ -76,29 +88,27 @@ class _EventPageState extends State<EventPage>
     print(user);
     try {
       final response = await http.put(
-        Uri.parse('https://ripple-4wg9.onrender.com/events/$eventId/like/1234'),
+        Uri.parse('$apiUrl/events/$eventId/like/${user?.uid}'),
         headers: {'Content-Type': 'application/json'},
       );
       print(eventId);
       print(user?.uid);
       print(events);
-      // print(
-      //     'https://ripple-4wg9.onrender.com/events/$eventId/like/${user?.uid}');
 
       if (response.statusCode == 200) {
         print(response);
         final dynamic responseData = json.decode(response.body);
+        final String message = responseData['message'] as String;
         final int numLikes = responseData['numLikes'] as int;
         print(responseData);
         print(numLikes);
 
         setState(() {
-          // Update the state with the updated number of likes
           Event event = events[eventId - 1];
 
           Event updatedEvent = Event(
             id: event.id,
-            author: event.author,
+            title: event.title,
             date: event.date,
             participants: event.participants,
             likedBy: numLikes,
@@ -107,6 +117,8 @@ class _EventPageState extends State<EventPage>
 
           events[eventId - 1] = updatedEvent;
         });
+
+        print(message);
       } else {
         print('Request failed with status: ${response.statusCode}');
       }
@@ -119,37 +131,53 @@ class _EventPageState extends State<EventPage>
     print(user);
     try {
       final response = await http.put(
-        Uri.parse(
-            'https://ripple-4wg9.onrender.com/events/$eventId/part/123456'),
+        Uri.parse('$apiUrl/events/$eventId/part/${user?.uid}'),
         headers: {'Content-Type': 'application/json'},
       );
       print(eventId);
       print(user?.uid);
       print(events);
-      print(
-          'https://ripple-4wg9.onrender.com/events/$eventId/part/${user?.uid}');
 
       if (response.statusCode == 200) {
         print(response);
         final dynamic responseData = json.decode(response.body);
+        final String message = responseData['message'] as String;
         final int numParticipants = responseData['numParticipants'] as int;
         print(responseData);
         print(numParticipants);
 
         setState(() {
-          // Update the state with the updated number of likes
           Event event = events[eventId - 1];
 
-          Event updatedEvent = Event(
-            id: event.id,
-            author: event.author,
-            date: event.date,
-            participants: numParticipants,
-            likedBy: event.likedBy,
-            image: event.image,
-          );
+          if (message == "Event dis-participated successfully") {
+            // Handle dis-participate behavior
+            Event updatedEvent = Event(
+              id: event.id,
+              title: event.title,
+              date: event.date,
+              participants: numParticipants,
+              likedBy: event.likedBy,
+              image: event.image,
+            );
 
-          events[eventId - 1] = updatedEvent;
+            events[eventId - 1] = updatedEvent;
+            print("Dis-participated in event successfully");
+          } else if (message == "Participated in event successfully") {
+            // Handle participate behavior
+            Event updatedEvent = Event(
+              id: event.id,
+              title: event.title,
+              date: event.date,
+              participants: numParticipants,
+              likedBy: event.likedBy,
+              image: event.image,
+            );
+
+            events[eventId - 1] = updatedEvent;
+            print("Participated in event successfully");
+          }
+
+          print(message);
         });
       } else {
         print('Request failed with status: ${response.statusCode}');
@@ -298,7 +326,7 @@ class _EventPageState extends State<EventPage>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  events[index].author,
+                                  events[index].title,
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20.0,
@@ -373,35 +401,6 @@ class _EventPageState extends State<EventPage>
           ],
         ),
       ),
-    );
-  }
-}
-
-class Event {
-  final int id; // Add the id property
-  final String author;
-  final String date;
-  final int participants;
-  final int likedBy;
-  final String image;
-
-  Event({
-    required this.id, // Include the id parameter in the constructor
-    required this.author,
-    required this.date,
-    required this.participants,
-    required this.likedBy,
-    required this.image,
-  });
-
-  factory Event.fromJson(Map<String, dynamic> json) {
-    return Event(
-      id: json['id'] as int, // Initialize the id property from JSON
-      author: json['author'] as String,
-      date: json['date'] as String,
-      participants: int.tryParse(json['participants'].toString()) ?? 0,
-      likedBy: int.tryParse(json['likedBy'].toString()) ?? 0,
-      image: json['image'] as String,
     );
   }
 }

@@ -7,20 +7,13 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-class User {
-  int points;
-  List<RewardItem> redeemedItems;
-
-  User({required this.points, required this.redeemedItems});
-}
-
 class RewardsPage extends StatefulWidget {
   @override
   RewardsPageState createState() => RewardsPageState();
 }
 
 class RewardsPageState extends State<RewardsPage> with SingleTickerProviderStateMixin {
-  User user = User(points: 100, redeemedItems: []);
+  int points = 10;
   List<RewardItem> items = [];
 
   late AnimationController _animationController;
@@ -66,7 +59,8 @@ class RewardsPageState extends State<RewardsPage> with SingleTickerProviderState
   void _showAlert(BuildContext context, String message) {
     showGeneralDialog(
       context: context,
-      pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+      pageBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation) {
         return AnimatedDialog(
           message: message,
           onOkPressed: () {
@@ -78,7 +72,8 @@ class RewardsPageState extends State<RewardsPage> with SingleTickerProviderState
       barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
       barrierColor: Colors.black.withOpacity(0.5),
       transitionDuration: Duration(milliseconds: 200),
-      transitionBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+      transitionBuilder: (BuildContext context, Animation<double> animation,
+          Animation<double> secondaryAnimation, Widget child) {
         return FadeTransition(
           opacity: animation,
           child: ScaleTransition(
@@ -106,20 +101,20 @@ class RewardsPageState extends State<RewardsPage> with SingleTickerProviderState
       ),
       body: Stack(
         children: [
-          AnimatedBuilder(
-            animation: _animationController,
-            builder: (BuildContext context, Widget? child) {
-              return CustomPaint(
-                painter: WaterWavePainter(
-                  waveAmplitude: 10,
-                  waveFrequency: 0.01,
-                  wavePhase: _animationController.value * 2 * pi,
-                  waveColor: Color.fromARGB(255, 0, 133, 241),
-                ),
-                child: Container(),
-              );
-            },
-          ),
+        AnimatedBuilder(
+  animation: _animationController,
+  builder: (BuildContext context, Widget? child) {
+    return CustomPaint(
+      painter: WaterWavePainter(
+        waveAmplitude: 10,
+        waveFrequency: 0.01,
+        wavePhase: _animationController.value * 2 * pi,
+        waveColor: Color.fromARGB(255, 0, 133, 241), // Removed the '!' operator
+      ),
+      child: Container(),
+    );
+  },
+),
 
           LiquidPullToRefresh(
             onRefresh: handleRefresh,
@@ -141,10 +136,12 @@ class RewardsPageState extends State<RewardsPage> with SingleTickerProviderState
                   rewardItem: items[index],
                   onTap: () {
                     var item = items[index];
-                    if (user.points >= item.price) {
-                      _redeemItem(item);
+                    if (points >= item.price) {
+                      points -= item.price;
+                      _showAlert(context, 'You have successfully redeemed "${item.name}" for ${item.price} points.');
                     } else {
-                     _showAlert(context, 'Sorry, you do not have enough points to redeem "${item.name}".');
+                      _showAlert(context,
+                          'Sorry, you do not have enough points to redeem "${item.name}".');
                     }
                   },
                 );

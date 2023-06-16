@@ -1,7 +1,9 @@
 const prisma = require("../prisma/client");
 
 const getEvents = async (req, res) => {
-  const events = await prisma.events.findMany();
+  const events = await prisma.events.findMany({
+    include: { LikedBy: true, participants: true },
+  });
   res.json(events);
   console.log(events);
 };
@@ -12,70 +14,92 @@ async function likeEvent(req, res) {
   console.log(eventId, userId);
 
   try {
-    // Retrieve the user object based on the userId
     const user = await prisma.user.findUnique({
       where: { uid: userId },
     });
 
-    const updatedEvent = await prisma.events.update({
-      where: { id: eventId },
-      data: { LikedBy: { connect: { uid: userId } } },
-    });
-    console.log(updatedEvent);
-
     const event = await prisma.events.findFirst({
       where: { id: eventId },
       include: { LikedBy: true },
-    });
-    console.log(event.LikedBy);
-    const numLikes = event.LikedBy.length;
-
-    // user.LikedEvents.push(eventId);
-
-    // Update the user in the database
-    await prisma.user.update({
-      where: { uid: userId },
-      data: { LikedEvents: user.LikedEvents },
+      // include: { LikedBy: { select: { uid: true } } },
     });
 
-    res.json({ message: 'Event liked successfully', numLikes });
+    console.log(event);
+
+    const userLikedEvent = event.LikedBy.find(
+      (likedByUser) => likedByUser.uid === userId
+    );
+
+    if (userLikedEvent) {
+      const updatedEvent = await prisma.events.update({
+        where: { id: eventId },
+        data: { LikedBy: { disconnect: { uid: userId } } },
+      });
+      console.log(updatedEvent);
+      const numLikes = event.LikedBy ? event.LikedBy.length - 1 : 0;
+      res.json({ message: "Event disliked successfully", numLikes });
+    } else {
+      const updatedEvent = await prisma.events.update({
+        where: { id: eventId },
+        data: { LikedBy: { connect: { uid: userId } } },
+      });
+      console.log(updatedEvent);
+      const numLikes = event.LikedBy ? event.LikedBy.length + 1 : 1;
+      res.json({ message: "Event liked successfully", numLikes });
+    }
   } catch (error) {
-    console.error('An error occurred:', error);
-    res.status(500).json({ error: 'An error occurred while liking the event' });
+    console.error("An error occurred:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while liking/disliking the event" });
   }
 }
+
 async function participateInEvent(req, res) {
   const eventId = parseInt(req.params.eventId);
-  const userId = parseInt(req.params.userId);
+  const userId = req.params.userId;
   console.log(eventId, userId);
   try {
-    const user = await prisma.user.findFirst({
+    const user = await prisma.user.findUnique({
       where: { uid: userId.toString() },
     });
 
-    const updatedEventPar = await prisma.events.update({
+    const event = await prisma.events.findFirst({
       where: { id: eventId },
-      data: { participants: { push: userId } },
-    });
-    console.log(updatedEventPar);
-
-    const event = await prisma.events.findUnique({
-      where: { id: eventId }
-    });
-    console.log(event.participants);
-    const numParticipants = event.participants.length;
-
-    await prisma.user.update({
-      where: { uid: userId.toString() },
-      data: { participatedEvents: user.participatedEvents },
+      include: { participants: true },
     });
 
-    res.json({ message: 'Participated in event successfully', numParticipants });
+    const userParticipatedEvent = event.participants.find(
+      (participatedByUser) => participatedByUser.uid === userId
+    );
+
+    if (userParticipatedEvent) {
+      const updatedEventPar = await prisma.events.update({
+        where: { id: eventId },
+        data: { participants: { disconnect: { uid: userId.toString() } } },
+      });
+      console.log(updatedEventPar);
+      const numParticipants = event.participants ? event.participants.length - 1 : 0;
+      res.json({ message: "Event dis-participated successfully", numParticipants });
+    } else {
+      const updatedEventPar = await prisma.events.update({
+        where: { id: eventId },
+        data: { participants: { connect: { uid: userId.toString() } } },
+      });
+      console.log(updatedEventPar);
+      const numParticipants = event.participants ? event.participants.length + 1 : 1;
+      res.json({
+        message: "Participated in event successfully",
+        numParticipants,
+      });
+    }
   } catch (error) {
-    console.error('An error occurred:', error);
-    res.status(500).json({ error: 'An error occurred while participating in the event' });
+    console.error("An error occurred:", error);
+    res
+      .status(500)
+      .json({ error: "An error occurred while participating in the event" });
   }
 }
 
 
-module.exports = {likeEvent, participateInEvent,  getEvents };
+module.exports = { likeEvent, participateInEvent, getEvents };
