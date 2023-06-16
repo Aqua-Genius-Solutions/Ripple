@@ -6,14 +6,13 @@ import 'water_wave_painter.dart';
 import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import "../classes.dart";
+
 class RewardsPage extends StatefulWidget {
   @override
   RewardsPageState createState() => RewardsPageState();
 }
 
-class RewardsPageState extends State<RewardsPage>
-    with SingleTickerProviderStateMixin {
+class RewardsPageState extends State<RewardsPage> with SingleTickerProviderStateMixin {
   int points = 10;
   List<RewardItem> items = [];
 
@@ -42,20 +41,20 @@ class RewardsPageState extends State<RewardsPage>
   }
 
   Future<void> fetchRewardsFromAPI() async {
-  try {
-    final response = await http.get(Uri.parse('https://ripple-4wg9.onrender.com/rewards'));
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonItems = json.decode(response.body);
-      items = jsonItems.map((item) => RewardItem.fromJson(item)).toList();
-      setState(() {});
-    } else {
-      throw Exception('Failed to load rewards from the API');
+    try {
+      final response = await http.get(Uri.parse('https://ripple-4wg9.onrender.com/rewards'));
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonItems = json.decode(response.body);
+        items = jsonItems.map((item) => RewardItem.fromJson(item)).toList();
+        setState(() {});
+      } else {
+        throw Exception('Failed to load rewards from the API');
+      }
+    } catch (e) {
+      print('Error: $e');
+      // You can show an error message to the user or handle it differently here
     }
-  } catch (e) {
-    print('Error: $e');
-    // You can show an error message to the user or handle it differently here
   }
-}
 
   void _showAlert(BuildContext context, String message) {
     showGeneralDialog(
@@ -86,6 +85,14 @@ class RewardsPageState extends State<RewardsPage>
     );
   }
 
+  void _redeemItem(RewardItem item) {
+    setState(() {
+      user.points -= item.price;
+      user.redeemedItems.add(item);
+    });
+    _showAlert(context, 'You have successfully redeemed "${item.name}" for ${item.price} points.');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -94,21 +101,21 @@ class RewardsPageState extends State<RewardsPage>
       ),
       body: Stack(
         children: [
-          AnimatedBuilder(
-            animation: _animationController,
-            builder: (BuildContext context, Widget? child) {
-              return CustomPaint(
-                painter: WaterWavePainter(
-                  waveAmplitude: 10,
-                  waveFrequency: 0.01,
-                  wavePhase: _animationController.value * 2 * pi,
-                  waveColor: Color.fromARGB(
-                      255, 0, 133, 241), // Removed the '!' operator
-                ),
-                child: Container(),
-              );
-            },
-          ),
+        AnimatedBuilder(
+  animation: _animationController,
+  builder: (BuildContext context, Widget? child) {
+    return CustomPaint(
+      painter: WaterWavePainter(
+        waveAmplitude: 10,
+        waveFrequency: 0.01,
+        wavePhase: _animationController.value * 2 * pi,
+        waveColor: Color.fromARGB(255, 0, 133, 241), // Removed the '!' operator
+      ),
+      child: Container(),
+    );
+  },
+),
+
           LiquidPullToRefresh(
             onRefresh: handleRefresh,
             color: Color.fromARGB(255, 13, 184, 231),
@@ -131,8 +138,7 @@ class RewardsPageState extends State<RewardsPage>
                     var item = items[index];
                     if (points >= item.price) {
                       points -= item.price;
-                      _showAlert(context,
-                          'You have successfully redeemed "${item.name}" for ${item.price} points.');
+                      _showAlert(context, 'You have successfully redeemed "${item.name}" for ${item.price} points.');
                     } else {
                       _showAlert(context,
                           'Sorry, you do not have enough points to redeem "${item.name}".');

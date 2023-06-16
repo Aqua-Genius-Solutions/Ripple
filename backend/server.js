@@ -12,6 +12,7 @@ const paymentRouter = require("./routes/paymentRoute");
 const rewardRouter = require("./routes/rewardRoute");
 const billRouter = require ("./routes/bill")
 const profileRouter = require("./routes/profileRoute");
+const leaderboardRouter = require ("./routes/leaderboardRoute");
 
 const app = express();
 
@@ -26,6 +27,7 @@ app.use("/auth", authRouter);
 app.use("/payment", paymentRouter);
 app.use("/rewards", rewardRouter);
 app.use("/stat", billRouter);
+app.use("/leaderboard", leaderboardRouter)
 app.use("/profile", profileRouter);
 
 app.put("/:uid", async (req, res) => {

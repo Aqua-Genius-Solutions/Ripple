@@ -11,7 +11,7 @@ import 'rewards/rewards_page.dart';
 import "chat/chat.dart";
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'events/events.dart';
-
+import 'package:namer_app/leaderboard/leaderboard.dart';
 void main() async {
   await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
@@ -104,7 +104,7 @@ class _WelcomePageState extends State<WelcomePage>
       if (status == AnimationStatus.completed) {
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => EventPage()),
+          MaterialPageRoute(builder: (context) => LoginPage()), // iii@iiii.ii wawawa
         );
       }
     });
@@ -208,7 +208,7 @@ class _LoginPageState extends State<LoginPage> {
     HomePage(),
     RewardsPage(),
     NewsList(),
-    AddCard(),
+    LeaderboardPage(),
   ];
   @override
   Widget build(BuildContext context) {
