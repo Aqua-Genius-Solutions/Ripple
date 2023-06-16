@@ -25,6 +25,7 @@ model User {
   LikedEvents        Events[]     @relation("UserLikedEvents")
   LikedNews          News[]       @relation("UserLikedNews")
   ParticipatedEvents Events[]     @relation("UserParticipatedEvents")
+  rank                Int?  
 }
 
 model Events {

@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:namer_app/main.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -46,6 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
           );
         },
       );
+
     } on FirebaseAuthException catch (e) {
       // Handle authentication error
       print('Failed to log in: $e');
@@ -70,8 +74,11 @@ class _LoginScreenState extends State<LoginScreen> {
         },
       );
     }
+  Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()), // iii@iiii.ii wawawa
+        );
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

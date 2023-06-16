@@ -10,6 +10,7 @@ const authRouter = require("./routes/authRoute");
 const paymentRouter = require("./routes/paymentRoute");
 const rewardRouter = require("./routes/rewardRoute");
 const billRouter = require ("./routes/bill");
+const leaderboardRouter = require ("./routes/leaderboardRoute");
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use("/auth", authRouter);
 app.use("/payment", paymentRouter);
 app.use("/rewards", rewardRouter);
 app.use("/stat", billRouter);
+app.use("/leaderboard", leaderboardRouter)
 
 
 app.listen(3000, () => {
