@@ -10,7 +10,7 @@ const newsRouter = require("./routes/newsRoute");
 const authRouter = require("./routes/authRoute");
 const paymentRouter = require("./routes/paymentRoute");
 const rewardRouter = require("./routes/rewardRoute");
-const billRouter = require ("./routes/bill")
+const billRouter = require("./routes/bill");
 const profileRouter = require("./routes/profileRoute");
 
 const app = express();
@@ -28,11 +28,14 @@ app.use("/rewards", rewardRouter);
 app.use("/stat", billRouter);
 app.use("/profile", profileRouter);
 
-app.put("/:uid", async (req, res) => {
-  const uid = req.params.uid;
+app.put("/:id", async (req, res) => {
+  const id = req.params.id;
   try {
-    await prisma.user.update({ where: { uid }, data: { isPro: true } });
-    res.json(await prisma.user.findFirst({ where: { uid } }));
+    await prisma.bill.update({
+      where: { id: Number(id) },
+      data: { paid: true },
+    });
+    res.json(await prisma.bill.findFirst({ where: { id: Number(id) } }));
   } catch (error) {
     res.json(error);
   }

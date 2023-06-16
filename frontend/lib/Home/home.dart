@@ -112,9 +112,8 @@ class _HomePageState extends State<HomePage> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Color.fromARGB(37, 87, 114, 249),
-                    Color.fromARGB(15, 87, 114, 249),
-                    Color.fromARGB(164, 255, 255, 255),
+                    Color.fromRGBO(159, 223, 255, 0.79),
+                    Color.fromRGBO(217, 217, 217, 0)
                   ],
                 ),
                 borderRadius: BorderRadius.circular(12.0),
@@ -177,7 +176,7 @@ class _HomePageState extends State<HomePage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => BarChartWidget()),
+                                  builder: (context) => BillsScreen()),
                             );
                           },
                           child: Image.asset(
@@ -249,9 +248,8 @@ class _HomePageState extends State<HomePage> {
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                     colors: [
-                      Color.fromARGB(37, 87, 114, 249),
-                      Color.fromARGB(15, 87, 114, 249),
-                      Color.fromARGB(164, 255, 255, 255),
+                      Color.fromRGBO(159, 223, 255, 0.79),
+                      Color.fromRGBO(217, 217, 217, 0)
                     ],
                   ),
                   borderRadius: BorderRadius.circular(12.0),

@@ -51,8 +51,8 @@ class Bill {
 
   factory Bill.fromJson(Map<dynamic, dynamic> bill) {
     return Bill(
-      price: double.parse(bill["price"]),
-      consumption: int.parse(bill['consumption']),
+      price: double.tryParse(bill["price"]) ?? 14.3,
+      consumption: bill['consumption'] as int? ?? 33,
       paid: bill['paid'] as bool? ?? false,
       startDate: DateTime.parse(bill['startDate'] as String? ?? ''),
       endDate: DateTime.parse(bill['endDate'] as String? ?? ''),

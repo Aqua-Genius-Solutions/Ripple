@@ -102,8 +102,7 @@ class RewardsPageState extends State<RewardsPage>
                   waveAmplitude: 10,
                   waveFrequency: 0.01,
                   wavePhase: _animationController.value * 2 * pi,
-                  waveColor: Color.fromARGB(
-                      255, 0, 133, 241), // Removed the '!' operator
+                  waveColor: Color.fromARGB(255, 30, 146, 240), // Removed the '!' operator
                 ),
                 child: Container(),
               );

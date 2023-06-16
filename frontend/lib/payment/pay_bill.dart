@@ -5,6 +5,7 @@ import 'package:flutter_credit_card/flutter_credit_card.dart';
 import 'package:flutter_credit_card/credit_card_brand.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../classes.dart';
 
@@ -36,6 +37,7 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   List<CreditCard> creditCards = [];
+  final String apiUrl = dotenv.env["API_URL"]!;
 
   @override
   void initState() {
@@ -44,24 +46,28 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Future<void> fetchCreditCards() async {
-    final response = await http.get(Uri.parse(
-        'https://c664-41-225-237-233.ngrok-free.app/payment/user/123456'));
+    try {
+      final response = await http
+          .get(Uri.parse('$apiUrl/payment/user/${widget.user["uid"]}'));
 
-    if (response.statusCode == 200) {
-      final List<dynamic> responseData = jsonDecode(response.body);
-      setState(() {
-        creditCards = responseData
-            .map((item) => CreditCard(
-                  id: item['id'] as int,
-                  number: item['number'] as int,
-                  cvc: item['CVC'] as int,
-                  expDate: DateTime.parse(item['expDate']),
-                  ownerId: item['ownerId'] as String,
-                ))
-            .toList();
-      });
-    } else {
-      print("failed to fetch");
+      if (response.statusCode == 200) {
+        final List<dynamic> responseData = jsonDecode(response.body);
+        setState(() {
+          creditCards = responseData
+              .map((item) => CreditCard(
+                    id: item['id'] as int,
+                    number: item['number'] as int,
+                    cvc: item['CVC'] as int,
+                    expDate: DateTime.parse(item['expDate']),
+                    ownerId: item['ownerId'] as String,
+                  ))
+              .toList();
+        });
+      } else {
+        print("failed to fetch");
+      }
+    } catch (error) {
+      print("error occured : $error");
     }
   }
 
@@ -70,12 +76,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
     return Scaffold(
       body: Column(
         children: [
-          // Image.network(
-          //   'https://your-image-url.com/image.jpg',
-          //   width: double.infinity,
-          //   height: 200,
-          //   fit: BoxFit.cover,
-          // ),
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(34),
+              child: Image.network(
+                widget.bill.imageUrl,
+                width: double.infinity,
+                height: 200,
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
           Text("${widget.bill.price}"),
           ListView.builder(
             shrinkWrap: true,

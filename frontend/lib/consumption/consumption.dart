@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:namer_app/consumption/bar_graph.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -14,25 +15,25 @@ class BarChartWidget extends StatefulWidget {
 class _BarChartWidgetState extends State<BarChartWidget> {
   List<Bill> bills = [];
   User? user = FirebaseAuth.instance.currentUser;
+  final String apiUrl = dotenv.env["API_URL"]!;
 
   Future<void> fetchData() async {
     print(user);
 
     try {
       final response = await http.get(
-        Uri.parse('https://ripple-4wg9.onrender.com/stat'),
+        Uri.parse('$apiUrl/stat'),
       );
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
-        List<Bill> mappedBills = [];
-        for (var bill in data) {
-          mappedBills.add(Bill.fromJson(bill));
-        }
+        final List<Bill> importedBills = data
+            .map((item) => Bill.fromJson(item as Map<String, dynamic>))
+            .toList();
 
         setState(() {
-          bills = mappedBills.reversed.toList();
+          bills = importedBills;
         });
         print(bills);
       } else {
@@ -141,7 +142,8 @@ class _BarChartWidgetState extends State<BarChartWidget> {
                     Container(
                       height: 640,
                       width: double.infinity,
-                      margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      margin:
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
@@ -154,7 +156,7 @@ class _BarChartWidgetState extends State<BarChartWidget> {
                         ),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
-                    child: ListView.builder(
+                      child: ListView.builder(
                         itemCount: 6, // Number of smaller containers
                         itemBuilder: (context, index) {
                           List<String> imagePaths = [
@@ -180,7 +182,8 @@ class _BarChartWidgetState extends State<BarChartWidget> {
                                 Expanded(
                                   flex: 3,
                                   child: Padding(
-                                    padding: EdgeInsets.only(left: 15.0, top: 12.0, right: 15.0),
+                                    padding: EdgeInsets.only(
+                                        left: 15.0, top: 12.0, right: 15.0),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(26.0),
                                       child: Image.asset(

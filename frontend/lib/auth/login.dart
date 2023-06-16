@@ -18,7 +18,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  Map<dynamic, dynamic> user = {"name": "", "surename": ""};
+  Map<dynamic, dynamic> user = {};
   final String apiUrl = dotenv.env["API_URL"]!;
 
   Future<void> login() async {
@@ -64,8 +64,8 @@ class _LoginScreenState extends State<LoginScreen> {
         },
       );
 
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => LoginPage(user: user)));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
     } on FirebaseAuthException catch (e) {
       // Handle authentication error
       print('Failed to log in: $e');

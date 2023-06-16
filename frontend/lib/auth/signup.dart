@@ -7,7 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'profile_creation.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';  
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -22,31 +22,7 @@ class _SignInScreenState extends State<SignInScreen> {
   TextEditingController confirmPasswordController = TextEditingController();
   final String apiUrl = dotenv.env["API_URL"]!;
 
-  @override
-  void initState() {
-    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-      if (!isAllowed) {
-        AwesomeNotifications().requestPermissionToSendNotifications();
-      }
-    });
-    super.initState();
-  } 
-
-    void subscribeToAllUsers() {
-    FirebaseMessaging.instance.subscribeToTopic('all_users');
-  }
-
   Future<void> signUp() async {
-    AwesomeNotifications().initialize(
-        null,
-        [
-          NotificationChannel(
-              channelKey: 'Basic_Channel',
-              channelName: 'Basic notifications',
-              channelDescription: 'Notification channel for basic test')
-        ],
-        debug: true);
-
     String name = nameController.text.trim();
     String surname = surnameController.text.trim();
     String email = emailController.text.trim();
@@ -89,30 +65,21 @@ class _SignInScreenState extends State<SignInScreen> {
           headers: {"Content-Type": "application/json"});
       print("Respone received : ${response.body}");
 
-       subscribeToAllUsers();
-      AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: 1,
-          channelKey: 'Basic_Channel',
-          title: "Welcome to Ripple",
-          body: "Congratulations $name, you are now part of Ripple",
-        ),
-      );
-      
-
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
             title: Text('Success'),
-            content: Text('User signed up successfully!'),
+            content: Text(
+                'Your account has been created! Continue to complete your profile'),
             actions: [
               TextButton(
                 onPressed: () {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => CreateProfileScreen()));
+                          builder: (context) =>
+                              CreateProfileScreen(name: name)));
                 },
                 child: Text('OK'),
               ),
@@ -237,7 +204,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     margin: EdgeInsets.symmetric(horizontal: 8.0),
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Colors.black,
+                        color: Colors.grey,
                         width: 1.0,
                       ),
                       borderRadius: BorderRadius.circular(8.0),
@@ -245,19 +212,29 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: Expanded(
                       child: Row(
                         children: [
-                          InkResponse(
-                            onTap: signUp,
-                            child: Image.asset(
-                              'images/google.png',
-                              width: 30,
-                              height: 30,
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 5.3, vertical: 5.3),
+                            child: InkResponse(
+                              onTap: signUp,
+                              child: Image.asset(
+                                'images/google.png',
+                                width: 30,
+                                height: 30,
+                              ),
                             ),
                           ),
                           SizedBox(width: 16.0),
-                          Text(
-                            'Signup with Google',
-                            style: TextStyle(fontSize: 16.0),
-                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 5.3, vertical: 5.3),
+                            child: Text(
+                              'Signup with Google',
+                              style: TextStyle(
+                                  fontSize: 16.0,
+                                  color: Color.fromARGB(255, 133, 133, 133)),
+                            ),
+                          )
                         ],
                       ),
                     ),

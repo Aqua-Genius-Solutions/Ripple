@@ -1,14 +1,18 @@
 // ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:namer_app/auth/login.dart';
 import 'package:namer_app/events/events.dart';
 import 'package:namer_app/news/news.dart';
 import 'package:namer_app/profile/profile.dart';
 import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
-import 'auth/login.dart';
+import 'payment/bills.dart';
+import 'auth/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'rewards/rewards_page.dart';
 import "chat/chat.dart";
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -86,6 +90,7 @@ class WelcomePage extends StatefulWidget {
 
 class _WelcomePageState extends State<WelcomePage>
     with SingleTickerProviderStateMixin {
+  User? user = FirebaseAuth.instance.currentUser;
   late AnimationController _animationController;
   late Animation<Offset> _slideAnimation;
 
@@ -105,9 +110,14 @@ class _WelcomePageState extends State<WelcomePage>
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => EventPage()),
-        );
+            context, MaterialPageRoute(builder: (context) => SignInScreen()));
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //       builder: user != null
+        //           ? (context) => LoginPage(user: user)
+        //           : (context) => LoginScreen()),
+        // );
       }
     });
   }
@@ -169,12 +179,7 @@ class _WelcomePageState extends State<WelcomePage>
               ),
               SizedBox(height: 8),
               InkResponse(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()),
-                  );
-                },
+                onTap: _startAnimation,
                 child: Padding(
                   padding: EdgeInsets.only(
                     top: 70,
@@ -196,9 +201,9 @@ class _WelcomePageState extends State<WelcomePage>
 }
 
 class LoginPage extends StatefulWidget {
-  final user;
+  // final user;
 
-  LoginPage({required this.user});
+  // LoginPage({required this.user});
   @override
   _LoginPageState createState() => _LoginPageState();
 }
