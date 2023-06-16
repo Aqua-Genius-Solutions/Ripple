@@ -94,12 +94,11 @@ class _EventPageState extends State<EventPage>
       print(eventId);
       print(user?.uid);
       print(events);
-      // print(
-      //     '$apiUrl/events/$eventId/like/${user?.uid}');
 
       if (response.statusCode == 200) {
         print(response);
         final dynamic responseData = json.decode(response.body);
+        final String message = responseData['message'] as String;
         final int numLikes = responseData['numLikes'] as int;
         print(responseData);
         print(numLikes);
@@ -118,6 +117,8 @@ class _EventPageState extends State<EventPage>
 
           events[eventId - 1] = updatedEvent;
         });
+
+        print(message);
       } else {
         print('Request failed with status: ${response.statusCode}');
       }
@@ -136,29 +137,47 @@ class _EventPageState extends State<EventPage>
       print(eventId);
       print(user?.uid);
       print(events);
-      print('$apiUrl/events/$eventId/part/${user?.uid}');
 
       if (response.statusCode == 200) {
         print(response);
         final dynamic responseData = json.decode(response.body);
+        final String message = responseData['message'] as String;
         final int numParticipants = responseData['numParticipants'] as int;
         print(responseData);
         print(numParticipants);
 
         setState(() {
-          // Update the state with the updated number of likes
           Event event = events[eventId - 1];
 
-          Event updatedEvent = Event(
-            id: event.id,
-            title: event.title,
-            date: event.date,
-            participants: numParticipants,
-            likedBy: event.likedBy,
-            image: event.image,
-          );
+          if (message == "Event dis-participated successfully") {
+            // Handle dis-participate behavior
+            Event updatedEvent = Event(
+              id: event.id,
+              title: event.title,
+              date: event.date,
+              participants: numParticipants,
+              likedBy: event.likedBy,
+              image: event.image,
+            );
 
-          events[eventId - 1] = updatedEvent;
+            events[eventId - 1] = updatedEvent;
+            print("Dis-participated in event successfully");
+          } else if (message == "Participated in event successfully") {
+            // Handle participate behavior
+            Event updatedEvent = Event(
+              id: event.id,
+              title: event.title,
+              date: event.date,
+              participants: numParticipants,
+              likedBy: event.likedBy,
+              image: event.image,
+            );
+
+            events[eventId - 1] = updatedEvent;
+            print("Participated in event successfully");
+          }
+
+          print(message);
         });
       } else {
         print('Request failed with status: ${response.statusCode}');
