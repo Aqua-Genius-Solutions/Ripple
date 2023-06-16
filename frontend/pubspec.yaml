@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^1.0.0
+  # http: ^1.0.0
   english_words: ^4.0.0
   provider: ^6.0.0
   firebase_auth: ^4.6.3
@@ -29,6 +29,7 @@ dependencies:
   firebase_core: ^2.14.0
   firebase_messaging: ^14.6.2
   cloud_firestore: ^4.8.1
+  lottie: ^2.4.0
 
 dev_dependencies:
   flutter_test:
@@ -46,11 +47,11 @@ flutter:
     - images/background.png
     - icons/home-page.png
     - icons/news.png
-    - icons/setting.png
+    - icons/chat.png
     - icons/trophy.png
     - icons/home-page-colored.png
     - icons/news-colored.png
-    - icons/setting-colored.png
+    - icons/chat-colored.png
     - icons/trophy-colored.png
     - images/arrow.png
     - images/phone.png

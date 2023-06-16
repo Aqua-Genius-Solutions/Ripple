@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:namer_app/consumption/bar_graph.dart';
+import '../classes.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,37 +18,24 @@ class _BarChartWidgetState extends State<BarChartWidget> {
   User? user = FirebaseAuth.instance.currentUser;
   final String apiUrl = dotenv.env["API_URL"]!;
 
-  Future<void> fetchData() async {
-    print(user);
+  Future<void> importBills() async {
+    final response = await http.get(Uri.parse('$apiUrl/stat')); // user/$uid
 
-    try {
-      final response = await http.get(
-        Uri.parse('$apiUrl/stat'),
-      );
+    final List<dynamic> responseData = jsonDecode(response.body);
+    print(responseData);
 
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-
-        final List<Bill> importedBills = data
-            .map((item) => Bill.fromJson(item as Map<String, dynamic>))
-            .toList();
-
-        setState(() {
-          bills = importedBills;
-        });
-        print(bills);
-      } else {
-        print('Request failed with status: ${response.statusCode}');
-      }
-    } catch (error) {
-      print('An error occurred: $error');
-    }
+    final List<Bill> importedBills = responseData
+        .map((item) => Bill.fromJson(item as Map<dynamic, dynamic>))
+        .toList();
+    setState(() {
+      bills = importedBills;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    fetchData();
+    importBills();
   }
 
   @override
