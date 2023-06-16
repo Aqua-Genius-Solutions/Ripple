@@ -7,7 +7,6 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import "../classes.dart";
-
 class RewardsPage extends StatefulWidget {
   @override
   RewardsPageState createState() => RewardsPageState();
@@ -43,21 +42,20 @@ class RewardsPageState extends State<RewardsPage>
   }
 
   Future<void> fetchRewardsFromAPI() async {
-    try {
-      final response =
-          await http.get(Uri.parse('https://ripple-4wg9.onrender.com/rewards'));
-      if (response.statusCode == 200) {
-        final List<dynamic> jsonItems = json.decode(response.body);
-        items = jsonItems.map((item) => RewardItem.fromJson(item)).toList();
-        setState(() {});
-      } else {
-        throw Exception('Failed to load rewards from the API');
-      }
-    } catch (e) {
-      print('Error: $e');
-      // You can show an error message to the user or handle it differently here
+  try {
+    final response = await http.get(Uri.parse('https://ripple-4wg9.onrender.com/rewards'));
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonItems = json.decode(response.body);
+      items = jsonItems.map((item) => RewardItem.fromJson(item)).toList();
+      setState(() {});
+    } else {
+      throw Exception('Failed to load rewards from the API');
     }
+  } catch (e) {
+    print('Error: $e');
+    // You can show an error message to the user or handle it differently here
   }
+}
 
   void _showAlert(BuildContext context, String message) {
     showGeneralDialog(
@@ -105,7 +103,7 @@ class RewardsPageState extends State<RewardsPage>
                   waveFrequency: 0.01,
                   wavePhase: _animationController.value * 2 * pi,
                   waveColor: Color.fromARGB(
-                      255, 30, 146, 240), // Removed the '!' operator
+                      255, 0, 133, 241), // Removed the '!' operator
                 ),
                 child: Container(),
               );

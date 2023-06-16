@@ -16,9 +16,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'rewards/rewards_page.dart';
 import "chat/chat.dart";
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'events/events.dart';
-import 'package:namer_app/leaderboard/leaderboard.dart';
+import 'settings/settings.dart';
 import 'package:lottie/lottie.dart';
+
 
 void main() async {
   await dotenv.load();

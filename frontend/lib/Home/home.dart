@@ -147,7 +147,7 @@ class _HomePageState extends State<HomePage> {
                         );
                       },
                       child: Image.asset(
-                        'images/waterC.png',
+                        'images/consumption.png',
                         width: 50,
                         height: 30,
                       ),
