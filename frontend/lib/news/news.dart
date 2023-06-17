@@ -127,6 +127,7 @@ class NewsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: Color.fromRGBO(246, 246, 246, 1),
       margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Card(
         shape:
@@ -145,7 +146,7 @@ class NewsCard extends StatelessWidget {
             Padding(
               padding: EdgeInsets.fromLTRB(16.0, 4.0, 16.0, 12.0),
               child: Text(
-                'By $author, $date',
+                'By $author, ${date.substring(0, 10)}',
                 style: TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ),

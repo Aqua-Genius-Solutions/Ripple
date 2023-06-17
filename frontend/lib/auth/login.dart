@@ -18,7 +18,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  Map<dynamic, dynamic> user = {"name": "", "surename": ""};
+  Map<dynamic, dynamic> user = {};
   final String apiUrl = dotenv.env["API_URL"]!;
 
   Future<void> login() async {
@@ -64,8 +64,8 @@ class _LoginScreenState extends State<LoginScreen> {
         },
       );
 
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => LoginPage(user: user)));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
     } on FirebaseAuthException catch (e) {
       // Handle authentication error
       print('Failed to log in: $e');
@@ -95,6 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromRGBO(246, 246, 246, 1),
       appBar: AppBar(
         title: Text('Login'),
       ),
@@ -132,13 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 16.0),
               // Login Button
               InkResponse(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ProfileScreen()),
-                  );
-                },
+                onTap: login,
                 child: Image.asset(
                   'images/arrow-blue.png',
                   width: 60,

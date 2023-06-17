@@ -38,7 +38,7 @@ class _BillsScreenState extends State<BillsScreen> {
   }
 
   Future<void> importBills() async {
-    final response = await http.get(Uri.parse('$apiUrl/stat/user/$uid'));
+    final response = await http.get(Uri.parse('$apiUrl/stat')); // user/$uid
 
     final List<dynamic> responseData = jsonDecode(response.body);
     print(responseData);
@@ -54,9 +54,23 @@ class _BillsScreenState extends State<BillsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       appBar: AppBar(
+  backgroundColor: Colors.transparent,
+  elevation: 0,
+  leading: Padding(
+    padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
+    child: IconButton(
+      icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    ),
+  ),
+),
+      backgroundColor:Color.fromRGBO(246, 246, 246, 1),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(16, 80, 16, 0),
+          padding: EdgeInsets.fromLTRB(16, 30, 16, 0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
