@@ -182,8 +182,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Color.fromRGBO(246, 246, 246, 1),
       appBar: AppBar(
-        title: Text('Profile'),
-      ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: Padding(
+            padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
+            child: IconButton(
+              icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ),
       body: DefaultTabController(
         length: 3,
         child: Column(
@@ -204,12 +214,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ),
             TabBar(
-              tabs: [
-                Tab(text: 'Liked Events'),
-                Tab(text: 'Liked News'),
-                Tab(text: 'Profile Editing'),
-              ],
-            ),
+                tabs: [
+                  Tab(
+                    child: Text(
+                      'Liked Events',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  Tab(
+                    child: Text(
+                      'Liked News',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  Tab(
+                    child: Text(
+                      'Profile Editing',
+                      style: TextStyle(color: Colors.black),
+                    ),
+                  ),
+                ],
+              ),
             Expanded(
               child: TabBarView(
                 children: [

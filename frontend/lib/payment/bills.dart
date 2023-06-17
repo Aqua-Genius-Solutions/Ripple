@@ -54,33 +54,19 @@ class _BillsScreenState extends State<BillsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: Padding(
-              padding: EdgeInsets.only(left: 16.0, top: 12.0, bottom: 4),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Color.fromARGB(232, 255, 255, 255),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.5),
-                      spreadRadius: 2,
-                      blurRadius: 4,
-                      offset: Offset(0, 1.5), 
-                    ),
-                  ],
-                ),
-                child: IconButton(
-                  icon: Image.asset('images/right-arrow.png',height: 50, width: 60),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-            ),
-           ),
+       appBar: AppBar(
+  backgroundColor: Colors.transparent,
+  elevation: 0,
+  leading: Padding(
+    padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
+    child: IconButton(
+      icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
+      onPressed: () {
+        Navigator.pop(context);
+      },
+    ),
+  ),
+),
       backgroundColor:Color.fromRGBO(246, 246, 246, 1),
       body: SingleChildScrollView(
         child: Padding(
