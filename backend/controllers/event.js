@@ -106,18 +106,36 @@ async function participateInEvent(req, res) {
       .status(500)
       .json({ error: "An error occurred while participating in the event" });
   }
-
 }
 
-const getLatest= async (req, res) => {
+const getUserLikedEvents = async (req, res) => {
+  const uid = req.params.uid;
+  try {
+    const user = await prisma.user.findFirst({
+      where: { uid },
+      include: { LikedEvents: true },
+    });
+    res.status(200).json(user?.LikedEvents);
+  } catch (error) {
+    console.error("An error occurred:", error);
+    res.status(500).json({ error: "An error occurred while liking the event" });
+  }
+};
+
+const getLatest = async (req, res) => {
   const events = await prisma.events.findMany({
-    include: { LikedBy: true , participants: true },
-    orderBy: { date: 'desc' }, 
-    take: 3, 
+    include: { LikedBy: true, participants: true },
+    orderBy: { date: "desc" },
+    take: 3,
   });
   res.json(events);
   console.log(events);
 };
 
-
-module.exports = { likeEvent, participateInEvent, getEvents , getLatest};
+module.exports = {
+  likeEvent,
+  participateInEvent,
+  getEvents,
+  getUserLikedEvents,
+  getLatest,
+};
