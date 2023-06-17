@@ -29,6 +29,9 @@ dependencies:
   firebase_core: ^2.14.0
   firebase_messaging: ^14.6.2
   cloud_firestore: ^4.8.1
+  # cupertino_icon: ^0.1.2
+  rxdart: ^0.27.2-nullsafety.0
+  flutter_bloc: ^7.0.0
 
 dev_dependencies:
   flutter_test:
