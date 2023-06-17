@@ -35,8 +35,8 @@ class Bill {
   final double price;
   final double consumption;
   final bool paid;
-  final DateTime startDate;
-  final DateTime endDate;
+  final String startDate;
+  final String endDate;
   final String imageUrl;
   final String uid;
 
@@ -52,13 +52,20 @@ class Bill {
   });
 
   factory Bill.fromJson(Map<dynamic, dynamic> bill) {
+    print(bill["imageUrl"].runtimeType);
+    print("start date : ${bill["startDate"].runtimeType}");
+    print(bill["endDate"].runtimeType);
+    print(bill["id"].runtimeType);
+    print(bill["consumption"].runtimeType);
+    print(bill["price"].runtimeType);
+    print(bill["userId"].runtimeType);
     return Bill(
-      id: bill["id"],
-      price: double.tryParse(bill["price"]) ?? 14.3,
-      consumption: bill['consumption'] as double? ?? 33,
+      id: int.tryParse(bill["id"].toString()) ?? 4,
+      price: double.tryParse(bill["price"].toString()) ?? 14.3,
+      consumption: double.tryParse(bill['consumption'].toString()) ?? 33,
       paid: bill['paid'] as bool? ?? false,
-      startDate: DateTime.parse(bill['startDate'] as String? ?? ''),
-      endDate: DateTime.parse(bill['endDate'] as String? ?? ''),
+      startDate: bill['startDate'] as String? ?? '',
+      endDate: bill['endDate'] as String? ?? '',
       imageUrl: bill['imageUrl'] as String? ?? '',
       uid: bill['userId'] as String? ?? '',
     );

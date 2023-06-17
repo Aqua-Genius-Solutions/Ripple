@@ -52,8 +52,8 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
-      backgroundColor: Color.fromRGBO(246, 246, 246, 1), // Set the background color to grey
+      backgroundColor:
+          Color.fromRGBO(246, 246, 246, 1), // Set the background color to grey
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -79,12 +79,19 @@ class _HomePageState extends State<HomePage> {
                     width: 60.0,
                     height: 60.0,
                     child: Padding(
-                      padding: EdgeInsets.only(right: 20, top: 16.0),
-                      child: CircleAvatar(
-                        backgroundImage: AssetImage('images/unnamed.jpg'),
-                        radius: 15.0,
-                      ),
-                    ),
+                        padding: EdgeInsets.only(right: 20, top: 16.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ProfileScreen()));
+                          },
+                          child: CircleAvatar(
+                            backgroundImage: AssetImage('images/unnamed.jpg'),
+                            radius: 15.0,
+                          ),
+                        )),
                   ),
                 ),
               ),
@@ -99,9 +106,9 @@ class _HomePageState extends State<HomePage> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Color.fromARGB(37, 87, 114, 249),
-                  Color.fromARGB(15, 87, 114, 249),
-                  Color.fromARGB(164, 255, 255, 255),
+                  Color.fromRGBO(159, 223, 255, 0.79),
+                  Color.fromRGBO(159, 223, 255, 0.49),
+                  Color.fromRGBO(217, 217, 217, 0)
                 ],
               ),
               borderRadius: BorderRadius.circular(12.0),
@@ -234,9 +241,9 @@ class _HomePageState extends State<HomePage> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Color.fromARGB(37, 87, 114, 249),
-                    Color.fromARGB(15, 87, 114, 249),
-                    Color.fromARGB(164, 255, 255, 255),
+                    Color.fromRGBO(159, 223, 255, 0.79),
+                    Color.fromRGBO(159, 223, 255, 0.49),
+                    Color.fromRGBO(217, 217, 217, 0)
                   ],
                 ),
                 borderRadius: BorderRadius.circular(12.0),

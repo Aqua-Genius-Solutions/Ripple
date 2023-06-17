@@ -28,7 +28,6 @@ void main() async {
   runApp(MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
 
@@ -39,7 +38,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: BillsScreen(),
+      home: MyHomePage(),
     );
   }
 }

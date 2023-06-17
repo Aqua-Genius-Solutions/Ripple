@@ -106,7 +106,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor:Color.fromRGBO(246, 246, 246, 1),
+      backgroundColor: Color.fromRGBO(246, 246, 246, 1),
       body: Column(
         children: [
           Padding(
@@ -126,32 +126,26 @@ class _PaymentScreenState extends State<PaymentScreen> {
             shrinkWrap: true,
             itemCount: creditCards.length,
             itemBuilder: (context, index) {
-              return GestureDetector(
-                onTap: () {
-                  pay(widget.bill.id, creditCards[index].id);
-                },
-                child: CreditCardWidget(
-                  cardNumber: creditCards[index].number.toString(),
-                  expiryDate: creditCards[index].expDate.toString(),
-                  cardHolderName: "creditCards[index].owner.name",
-                  cvvCode: creditCards[index].cvc.toString(),
-                  showBackView: false,
-                  obscureCardNumber: true,
-                  obscureCardCvv: true,
-                  isHolderNameVisible: true,
-                  onCreditCardWidgetChange:
-                      (CreditCardBrand creditCardBrand) {},
-                  customCardTypeIcons: <CustomCardTypeIcon>[
-                    CustomCardTypeIcon(
-                      cardType: CardType.mastercard,
-                      cardImage: Image.asset(
-                        'images/mastercard.png',
-                        height: 48,
-                        width: 48,
-                      ),
+              return CreditCardWidget(
+                cardNumber: creditCards[index].number.toString(),
+                expiryDate: creditCards[index].expDate.toString(),
+                cardHolderName: "creditCards[index].owner.name",
+                cvvCode: creditCards[index].cvc.toString(),
+                showBackView: false,
+                obscureCardNumber: true,
+                obscureCardCvv: true,
+                isHolderNameVisible: true,
+                onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
+                customCardTypeIcons: <CustomCardTypeIcon>[
+                  CustomCardTypeIcon(
+                    cardType: CardType.mastercard,
+                    cardImage: Image.asset(
+                      'images/mastercard.png',
+                      height: 48,
+                      width: 48,
                     ),
-                  ],
-                ),
+                  ),
+                ],
               );
             },
           ),
