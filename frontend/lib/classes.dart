@@ -31,6 +31,7 @@ class Event {
 
 //Bills
 class Bill {
+  final int id;
   final double price;
   final double consumption;
   final bool paid;
@@ -40,6 +41,7 @@ class Bill {
   final String uid;
 
   Bill({
+    required this.id,
     required this.price,
     required this.consumption,
     required this.paid,
@@ -51,6 +53,7 @@ class Bill {
 
   factory Bill.fromJson(Map<dynamic, dynamic> bill) {
     return Bill(
+      id: bill["id"],
       price: double.tryParse(bill["price"]) ?? 14.3,
       consumption: bill['consumption'] as double? ?? 33,
       paid: bill['paid'] as bool? ?? false,

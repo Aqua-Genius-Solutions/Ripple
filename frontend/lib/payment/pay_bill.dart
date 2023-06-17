@@ -71,6 +71,38 @@ class _PaymentScreenState extends State<PaymentScreen> {
     }
   }
 
+  Future<void> pay(int billId, int cardId) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Success'),
+          content: Text('Are you sure you want to use this card?'),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                try {
+                  final response = await http
+                      .get(Uri.parse("$apiUrl/payment/pay/$billId/$cardId"));
+                  print(response);
+                } catch (error) {
+                  print("error occured : $error");
+                }
+              },
+              child: Text('Yes'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('No'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,26 +125,32 @@ class _PaymentScreenState extends State<PaymentScreen> {
             shrinkWrap: true,
             itemCount: creditCards.length,
             itemBuilder: (context, index) {
-              return CreditCardWidget(
-                cardNumber: creditCards[index].number.toString(),
-                expiryDate: creditCards[index].expDate.toString(),
-                cardHolderName: "creditCards[index].owner.name",
-                cvvCode: creditCards[index].cvc.toString(),
-                showBackView: false,
-                obscureCardNumber: true,
-                obscureCardCvv: true,
-                isHolderNameVisible: true,
-                onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
-                customCardTypeIcons: <CustomCardTypeIcon>[
-                  CustomCardTypeIcon(
-                    cardType: CardType.mastercard,
-                    cardImage: Image.asset(
-                      'images/mastercard.png',
-                      height: 48,
-                      width: 48,
+              return GestureDetector(
+                onTap: () {
+                  pay(widget.bill.id, creditCards[index].id);
+                },
+                child: CreditCardWidget(
+                  cardNumber: creditCards[index].number.toString(),
+                  expiryDate: creditCards[index].expDate.toString(),
+                  cardHolderName: "creditCards[index].owner.name",
+                  cvvCode: creditCards[index].cvc.toString(),
+                  showBackView: false,
+                  obscureCardNumber: true,
+                  obscureCardCvv: true,
+                  isHolderNameVisible: true,
+                  onCreditCardWidgetChange:
+                      (CreditCardBrand creditCardBrand) {},
+                  customCardTypeIcons: <CustomCardTypeIcon>[
+                    CustomCardTypeIcon(
+                      cardType: CardType.mastercard,
+                      cardImage: Image.asset(
+                        'images/mastercard.png',
+                        height: 48,
+                        width: 48,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),

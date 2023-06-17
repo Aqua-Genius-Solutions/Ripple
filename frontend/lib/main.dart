@@ -19,7 +19,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'settings/settings.dart';
 import 'package:lottie/lottie.dart';
 
-
 void main() async {
   await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,7 +36,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(),
+      home: BillsScreen(),
     );
   }
 }
