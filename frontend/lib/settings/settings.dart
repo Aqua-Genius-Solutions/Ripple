@@ -17,11 +17,12 @@ class _SettingsPageState extends State<SettingsPage> {
       appBar: AppBar(
         title: Text('Notifications settings'),
       ),
+      backgroundColor: Color.fromRGBO(246, 246, 246, 1),
       body: ListView(
         children: [
           Container(
             width: double.infinity,
-            height: 300.0,
+            height: 290.0,
             margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -36,7 +37,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
             child: ListView(
               children: [
-                SizedBox(height: 25),
+                SizedBox(height: 20),
                 Center(
                   child: ListTile(
                     leading: Image.asset('images/eventC.png',  width: 40, height: 30,),
@@ -54,7 +55,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 25),
+                SizedBox(height: 20),
                 Divider(),
                 Center(
                   child: ListTile(
@@ -73,7 +74,7 @@ class _SettingsPageState extends State<SettingsPage> {
                     ),
                   ),
                 ),
-                SizedBox(height: 25),
+                SizedBox(height: 20),
                 Divider(),
                 Center(
                   child: ListTile(
