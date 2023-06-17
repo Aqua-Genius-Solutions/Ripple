@@ -17,9 +17,9 @@ const getOne = async (req, res) => {
       where: { uid },
       include: {
         LikedEvents: true,
-        LikedNews: true,
-        bills: true,
-        creditCards: true,
+        News: true,
+        Bill: true,
+        CreditCard: true,
       },
     });
     res.status(200).json(users);
@@ -59,10 +59,10 @@ const signup = async (req, res) => {
         Bubbles: 0,
         Image: "",
         isAdmin: false,
-        bills: { connect: [] },
-        creditCards: { connect: [] },
+        Bill: { connect: [] },
+        CreditCard: { connect: [] },
         LikedEvents: { connect: [] },
-        LikedNews: { connect: [] },
+        News: { connect: [] },
       },
     });
 

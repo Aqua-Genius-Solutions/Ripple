@@ -29,11 +29,11 @@ app.use("/stat", billRouter);
 app.use("/profile", profileRouter);
 
 app.put("/:id", async (req, res) => {
-  const id = req.params.id;
+  const uid = req.params.id;
   try {
-    await prisma.bill.update({
-      where: { id: Number(id) },
-      data: { paid: true },
+    await prisma.user.update({
+      where: { uid },
+      data: { isPro: true },
     });
     res.json(await prisma.bill.findFirst({ where: { id: Number(id) } }));
   } catch (error) {
