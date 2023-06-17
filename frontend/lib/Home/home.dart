@@ -99,43 +99,8 @@ class _HomePageState extends State<HomePage> {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              SizedBox(
-                width: 70.0,
-                height: 70.0,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 16.0, top: 16.0),
-                  child: Image.asset(
-                    'images/bubble2.png',
-                    width: 60.0,
-                    height: 60.0,
-                  ),
-                ),
-              ),
-              Expanded(
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: SizedBox(
-                    width: 60.0,
-                    height: 60.0,
-                    child: Padding(
-                        padding: EdgeInsets.only(right: 20, top: 16.0),
-                        child: GestureDetector(
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ProfileScreen()));
-                          },
-                          child: CircleAvatar(
-                            backgroundImage: AssetImage('images/unnamed.jpg'),
-                            radius: 15.0,
-                          ),
-                        )),
-                  ),
-                ),
-              ),
-            ],
+            
+              
           ),
           Container(
             width: double.infinity,
@@ -146,9 +111,9 @@ class _HomePageState extends State<HomePage> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  Color.fromRGBO(159, 223, 255, 0.79),
-                  Color.fromRGBO(159, 223, 255, 0.49),
-                  Color.fromRGBO(217, 217, 217, 0)
+                 Color.fromRGBO(159, 223, 255, 0.49),
+                    Color.fromRGBO(159, 223, 255, 0.327),
+                    Color.fromRGBO(159, 223, 255, 0.49),
                 ],
               ),
               borderRadius: BorderRadius.circular(12.0),
@@ -275,15 +240,16 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: Container(
               width: double.infinity,
+              height: 300,
               margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Color.fromRGBO(159, 223, 255, 0.79),
+                   Color.fromRGBO(159, 223, 255, 0.49),
+                    Color.fromRGBO(159, 223, 255, 0.327),
                     Color.fromRGBO(159, 223, 255, 0.49),
-                    Color.fromRGBO(217, 217, 217, 0)
                   ],
                 ),
                 borderRadius: BorderRadius.circular(12.0),
@@ -322,7 +288,7 @@ class _HomePageState extends State<HomePage> {
                                     Row(
                                       children: [
                                         Image.asset(
-                                          'images/calendar.png',
+                                          'images/schedule.png',
                                           width: 30.0,
                                           height: 30.0,
                                         ),
@@ -402,35 +368,34 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Padding(
-              padding: EdgeInsets.only(bottom: 16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => EventPage()),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
+         Padding(
+              padding: EdgeInsets.only(bottom: 0.0),
+              child: Align(
+                alignment: Alignment.bottomCenter,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => EventPage()),
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.0),
+                    ),
+                    backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                    padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
                   ),
-                  backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 30.0, vertical: 16.0),
-                ),
-                child: Text(
-                  'See More',
-                  style: TextStyle(
-                    color: Color.fromARGB(255, 22, 56, 191),
-                    fontSize: 16.0,
+                  child: Text(
+                    'See More',
+                    style: TextStyle(
+                      color: Color.fromARGB(255, 68, 68, 68),
+                      fontSize: 16.0,
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
         ],
       ),
     );

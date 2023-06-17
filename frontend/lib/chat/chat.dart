@@ -69,9 +69,8 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     if (!_isProUser) {
       return Scaffold(
-        appBar: AppBar(
-          title: Text('💬 let\'s brainstorm here'),
-        ),
+        backgroundColor:
+        Color.fromRGBO(246, 246, 246, 1), 
         body: Center(
           child: Text(
             'You need to be a Pro user to access the chat.',
