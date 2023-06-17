@@ -1,19 +1,24 @@
 // ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:namer_app/auth/login.dart';
+import 'package:namer_app/events/events.dart';
 import 'package:namer_app/auth/signup.dart';
 import 'package:namer_app/news/news.dart';
+import 'package:namer_app/profile/profile.dart';
 import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
 import 'home/home.dart';
-import 'auth/login.dart';
+import 'payment/bills.dart';
+import 'auth/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'rewards/rewards_page.dart';
 import "chat/chat.dart";
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'profile/profile.dart';
-import 'events/events.dart';
 import 'settings/settings.dart';
+import 'package:lottie/lottie.dart';
 import 'news/news.dart';
 
 void main() async {
@@ -22,7 +27,6 @@ void main() async {
   await Firebase.initializeApp();
   runApp(MyApp());
 }
-
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
@@ -44,12 +48,17 @@ class MyHomePage extends StatefulWidget {
   _MyHomePageState createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  late final AnimationController _controller;
+
+  bool firstPress = false;
 
   @override
   void initState() {
     super.initState();
+    _controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 700));
 
     _firebaseMessaging.getToken().then((token) {
       print('FCM Token: $token');
@@ -77,7 +86,29 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: WelcomePage(),
+      body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Color.fromARGB(176, 4, 67, 144),
+                Color.fromARGB(176, 111, 176, 255),
+                Color.fromARGB(176, 129, 222, 248),
+              ],
+            ),
+          ),
+          child: Center(
+              child: Lottie.network(
+                  "https://assets6.lottiefiles.com/packages/lf20_12G4mZ.json",
+                  controller: _controller, onLoaded: (compos) {
+            _controller
+              ..duration = Duration(milliseconds: 4000)
+              ..forward().then((value) {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => WelcomePage()));
+              });
+          }))),
     );
   }
 }
@@ -88,9 +119,11 @@ class WelcomePage extends StatefulWidget {
 }
 
 class _WelcomePageState extends State<WelcomePage>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
+  User? user = FirebaseAuth.instance.currentUser;
   late AnimationController _animationController;
   late Animation<Offset> _slideAnimation;
+  bool firstPress = false;
 
   @override
   void initState() {
@@ -108,9 +141,7 @@ class _WelcomePageState extends State<WelcomePage>
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => EventPage()),
-        );
+            context, MaterialPageRoute(builder: (context) => SignInScreen()));
       }
     });
   }
@@ -122,11 +153,16 @@ class _WelcomePageState extends State<WelcomePage>
   }
 
   void _startAnimation() {
-    _animationController.forward();
+    // _animationController.forward();
+    setState(() {
+      firstPress = true;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -150,12 +186,12 @@ class _WelcomePageState extends State<WelcomePage>
                   children: [
                     ClipRRect(
                       borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(124),
-                        bottomRight: Radius.circular(124),
+                        bottomLeft: Radius.circular(100),
+                        bottomRight: Radius.circular(100),
                       ),
                       child: Container(
                         width: 320,
-                        height: 420,
+                        height: 320,
                         color: Color.fromRGBO(237, 237, 237, 1),
                       ),
                     ),
@@ -170,23 +206,79 @@ class _WelcomePageState extends State<WelcomePage>
                   ],
                 ),
               ),
-              SizedBox(height: 8),
-              InkResponse(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                  );
-                },
+              SizedBox(height: 18.0),
+              AnimatedOpacity(
+                opacity: firstPress ? 1.0 : 1.0,
+                duration: Duration(milliseconds: 1500),
+                child: InkResponse(
+                  onTap: _startAnimation,
+                  child: Padding(
+                      padding: EdgeInsets.only(
+                        top: 70,
+                        bottom: 40,
+                      ),
+                      child: firstPress
+                          ? AnimatedOpacity(
+                              opacity: firstPress ? 1.0 : 0.0,
+                              duration: Duration(milliseconds: 1500),
+                              child: Text("Slogan hh"),
+                            )
+                          : AnimatedOpacity(
+                              opacity: firstPress ? 0.0 : 1.0,
+                              duration: Duration(milliseconds: 1500),
+                              child: Image.asset(
+                                'images/arrow.png',
+                                width: 80,
+                                height: 80,
+                              ),
+                            )),
+                ),
+              ),
+              SizedBox(height: 180.0),
+              AnimatedOpacity(
+                opacity: firstPress ? 1.0 : 0.0,
+                duration: Duration(milliseconds: 1500),
                 child: Padding(
-                  padding: EdgeInsets.only(
-                    top: 70,
-                    bottom: 40,
-                  ),
-                  child: Image.asset(
-                    'images/arrow.png',
-                    width: 80,
-                    height: 80,
+                  padding:
+                      EdgeInsets.symmetric(horizontal: screenWidth * 0.075),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => LoginScreen()));
+                        },
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: Size(screenWidth * 0.4, 50),
+                            backgroundColor: Color.fromARGB(
+                                255, 236, 236, 236)), // 42.5% of screen width
+                        child: Text(
+                          "Log In",
+                          style:
+                              TextStyle(fontSize: 22.0, color: Colors.blueGrey),
+                        ),
+                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignInScreen()));
+                        },
+                        style: ElevatedButton.styleFrom(
+                            minimumSize: Size(screenWidth * 0.4, 50),
+                            backgroundColor: Color.fromARGB(
+                                255, 236, 236, 236)), // 42.5% of screen width
+                        child: Text(
+                          "Sign Up",
+                          style:
+                              TextStyle(fontSize: 22.0, color: Colors.blueGrey),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -199,9 +291,9 @@ class _WelcomePageState extends State<WelcomePage>
 }
 
 class LoginPage extends StatefulWidget {
-  final user;
+  // final user;
 
-  LoginPage({required this.user});
+  // LoginPage({required this.user});
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -213,7 +305,7 @@ class _LoginPageState extends State<LoginPage> {
     HomePage(),
     RewardsPage(),
     NewsList(),
-    AddCard(),
+    ChatPage(),
   ];
   @override
   Widget build(BuildContext context) {

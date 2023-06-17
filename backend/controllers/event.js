@@ -79,15 +79,22 @@ async function participateInEvent(req, res) {
         data: { participants: { disconnect: { uid: userId.toString() } } },
       });
       console.log(updatedEventPar);
-      const numParticipants = event.participants ? event.participants.length - 1 : 0;
-      res.json({ message: "Event dis-participated successfully", numParticipants });
+      const numParticipants = event.participants
+        ? event.participants.length - 1
+        : 0;
+      res.json({
+        message: "Event dis-participated successfully",
+        numParticipants,
+      });
     } else {
       const updatedEventPar = await prisma.events.update({
         where: { id: eventId },
         data: { participants: { connect: { uid: userId.toString() } } },
       });
       console.log(updatedEventPar);
-      const numParticipants = event.participants ? event.participants.length + 1 : 1;
+      const numParticipants = event.participants
+        ? event.participants.length + 1
+        : 1;
       res.json({
         message: "Participated in event successfully",
         numParticipants,

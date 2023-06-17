@@ -22,7 +22,7 @@ class WaterWavePainter extends CustomPainter {
 
     Path wavePath = Path();
 
-    wavePath.moveTo(0, size.height * 0.5);
+    wavePath.moveTo(0, size.height * 0.23);
     for (int x = 0; x < size.width; x++) {
       wavePath.lineTo(
         x.toDouble(),

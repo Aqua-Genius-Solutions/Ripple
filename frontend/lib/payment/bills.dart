@@ -38,7 +38,7 @@ class _BillsScreenState extends State<BillsScreen> {
   }
 
   Future<void> importBills() async {
-    final response = await http.get(Uri.parse('$apiUrl/stat/user/$uid'));
+    final response = await http.get(Uri.parse('$apiUrl/stat')); // user/$uid
 
     final List<dynamic> responseData = jsonDecode(response.body);
     print(responseData);

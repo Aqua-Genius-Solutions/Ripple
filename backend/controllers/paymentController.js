@@ -47,4 +47,25 @@ const getCreditCards = async (req, res) => {
   }
 };
 
-module.exports = { addCard, getCreditCards };
+const pay = async (req, res) => {
+  const { billId, cardId } = req.params;
+  try {
+    const bill = await prisma.bill.findFirst({ where: { id: billId } });
+    const creditCard = await prisma.creditCard.findFirst({
+      where: { id: billId },
+    });
+
+    await prisma.creditCard.update({
+      where: { id: cardId },
+      data: { balance: creditCard.balance - bill.price },
+    });
+    await prisma.bill.update({ where: { id: billId }, data: { paid: true } });
+
+    res.status(200).json("Bill paid successfully");
+  } catch (error) {
+    console.error("Error paying bill:", error);
+    return res.status(500).json({ error: "Failed to pay the bill" });
+  }
+};
+
+module.exports = { addCard, getCreditCards, pay };

@@ -25,8 +25,8 @@ class BottomNavigationBarWidget extends StatelessWidget {
       'icons/news-colored.png',
     ],
     [
-      'icons/setting.png',
-      'icons/setting-colored.png',
+      'icons/chat.png',
+      'icons/chat-colored.png',
     ],
   ];
 
