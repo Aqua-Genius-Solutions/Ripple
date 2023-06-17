@@ -175,7 +175,7 @@ class _WelcomePageState extends State<WelcomePage>
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => AddCard()),
+                    MaterialPageRoute(builder: (context) => HomePage()),
                   );
                 },
                 child: Padding(

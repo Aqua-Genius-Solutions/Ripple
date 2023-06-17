@@ -108,3 +108,5 @@ flutter:
     - images/right-arrow.png
     - images/down-chevron.png
     - images/left-chevron.png
+    - images/like.png
+    - images/unlike.png

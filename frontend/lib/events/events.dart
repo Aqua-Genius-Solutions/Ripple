@@ -340,7 +340,7 @@ class _EventPageState extends State<EventPage>
                                         child: Row(
                                           children: [
                                             Image.asset(
-                                              'images/heart1.png',
+                                              'images/unlike.png',
                                               width: 30.0,
                                               height: 30.0,
                                             ),

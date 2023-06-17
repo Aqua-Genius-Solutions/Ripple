@@ -99,7 +99,18 @@ async function participateInEvent(req, res) {
       .status(500)
       .json({ error: "An error occurred while participating in the event" });
   }
+
 }
 
+const getLatest= async (req, res) => {
+  const events = await prisma.events.findMany({
+    include: { LikedBy: true , participants: true },
+    orderBy: { date: 'desc' }, 
+    take: 3, 
+  });
+  res.json(events);
+  console.log(events);
+};
 
-module.exports = { likeEvent, participateInEvent, getEvents };
+
+module.exports = { likeEvent, participateInEvent, getEvents , getLatest};

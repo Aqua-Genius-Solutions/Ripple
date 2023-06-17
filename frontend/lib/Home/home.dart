@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> fetchData() async {
     try {
       final response = await http.get(
-        Uri.parse('$apiUrl/events'),
+        Uri.parse('$apiUrl/events/latest'),
       );
 
       if (response.statusCode == 200) {
@@ -292,7 +292,7 @@ class _HomePageState extends State<HomePage> {
                                     Row(
                                       children: [
                                         Image.asset(
-                                          'images/heart.png',
+                                          'images/unlike.png',
                                           width: 30.0,
                                           height: 30.0,
                                         ),
@@ -310,7 +310,7 @@ class _HomePageState extends State<HomePage> {
                                     Row(
                                       children: [
                                         Image.asset(
-                                          'images/hands-up.png',
+                                          'images/add.png',
                                           width: 30.0,
                                           height: 30.0,
                                         ),
