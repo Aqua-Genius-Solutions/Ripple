@@ -153,7 +153,10 @@ class _WelcomePageState extends State<WelcomePage>
   }
 
   void _startAnimation() {
-    // _animationController.forward();
+    if (user != null) {
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
+    }
     setState(() {
       firstPress = true;
     });

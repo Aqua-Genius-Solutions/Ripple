@@ -52,13 +52,6 @@ class Bill {
   });
 
   factory Bill.fromJson(Map<dynamic, dynamic> bill) {
-    print(bill["imageUrl"].runtimeType);
-    print("start date : ${bill["startDate"].runtimeType}");
-    print(bill["endDate"].runtimeType);
-    print(bill["id"].runtimeType);
-    print(bill["consumption"].runtimeType);
-    print(bill["price"].runtimeType);
-    print(bill["userId"].runtimeType);
     return Bill(
       id: int.tryParse(bill["id"].toString()) ?? 4,
       price: double.tryParse(bill["price"].toString()) ?? 14.3,
