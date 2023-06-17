@@ -41,14 +41,18 @@ const likeNews = async (req, res) => {
   }
 };
 
-const getUserLikedEvents = async (req, res) => {
+const getUserLikedNews = async (req, res) => {
   const uid = req.params.uid;
   try {
-    
+    const user = await prisma.user.findFirst({
+      where: { uid },
+      include: { LikedNews: true },
+    });
+    res.status(200).json(user?.LikedNews);
   } catch (error) {
     console.error("An error occurred:", error);
     res.status(500).json({ error: "An error occurred while liking the news" });
   }
 };
 
-module.exports = { getAllNews, likeNews };
+module.exports = { getAllNews, likeNews, getUserLikedNews };

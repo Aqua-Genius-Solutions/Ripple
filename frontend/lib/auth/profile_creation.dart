@@ -7,8 +7,15 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:namer_app/main.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class CreateProfileScreen extends StatefulWidget {
+  final String name;
+
+  CreateProfileScreen({
+    required this.name,
+  });
   @override
   _CreateProfileState createState() => _CreateProfileState();
 }
@@ -28,11 +35,30 @@ class _CreateProfileState extends State<CreateProfileScreen> {
 
   @override
   void initState() {
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        AwesomeNotifications().requestPermissionToSendNotifications();
+      }
+    });
+
     super.initState();
     print(user);
   }
 
+  void subscribeToAllUsers() {
+    FirebaseMessaging.instance.subscribeToTopic('all_users');
+  }
+
   Future<void> signUp() async {
+    AwesomeNotifications().initialize(
+        null,
+        [
+          NotificationChannel(
+              channelKey: 'Basic_Channel',
+              channelName: 'Basic notifications',
+              channelDescription: 'Notification channel for basic test')
+        ],
+        debug: true);
     String address = addressController.text.trim();
     String nfm = nfmController.text.trim();
 
@@ -53,37 +79,26 @@ class _CreateProfileState extends State<CreateProfileScreen> {
       );
       print("Response received");
 
+      subscribeToAllUsers();
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: 1,
+          channelKey: 'Basic_Channel',
+          title: "Welcome to Ripple",
+          body: "Congratulations ${widget.name}, you are now part of Ripple",
+        ),
+      );
+
       if (response.statusCode == 200) {
         final responseData = response.body;
 
         print(responseData);
         Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage(user: user)),
-        );
+            context, MaterialPageRoute(builder: (context) => LoginPage()));
       } else {
         // Error handling for Prisma backend request
         print('Prisma backend request failed with status: ${response.body}');
       }
-
-      // Success dialog
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Success'),
-            content: Text('User signed up successfully!'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
     } on FirebaseAuthException catch (e) {
       print('Failed to sign up: $e');
 
@@ -287,11 +302,10 @@ class _CreateProfileState extends State<CreateProfileScreen> {
                 ),
               ),
               SizedBox(height: 16.0),
-              // Name Input
               TextField(
                 controller: addressController,
                 decoration: InputDecoration(
-                  labelText: 'Name',
+                  labelText: 'Address',
                   border: OutlineInputBorder(),
                 ),
               ),

@@ -1,34 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-
-class Bill {
-  final int id;
-  final double consumption;
-  final int NormalConsp;
-  final DateTime startDate;
-  final DateTime endDate;
-  final String userId;
-
-  Bill({
-    required this.id,
-    required this.consumption,
-    required this.NormalConsp,
-    required this.startDate,
-    required this.endDate,
-    required this.userId,
-  });
-
-  factory Bill.fromJson(Map<String, dynamic> json) {
-    return Bill(
-      id: json['id'],
-      consumption: json['consumption'].toDouble(),
-      NormalConsp: json['NormalConsp'],
-      startDate: DateTime.parse(json['startDate']),
-      endDate: DateTime.parse(json['endDate']),
-      userId: json['userId'],
-    );
-  }
-}
+import '../classes.dart';
 
 class MyBarGraph extends StatelessWidget {
   final List<Bill> bills;
@@ -170,7 +142,6 @@ class MyBarGraph extends StatelessWidget {
             ],
           ),
         ),
-        
       ],
     );
   }
