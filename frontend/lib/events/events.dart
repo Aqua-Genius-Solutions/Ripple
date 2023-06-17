@@ -190,11 +190,7 @@ class _EventPageState extends State<EventPage>
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('images/backgroundd.jpg'),
-        ),
-      ),
+      color: Color.fromRGBO(246, 246, 246, 1),
       child: Scaffold(
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,

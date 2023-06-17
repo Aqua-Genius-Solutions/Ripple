@@ -62,7 +62,7 @@ class AddCardState extends State<AddCard> {
         resizeToAvoidBottomInset: false,
         body: Container(
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.7),
+            color: Color.fromRGBO(246, 246, 246, 1),
           ),
           child: SafeArea(
             child: Column(

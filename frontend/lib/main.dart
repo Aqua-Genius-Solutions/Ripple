@@ -1,6 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:namer_app/auth/signup.dart';
 import 'package:namer_app/news/news.dart';
 import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
@@ -13,6 +14,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'profile/profile.dart';
 import 'events/events.dart';
 import 'settings/settings.dart';
+import 'news/news.dart';
 
 void main() async {
   await dotenv.load();
@@ -20,6 +22,7 @@ void main() async {
   await Firebase.initializeApp();
   runApp(MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});
