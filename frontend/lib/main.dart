@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:namer_app/auth/login.dart';
 import 'package:namer_app/events/events.dart';
+import 'package:namer_app/auth/signup.dart';
 import 'package:namer_app/news/news.dart';
 import 'package:namer_app/profile/profile.dart';
 import 'profile/Card/addcard.dart';
@@ -18,6 +19,7 @@ import "chat/chat.dart";
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'settings/settings.dart';
 import 'package:lottie/lottie.dart';
+import 'news/news.dart';
 
 void main() async {
   await dotenv.load();
@@ -25,6 +27,7 @@ void main() async {
   await Firebase.initializeApp();
   runApp(MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key});

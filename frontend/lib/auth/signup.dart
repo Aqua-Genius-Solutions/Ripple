@@ -133,6 +133,7 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromRGBO(246, 246, 246, 1),
       appBar: AppBar(
         title: Text('Sign Up'),
       ),

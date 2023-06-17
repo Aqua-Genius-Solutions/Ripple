@@ -106,6 +106,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:Color.fromRGBO(246, 246, 246, 1),
       body: Column(
         children: [
           Padding(
