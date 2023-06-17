@@ -42,6 +42,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   @override
   void initState() {
     super.initState();
+    print(widget.user);
     fetchCreditCards();
   }
 
@@ -52,11 +53,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
       if (response.statusCode == 200) {
         final List<dynamic> responseData = jsonDecode(response.body);
+        print(responseData);
         setState(() {
           creditCards = responseData
               .map((item) => CreditCard(
                     id: item['id'] as int,
-                    number: item['number'] as int,
+                    number: int.parse(item['number']),
                     cvc: item['CVC'] as int,
                     expDate: DateTime.parse(item['expDate']),
                     ownerId: item['ownerId'] as String,
@@ -83,8 +85,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
               onPressed: () async {
                 try {
                   final response = await http
-                      .get(Uri.parse("$apiUrl/payment/pay/$billId/$cardId"));
-                  print(response);
+                      .put(Uri.parse("$apiUrl/payment/pay/$billId/$cardId"));
+                  Navigator.of(context).pop();
                 } catch (error) {
                   print("error occured : $error");
                 }
@@ -126,27 +128,32 @@ class _PaymentScreenState extends State<PaymentScreen> {
             shrinkWrap: true,
             itemCount: creditCards.length,
             itemBuilder: (context, index) {
-              return CreditCardWidget(
-                cardNumber: creditCards[index].number.toString(),
-                expiryDate: creditCards[index].expDate.toString(),
-                cardHolderName: "creditCards[index].owner.name",
-                cvvCode: creditCards[index].cvc.toString(),
-                showBackView: false,
-                obscureCardNumber: true,
-                obscureCardCvv: true,
-                isHolderNameVisible: true,
-                onCreditCardWidgetChange: (CreditCardBrand creditCardBrand) {},
-                customCardTypeIcons: <CustomCardTypeIcon>[
-                  CustomCardTypeIcon(
-                    cardType: CardType.mastercard,
-                    cardImage: Image.asset(
-                      'images/mastercard.png',
-                      height: 48,
-                      width: 48,
-                    ),
-                  ),
-                ],
-              );
+              return GestureDetector(
+                  onTap: () {
+                    pay(widget.bill.id, creditCards[index].id);
+                  },
+                  child: CreditCardWidget(
+                    cardNumber: creditCards[index].number.toString(),
+                    expiryDate: creditCards[index].expDate.toString(),
+                    cardHolderName: "creditCards[index].owner.name",
+                    cvvCode: creditCards[index].cvc.toString(),
+                    showBackView: false,
+                    obscureCardNumber: true,
+                    obscureCardCvv: true,
+                    isHolderNameVisible: true,
+                    onCreditCardWidgetChange:
+                        (CreditCardBrand creditCardBrand) {},
+                    customCardTypeIcons: <CustomCardTypeIcon>[
+                      CustomCardTypeIcon(
+                        cardType: CardType.mastercard,
+                        cardImage: Image.asset(
+                          'images/mastercard.png',
+                          height: 48,
+                          width: 48,
+                        ),
+                      ),
+                    ],
+                  ));
             },
           ),
         ],
