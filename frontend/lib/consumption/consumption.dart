@@ -104,9 +104,9 @@ class _BarChartWidgetState extends State<BarChartWidget> {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Color.fromARGB(37, 87, 114, 249),
-                    Color.fromARGB(15, 87, 114, 249),
-                    Color.fromARGB(164, 255, 255, 255),
+                    Color.fromRGBO(159, 223, 255, 0.59),
+                    Color.fromRGBO(227, 227, 227, 0.765),
+                    Color.fromRGBO(159, 223, 255, 0.59)
                   ],
                 ),
                 borderRadius: BorderRadius.circular(12.0),

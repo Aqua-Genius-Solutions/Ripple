@@ -33,6 +33,8 @@ class BottomNavigationBarWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor:
+        Color.fromRGBO(246, 246, 246, 1), 
       body: IndexedStack(
         index: currentIndex,
         children: screens,
@@ -43,8 +45,8 @@ class BottomNavigationBarWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(34.0),
           boxShadow: [
             BoxShadow(
-              color: Color.fromRGBO(49, 75, 206, 0.6),
-              offset: Offset(0, 4),
+              color:Color.fromARGB(255,159, 223, 255),
+              offset: Offset(1, 0),
               blurRadius: 8.0,
               spreadRadius: 0,
             ),

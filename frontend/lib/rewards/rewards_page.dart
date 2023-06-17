@@ -91,8 +91,18 @@ class RewardsPageState extends State<RewardsPage>
     return Scaffold(
       backgroundColor: Color.fromRGBO(246, 246, 246, 1),
       appBar: AppBar(
-        title: Text('Rewards'),
-      ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: Padding(
+            padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
+            child: IconButton(
+              icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ),
       body: Stack(
         children: [
           AnimatedBuilder(
