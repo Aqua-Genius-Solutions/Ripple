@@ -13,6 +13,8 @@ class HomePage extends StatefulWidget {
   _HomePageState createState() => _HomePageState();
 }
 
+final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
 class _HomePageState extends State<HomePage> {
   List<Event> events = [];
   final String apiUrl = dotenv.env["API_URL"]!;
@@ -52,16 +54,56 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu),
+            color: Color.fromARGB(255, 13, 183, 226),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
+      ),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            UserAccountsDrawerHeader(
+              accountName: Text('User Name'),
+              accountEmail: Text('user@example.com'),
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: AssetImage('images/user_avatar.jpg'),
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.notifications),
+              title: Text('Notifications'),
+              onTap: () {
+                // Navigate to the notifications page
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.notifications),
+              title: Text('Become Pro'),
+              onTap: () {
+                // Navigate to the notifications page
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              title: Text('Logout'),
+              onTap: () {
+                // Perform logout action
+              },
+            ),
+          ],
+        ),
+      ),
       backgroundColor:
           Color.fromRGBO(246, 246, 246, 1), // Set the background color to grey
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            
-              
-          ),
           Container(
             width: double.infinity,
             height: 200.0,
@@ -71,9 +113,9 @@ class _HomePageState extends State<HomePage> {
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                 Color.fromRGBO(159, 223, 255, 0.49),
-                    Color.fromRGBO(159, 223, 255, 0.327),
-                    Color.fromRGBO(159, 223, 255, 0.49),
+                  Color.fromRGBO(159, 223, 255, 0.79),
+                  Color.fromRGBO(159, 223, 255, 0.49),
+                  Color.fromRGBO(217, 217, 217, 0)
                 ],
               ),
               borderRadius: BorderRadius.circular(12.0),
@@ -200,16 +242,15 @@ class _HomePageState extends State<HomePage> {
           Expanded(
             child: Container(
               width: double.infinity,
-              height: 300,
               margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                   Color.fromRGBO(159, 223, 255, 0.49),
-                    Color.fromRGBO(159, 223, 255, 0.327),
+                    Color.fromRGBO(159, 223, 255, 0.79),
                     Color.fromRGBO(159, 223, 255, 0.49),
+                    Color.fromRGBO(217, 217, 217, 0)
                   ],
                 ),
                 borderRadius: BorderRadius.circular(12.0),
@@ -248,7 +289,7 @@ class _HomePageState extends State<HomePage> {
                                     Row(
                                       children: [
                                         Image.asset(
-                                          'images/schedule.png',
+                                          'images/calendar.png',
                                           width: 30.0,
                                           height: 30.0,
                                         ),
@@ -328,34 +369,35 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
-         Padding(
-              padding: EdgeInsets.only(bottom: 0.0),
-              child: Align(
-                alignment: Alignment.bottomCenter,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => EventPage()),
-                    );
-                  },
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    backgroundColor: Color.fromARGB(255, 255, 255, 255),
-                    padding: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: EdgeInsets.only(bottom: 16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => EventPage()),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
-                  child: Text(
-                    'See More',
-                    style: TextStyle(
-                      color: Color.fromARGB(255, 68, 68, 68),
-                      fontSize: 16.0,
-                    ),
+                  backgroundColor: Color.fromARGB(255, 255, 255, 255),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 30.0, vertical: 16.0),
+                ),
+                child: Text(
+                  'See More',
+                  style: TextStyle(
+                    color: Color.fromARGB(255, 22, 56, 191),
+                    fontSize: 16.0,
                   ),
                 ),
               ),
             ),
+          ),
         ],
       ),
     );

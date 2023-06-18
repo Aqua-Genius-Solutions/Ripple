@@ -6,12 +6,12 @@ import 'package:namer_app/auth/login.dart';
 import 'package:namer_app/events/events.dart';
 import 'package:namer_app/auth/signup.dart';
 import 'package:namer_app/news/news.dart';
+
 import 'package:namer_app/profile/profile.dart';
 import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
-import 'home/home.dart';
+import 'Home/home.dart';
 import 'payment/bills.dart';
-import 'auth/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'rewards/rewards_page.dart';
@@ -19,7 +19,6 @@ import "chat/chat.dart";
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'settings/settings.dart';
 import 'package:lottie/lottie.dart';
-import 'news/news.dart';
 
 void main() async {
   await dotenv.load();
@@ -314,18 +313,18 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:Color.fromRGBO(246, 246, 246, 1),
-          elevation: 0,
-          leading: Padding(
-            padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
-            child: IconButton(
-              icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
+        backgroundColor: Color.fromRGBO(246, 246, 246, 1),
+        elevation: 0,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
+          child: IconButton(
+            icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ),
+      ),
       body: Stack(
         children: [
           _screens[_currentIndex],
