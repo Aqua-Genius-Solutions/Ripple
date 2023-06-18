@@ -9,7 +9,7 @@ async function getRewards(req, res) {
   }
 }
 
-async function createRewards(req, res) {
+async function createReward(req, res) {
   try {
     const newRewards = req.body;
     const createdRewards = await prisma.rewards.create({ data: newRewards });
@@ -19,7 +19,7 @@ async function createRewards(req, res) {
   }
 }
 
-async function updateRewards(req, res) {
+async function updateReward(req, res) {
   try {
     const { id } = req.params;
     const updates = req.body;
@@ -33,7 +33,7 @@ async function updateRewards(req, res) {
   }
 }
 
-async function deleteRewards(req, res) {
+async function deleteReward(req, res) {
   try {
     const { id } = req.params;
     const deletedRewards = await prisma.rewards.delete({
@@ -47,7 +47,7 @@ async function deleteRewards(req, res) {
 
 module.exports = {
   getRewards,
-  createRewards,
-  updateRewards,
-  deleteRewards,
+  createReward,
+  updateReward,
+  deleteReward,
 };

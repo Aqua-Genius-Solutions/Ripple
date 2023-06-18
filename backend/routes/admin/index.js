@@ -8,7 +8,7 @@ const rewardsController = require("../../controllers/admin/rewardsController");
 const usersController = require("../../controllers/admin/usersController");
 
 // Use authorize middleware
-router.use(authorize);
+// router.use(authorize);
 
 // Routes for Events
 router.get("/events", eventsController.getEvents);
