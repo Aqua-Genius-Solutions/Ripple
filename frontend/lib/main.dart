@@ -8,6 +8,7 @@ import 'package:namer_app/auth/signup.dart';
 import 'package:namer_app/news/news.dart';
 
 import 'package:namer_app/profile/profile.dart';
+import 'package:namer_app/slide_transition.dart';
 import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
 import 'Home/home.dart';
@@ -86,28 +87,30 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromARGB(176, 4, 67, 144),
-                Color.fromARGB(176, 111, 176, 255),
-                Color.fromARGB(176, 129, 222, 248),
-              ],
-            ),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color.fromARGB(200, 129, 222, 248),
+              Color.fromARGB(200, 111, 176, 255),
+              Color.fromARGB(200, 4, 67, 144),
+            ],
           ),
-          child: Center(
-              child: Lottie.network(
-                  "https://assets6.lottiefiles.com/packages/lf20_12G4mZ.json",
-                  controller: _controller, onLoaded: (compos) {
+        ),
+        child: Center(
+          child: Lottie.network(
+              "https://assets6.lottiefiles.com/packages/lf20_12G4mZ.json",
+              controller: _controller, onLoaded: (compos) {
             _controller
               ..duration = Duration(milliseconds: 4000)
               ..forward().then((value) {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => WelcomePage()));
+                    SlidePageRoute(builder: (context) => WelcomePage()));
               });
-          }))),
+          }),
+        ),
+      ),
     );
   }
 }
