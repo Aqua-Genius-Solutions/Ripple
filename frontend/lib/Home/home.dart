@@ -54,7 +54,6 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -79,6 +78,13 @@ class _HomePageState extends State<HomePage> {
             ListTile(
               leading: Icon(Icons.notifications),
               title: Text('Notifications'),
+              onTap: () {
+                // Navigate to the notifications page
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.notifications),
+              title: Text('Become Pro'),
               onTap: () {
                 // Navigate to the notifications page
               },
