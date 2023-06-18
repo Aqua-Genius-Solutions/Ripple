@@ -128,6 +128,27 @@ async function getProUser(req, res) {
   }
 }
 
+async function getImage (req, res) {
+  const uid = req.params.uid;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { uid },
+      select: { Image: true },
+    });
+
+    if (user) {
+      res.json({ image: user.Image });
+    } else {
+      res.status(404).json({ message: 'User not found' });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
+
 module.exports = {
   signup,
   getUsers,
@@ -135,4 +156,5 @@ module.exports = {
   getAdminUser,
   getProUser,
   getOne,
+  getImage,
 };
