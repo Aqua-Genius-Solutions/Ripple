@@ -85,3 +85,10 @@ model User {
   News               News[]       @relation("UserLikedNews")
   participatedEvents Events[]     @relation("UserParticipatedEvents")
 }
+
+model Request {
+  id       Int       @id @default(autoincrement()) @unique
+  status   String
+  userId   String 
+  desc     String
+}

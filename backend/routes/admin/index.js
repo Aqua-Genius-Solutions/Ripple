@@ -6,6 +6,7 @@ const eventsController = require("../../controllers/admin/eventsController");
 const newsController = require("../../controllers/admin/newsController");
 const rewardsController = require("../../controllers/admin/rewardsController");
 const usersController = require("../../controllers/admin/usersController");
+const billsController = require("../../controllers/admin/billsController");
 
 // Use authorize middleware
 // router.use(authorize);
@@ -28,7 +29,11 @@ router.post("/rewards", rewardsController.createReward);
 router.put("/rewards/:id", rewardsController.updateReward);
 router.delete("/rewards/:id", rewardsController.deleteReward);
 
+// Routes for Bills
+router.get("/bills", billsController.getBills);
+
 // Routes for Users
+router.get("/users", usersController.getUsers);
 router.put("/users/:id/admin", usersController.setAdminStatus);
 router.put("/users/:id/pro", usersController.setProStatus);
 
