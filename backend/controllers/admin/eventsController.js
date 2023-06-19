@@ -2,7 +2,9 @@ const prisma = require("../../prisma/client");
 
 async function getEvents(req, res) {
   try {
-    const events = await prisma.events.findMany();
+    const events = await prisma.events.findMany({
+      include: { LikedBy: true, participants: true },
+    });
     res.json(events);
   } catch (error) {
     res.status(500).json({ message: "Error fetching events", error });

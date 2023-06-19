@@ -37,4 +37,8 @@ router.get("/users", usersController.getUsers);
 router.put("/users/:id/admin", usersController.setAdminStatus);
 router.put("/users/:id/pro", usersController.setProStatus);
 
+// Routes for Requests
+router.get("/requests", usersController.getProRequests)
+router.put("/requests/:id", usersController.manageProRequest)
+
 module.exports = router;

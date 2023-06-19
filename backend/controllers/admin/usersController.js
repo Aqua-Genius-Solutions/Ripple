@@ -46,6 +46,16 @@ async function setProStatus(req, res) {
   }
 }
 
+async function getProRequests(req, res) {
+  try {
+    const requests = await prisma.request.findMany();
+    res.status(200).json(requests);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "error getting requests", error });
+  }
+}
+
 async function manageProRequest(req, res) {
   const id = req.params.id;
   const state = req.body.state;
@@ -75,4 +85,6 @@ module.exports = {
   setAdminStatus,
   setProStatus,
   getUsers,
+  getProRequests,
+  manageProRequest,
 };
