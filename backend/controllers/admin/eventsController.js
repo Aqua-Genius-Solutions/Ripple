@@ -14,9 +14,17 @@ async function getEvents(req, res) {
 async function createEvent(req, res) {
   try {
     const newEvent = req.body;
-    const createdEvent = await prisma.events.create({ data: newEvent });
+    const createdEvent = await prisma.events.create({
+      data: {
+        ...newEvent,
+        date: new Date(newEvent.date),
+        LikedBy: { connect: [] },
+        participants: { connect: [] },
+      },
+    });
     res.json(createdEvent);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Error creating event", error });
   }
 }
