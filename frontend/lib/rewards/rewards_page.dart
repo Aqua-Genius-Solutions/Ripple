@@ -1,89 +1,31 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:liquid_pull_to_refresh/liquid_pull_to_refresh.dart';
-import 'reward_item_widget.dart';
-import 'animated_dialog.dart';
-import 'water_wave_painter.dart';
-import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import "../classes.dart";
+
 class RewardsPage extends StatefulWidget {
   @override
-  RewardsPageState createState() => RewardsPageState();
+  _RewardPageState createState() => _RewardPageState();
 }
 
-class RewardsPageState extends State<RewardsPage>
-    with SingleTickerProviderStateMixin {
+class RewardsPageState extends State<RewardsPage> with SingleTickerProviderStateMixin {
   int points = 10;
   List<RewardItem> items = [];
 
-  late AnimationController _animationController;
+    if (response.statusCode == 200) {
+      setState(() {
+        rewardData = json.decode(response.body);
+        loading = false;
+      });
+    } else {
+      throw Exception('Failed to load reward data');
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    fetchRewardsFromAPI();
-
-    _animationController = AnimationController(
-      duration: Duration(seconds: 2),
-      vsync: this,
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  Future<void> handleRefresh() async {
-    // Reloading takes some time...
-    return await Future.delayed(Duration(seconds: 2));
-  }
-
-  Future<void> fetchRewardsFromAPI() async {
-  try {
-    final response = await http.get(Uri.parse('https://ripple-4wg9.onrender.com/rewards'));
-    if (response.statusCode == 200) {
-      final List<dynamic> jsonItems = json.decode(response.body);
-      items = jsonItems.map((item) => RewardItem.fromJson(item)).toList();
-      setState(() {});
-    } else {
-      throw Exception('Failed to load rewards from the API');
-    }
-  } catch (e) {
-    print('Error: $e');
-    // You can show an error message to the user or handle it differently here
-  }
-}
-
-  void _showAlert(BuildContext context, String message) {
-    showGeneralDialog(
-      context: context,
-      pageBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation) {
-        return AnimatedDialog(
-          message: message,
-          onOkPressed: () {
-            Navigator.of(context).pop();
-          },
-        );
-      },
-      barrierDismissible: true,
-      barrierLabel: MaterialLocalizations.of(context).modalBarrierDismissLabel,
-      barrierColor: Colors.black.withOpacity(0.5),
-      transitionDuration: Duration(milliseconds: 200),
-      transitionBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation, Widget child) {
-        return FadeTransition(
-          opacity: animation,
-          child: ScaleTransition(
-            scale: animation,
-            child: child,
-          ),
-        );
-      },
-    );
+    fetchRewardData();
   }
 
   @override
@@ -91,70 +33,34 @@ class RewardsPageState extends State<RewardsPage>
     return Scaffold(
       backgroundColor: Color.fromRGBO(246, 246, 246, 1),
       appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: Padding(
-            padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
-            child: IconButton(
-              icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
-          ),
-        ),
-      body: Stack(
-        children: [
-          AnimatedBuilder(
-            animation: _animationController,
-            builder: (BuildContext context, Widget? child) {
-              return CustomPaint(
-                painter: WaterWavePainter(
-                  waveAmplitude: 10,
-                  waveFrequency: 0.01,
-                  wavePhase: _animationController.value * 2 * pi,
-                  waveColor: Color.fromARGB(
-                      255, 0, 133, 241), // Removed the '!' operator
-                ),
-                child: Container(),
-              );
-            },
-          ),
-          LiquidPullToRefresh(
-            onRefresh: handleRefresh,
-            color: Color.fromARGB(255, 13, 184, 231),
-            backgroundColor: Color.fromARGB(255, 255, 251, 2),
-            animSpeedFactor: 2,
-            showChildOpacityTransition: true,
-            child: GridView.builder(
-              padding: EdgeInsets.all(8),
-              itemCount: items.length,
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 8,
-                mainAxisSpacing: 8,
-                childAspectRatio: 0.7,
-              ),
-              itemBuilder: (BuildContext context, int index) {
-                return RewardItemWidget(
-                  rewardItem: items[index],
-                  onTap: () {
-                    var item = items[index];
-                    if (points >= item.price) {
-                      points -= item.price;
-                      _showAlert(context,
-                          'You have successfully redeemed "${item.name}" for ${item.price} points.');
-                    } else {
-                      _showAlert(context,
-                          'Sorry, you do not have enough points to redeem "${item.name}".');
-                    }
-                  },
+        title: Text('Rewards'),
+      ),
+      body: loading
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              itemCount: rewardData.length,
+              itemBuilder: (context, index) {
+                final reward = rewardData[index];
+                return Card(
+                  child: ListTile(
+                    leading: Image.network(
+                      reward['image'],
+                      width: 50,
+                      height: 50,
+                      fit: BoxFit.cover,
+                    ),
+                    title: Text(reward['name']),
+                    subtitle: Text('${reward['price']} points'),
+                    trailing: IconButton(
+                      icon: Icon(Icons.add_shopping_cart),
+                      onPressed: () {
+                        // Add reward item to cart or perform purchase action
+                      },
+                    ),
+                  ),
                 );
               },
             ),
-          ),
-        ],
-      ),
     );
   }
 }
