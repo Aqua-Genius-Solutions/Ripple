@@ -5,11 +5,6 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:namer_app/main.dart';
-
-import 'package:namer_app/main.dart';
-import 'package:http/http.dart' as http;
-import '../profile/profile.dart';
 
 import 'package:namer_app/main.dart';
 import 'package:http/http.dart' as http;
@@ -23,7 +18,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  Map<dynamic, dynamic> user = {"name": "", "surename": ""};
+  Map<dynamic, dynamic> user = {};
   final String apiUrl = dotenv.env["API_URL"]!;
 
   Future<void> login() async {
@@ -69,8 +64,8 @@ class _LoginScreenState extends State<LoginScreen> {
         },
       );
 
-      Navigator.push(context,
-          MaterialPageRoute(builder: (context) => LoginPage()));
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => LoginPage()));
     } on FirebaseAuthException catch (e) {
       // Handle authentication error
       print('Failed to log in: $e');
@@ -95,14 +90,12 @@ class _LoginScreenState extends State<LoginScreen> {
         },
       );
     }
-  Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => LoginPage()), // iii@iiii.ii wawawa
-        );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color.fromRGBO(246, 246, 246, 1),
       appBar: AppBar(
         title: Text('Login'),
       ),
@@ -140,13 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
               SizedBox(height: 16.0),
               // Login Button
               InkResponse(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ProfileScreen()),
-                  );
-                },
+                onTap: login,
                 child: Image.asset(
                   'images/arrow-blue.png',
                   width: 60,

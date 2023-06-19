@@ -190,43 +190,25 @@ class _EventPageState extends State<EventPage>
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage('images/backgroundd.jpg'),
-        ),
-      ),
+      color: Color.fromRGBO(246, 246, 246, 1),
       child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: Padding(
+            padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
+            child: IconButton(
+              icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Container(
-              padding: EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SizedBox(
-                    width: 100.0,
-                    height: 100.0,
-                    child: Image.asset(
-                      'images/bubble2.png',
-                      width: 80.0,
-                      height: 80.0,
-                    ),
-                  ),
-                  SizedBox(
-                    width: 60.0,
-                    height: 60.0,
-                    child: Padding(
-                      padding: EdgeInsets.only(top: 16.0),
-                      child: CircleAvatar(
-                        backgroundImage: AssetImage('images/unnamed.jpg'),
-                        radius: 15.0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            
             AnimatedBuilder(
               animation: _animationController,
               builder: (context, child) {
@@ -344,7 +326,7 @@ class _EventPageState extends State<EventPage>
                                         child: Row(
                                           children: [
                                             Image.asset(
-                                              'images/heart1.png',
+                                              'images/unlike.png',
                                               width: 30.0,
                                               height: 30.0,
                                             ),

@@ -11,7 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  # http: ^1.0.0
+  http: ^1.0.0
   english_words: ^4.0.0
   provider: ^6.0.0
   firebase_auth: ^4.6.3
@@ -26,9 +26,10 @@ dependencies:
   cloudinary_public: ^0.21.0
   awesome_notifications: ^0.7.4+1
   flutter_dotenv: ^5.1.0
-  firebase_core: ^2.14.0
+  firebase_core: ^2.13.1
   firebase_messaging: ^14.6.2
   cloud_firestore: ^4.8.1
+  lottie: ^2.4.0
 
 dev_dependencies:
   flutter_test:
@@ -46,11 +47,11 @@ flutter:
     - images/background.png
     - icons/home-page.png
     - icons/news.png
-    - icons/setting.png
+    - icons/chat.png
     - icons/trophy.png
     - icons/home-page-colored.png
     - icons/news-colored.png
-    - icons/setting-colored.png
+    - icons/chat-colored.png
     - icons/trophy-colored.png
     - images/arrow.png
     - images/phone.png
@@ -77,7 +78,7 @@ flutter:
     - images/tip2.png
     - images/tip3.png
     - images/tip4.png
-    - images/tip5.png
+    - images/tip7.png
     - images/tip6.png
     - images/bag.jpeg
     - images/bin.jpg
@@ -100,4 +101,14 @@ flutter:
     - icons/warn.png
     - icons/check.png
     - images/water.jpg
-    - images/waterC.png
+    - images/consumption.png
+    - images/notification.png
+    - images/eventC.png
+    - images/alarm-clock.png
+    - images/chat.png
+    - images/right-arrow.png
+    - images/down-chevron.png
+    - images/left-chevron.png
+    - images/like.png
+    - images/unlike.png
+    - images/schedule.png
