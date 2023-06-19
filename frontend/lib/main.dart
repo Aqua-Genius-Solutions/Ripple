@@ -314,7 +314,7 @@ class _LoginPageState extends State<LoginPage> {
 
   final List<Widget> _screens = [
     HomePage(),
-    RewardsPage(),
+    RewardPage(),
     NewsList(),
     ChatPage(),
   ];
