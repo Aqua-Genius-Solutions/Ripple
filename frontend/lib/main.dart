@@ -170,7 +170,7 @@ class _WelcomePageState extends State<WelcomePage>
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => EventPage()),
+                    MaterialPageRoute(builder: (context) => LoginPage()),
                   );
                 },
                 child: Padding(
@@ -194,9 +194,9 @@ class _WelcomePageState extends State<WelcomePage>
 }
 
 class LoginPage extends StatefulWidget {
-  final user;
+  // final user;
 
-  LoginPage({required this.user});
+  // LoginPage({required this.user});
   @override
   _LoginPageState createState() => _LoginPageState();
 }
@@ -206,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
 
   final List<Widget> _screens = [
     HomePage(),
-    RewardsPage(),
+    RewardPage(),
     NewsList(),
     LeaderboardPage(),
   ];

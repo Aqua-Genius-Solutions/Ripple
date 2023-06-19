@@ -1,5 +1,4 @@
 // import 'package:flutter/material.dart';
-// import "../classes.dart";
 
 // class RewardItemWidget extends StatelessWidget {
 //   final RewardItem rewardItem;
@@ -20,7 +19,7 @@
 //           children: [
 //             ClipRRect(
 //               borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
-//               child: Image.asset(
+//               child: Image.network( // Use Image.network instead of Image.asset
 //                 rewardItem.imageUrl,
 //                 fit: BoxFit.cover,
 //                 width: double.infinity,
@@ -48,3 +47,18 @@
 //   }
 // }
 
+// class RewardItem {
+//   String name;
+//   String imageUrl;
+//   int price;
+
+//   RewardItem({required this.name, required this.imageUrl, required this.price});
+
+//   factory RewardItem.fromJson(Map<String, dynamic> json) {
+//     return RewardItem(
+//       name: json['name'] as String,
+//       imageUrl: json['imageUrl'] as String,
+//       price: json['price'] as int,
+//     );
+//   }
+// }
