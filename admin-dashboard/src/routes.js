@@ -17,13 +17,14 @@
 */
 import axios from "axios";
 
+import Header from "components/Headers/Header.js";
 import Index from "views/Index.js";
-import Profile from "views/examples/Profile.js";
-import Maps from "views/examples/Maps.js";
+import Rewards from "views/examples/Rewards.js";
+import NewsArticles from "views/examples/NewsArticles";
 import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
-import Tables from "views/examples/Tables.js";
-import Icons from "views/examples/Icons.js";
+import Events from "views/examples/Events";
+import Users from "views/examples/Icons.js";
 
 const usersRequest = await axios.get(`${process.env.REACT_APP_API_URL}/users`);
 const users = usersRequest.data;
@@ -53,58 +54,106 @@ var routes = [
     name: "Dashboard",
     icon: "ni ni-tv-2 text-primary",
     component: (
-      <Index
-        users={users}
-        events={events}
-        newsArticles={newsArticles}
-        bills={bills}
-        paidBills={paidBills}
-        rewards={rewards}
-      />
+      <>
+        <Header
+          events={events.length}
+          newsArticles={newsArticles.length}
+          rewards={rewards.length}
+          bills={bills.length}
+        />
+        <Index
+          users={users}
+          events={events}
+          newsArticles={newsArticles}
+          bills={bills}
+          paidBills={paidBills}
+          rewards={rewards}
+        />
+      </>
     ),
     layout: "/admin",
   },
   {
-    path: "/icons",
-    name: "Icons",
-    icon: "ni ni-planet text-blue",
-    component: <Icons />,
+    path: "/users",
+    name: "Users",
+    icon: "ni ni-circle-08 text-blue",
+    component: (
+      <>
+        <Header
+          events={events.length}
+          newsArticles={newsArticles.length}
+          rewards={rewards.length}
+          bills={bills.length}
+        />
+        <Users />
+      </>
+    ),
     layout: "/admin",
   },
   {
-    path: "/maps",
-    name: "Maps",
-    icon: "ni ni-pin-3 text-orange",
-    component: <Maps />,
+    path: "/news-articles",
+    name: "News Articles",
+    icon: "fas fa-newspaper text-orange",
+    component: (
+      <>
+        <Header
+          events={events.length}
+          newsArticles={newsArticles.length}
+          rewards={rewards.length}
+          bills={bills.length}
+        />
+        <NewsArticles newsArticles={newsArticles} />
+      </>
+    ),
     layout: "/admin",
   },
   {
-    path: "/user-profile",
-    name: "User Profile",
-    icon: "ni ni-single-02 text-yellow",
-    component: <Profile />,
+    path: "/rewards",
+    name: "Rewards",
+    icon: "ni ni-trophy text-yellow",
+    component: (
+      <>
+        <Header
+          events={events.length}
+          newsArticles={newsArticles.length}
+          rewards={rewards.length}
+          bills={bills.length}
+        />
+        <Rewards />
+      </>
+    ),
     layout: "/admin",
   },
   {
-    path: "/tables",
-    name: "Tables",
-    icon: "ni ni-bullet-list-67 text-red",
-    component: <Tables events={events} />,
+    path: "/events",
+    name: "Events",
+    icon: "ni ni-pin-3 text-red",
+    component: (
+      <>
+        <Header
+          events={events.length}
+          newsArticles={newsArticles.length}
+          rewards={rewards.length}
+          bills={bills.length}
+        />
+        <Events events={events} />
+      </>
+    ),
     layout: "/admin",
   },
-  {
-    path: "/login",
-    name: "Login",
-    icon: "ni ni-key-25 text-info",
-    component: <Login />,
-    layout: "/auth",
-  },
-  {
-    path: "/register",
-    name: "Register",
-    icon: "ni ni-circle-08 text-pink",
-    component: <Register />,
-    layout: "/auth",
-  },
+  // {
+  //   path: "/login",
+  //   name: "Login",
+  //   icon: "ni ni-key-25 text-info",
+  //   component: <Login />,
+  //   layout: "/auth",
+  // },
+  // {
+  //   path: "/register",
+  //   name: "Register",
+  //   icon: "ni ni-badge text-pink",
+  //   component: <Register />,
+  //   layout: "/auth",
+  // },
 ];
 export default routes;

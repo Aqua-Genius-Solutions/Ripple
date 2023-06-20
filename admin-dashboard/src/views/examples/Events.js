@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import {
   Card,
@@ -20,22 +20,31 @@ import {
   Button,
 } from "reactstrap";
 
-import Header from "components/Headers/Header.js";
-
-const Tables = ({ events }) => {
+const Tables = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  const [events, setEvents] = useState([]);
+
   const [eventName, setEventName] = useState("");
   const [eventDate, setEventDate] = useState("");
   const [eventLink, setEventLink] = useState("");
   const [eventId, setEventId] = useState(null);
   const [eventImage, setEventImage] = useState("");
 
+  const fetchEvents = async () => {
+    const eventsRequest = await axios.get(
+      `${process.env.REACT_APP_API_URL}/events`
+    );
+    setEvents(eventsRequest.data);
+  };
+
   const deleteEvent = (id) => {
     axios
       .delete(`${process.env.REACT_APP_API_URL}/events/${id}`)
       .then((res) => console.log(res.data))
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => fetchEvents());
   };
 
   const openEditModal = (event) => {
@@ -71,7 +80,8 @@ const Tables = ({ events }) => {
         console.log(res.data);
         setShowModal(false);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => fetchEvents());
   };
 
   const addEvent = () => {
@@ -88,12 +98,16 @@ const Tables = ({ events }) => {
         console.log(res.data);
         setShowAddModal(false);
       })
-      .catch((err) => console.error(err));
+      .catch((err) => console.error(err))
+      .finally(() => fetchEvents());
   };
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
 
   return (
     <>
-      <Header />
       <Container className="mt--7" fluid>
         <Row>
           <div className="col">

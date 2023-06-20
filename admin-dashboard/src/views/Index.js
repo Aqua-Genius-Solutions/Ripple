@@ -64,12 +64,6 @@ const Index = ({ events, newsArticles, bills, paidBills, users, rewards }) => {
 
   return (
     <>
-      <Header
-        events={events.length}
-        newsArticles={newsArticles.length}
-        rewards={rewards.length}
-        bills={bills.length}
-      />
       {/* Page content */}
       <Container className="mt--7" fluid>
         <Row>
