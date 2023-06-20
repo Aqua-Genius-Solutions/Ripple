@@ -72,8 +72,6 @@ class NewsListState extends State<NewsList> {
         final int numLikes = responseData['numLikes'] as int;
         final List<dynamic> userLiked =
             responseData['userLiked'] as List<dynamic>;
-        final List<dynamic> userLiked =
-            responseData['userLiked'] as List<dynamic>;
 
         setState(() {
           // Update the state with the updated number of likes
@@ -144,9 +142,9 @@ class NewsCard extends StatelessWidget {
               padding: EdgeInsets.fromLTRB(16.0, 4.0, 16.0, 12.0),
               child: Text(
                 'By ' +
-                    article["article["author"]"] +
+                    article["author"] +
                     ' ' +
-                    article["article["date"]"].substring(0, 10),
+                    article["date"].substring(0, 10),
                 style: TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ),
@@ -174,14 +172,9 @@ class NewsCard extends StatelessWidget {
 class LikeButton extends StatefulWidget {
   final Map<String, dynamic> article;
   final Function(int) onPressed;
-  final Map<String, dynamic> article;
-  final Function(int) onPressed;
 
   LikeButton({required this.article, required this.onPressed});
-  LikeButton({required this.article, required this.onPressed});
 
-  @override
-  _LikeButtonState createState() => _LikeButtonState(article: article);
   @override
   _LikeButtonState createState() => _LikeButtonState(article: article);
 }
@@ -189,10 +182,7 @@ class LikeButton extends StatefulWidget {
 class _LikeButtonState extends State<LikeButton> {
   final Map<String, dynamic> article;
   late bool _isLiked;
-  final Map<String, dynamic> article;
-  late bool _isLiked;
 
-  _LikeButtonState({required this.article});
   _LikeButtonState({required this.article});
 
   @override
@@ -202,37 +192,7 @@ class _LikeButtonState extends State<LikeButton> {
     _isLiked =
         currentUser != null && article['userLiked'].contains(currentUser.uid);
   }
-  @override
-  void initState() {
-    super.initState();
-    User? currentUser = FirebaseAuth.instance.currentUser;
-    _isLiked =
-        currentUser != null && article['userLiked'].contains(currentUser.uid);
-  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        IconButton(
-          icon: Icon(
-            _isLiked ? Icons.favorite : Icons.favorite_border,
-            color: _isLiked ? Colors.red : null,
-          ),
-          onPressed: () {
-            setState(() {
-              _isLiked = !_isLiked;
-              widget.onPressed(article['id']);
-            });
-          },
-        ),
-        Padding(
-          padding: EdgeInsets.only(left: 8.0),
-          child: Text('${article['likes']}'),
-        ),
-      ],
-    );
-  }
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -257,4 +217,3 @@ class _LikeButtonState extends State<LikeButton> {
     );
   }
 }
-
