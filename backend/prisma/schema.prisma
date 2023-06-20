@@ -19,14 +19,6 @@ model Bill {
   User        User     @relation(fields: [userId], references: [uid])
 }
 
-model Comment {
-  id      Int    @id @default(autoincrement())
-  content String
-  author  String
-  newsId  Int
-  News    News   @relation(fields: [newsId], references: [id])
-}
-
 model CreditCard {
   id      Int      @id @default(autoincrement())
   number  String   @db.VarChar(16)
@@ -54,7 +46,6 @@ model News {
   link        String
   date        DateTime
   image       String
-  Comment     Comment[]
   User        User[]    @relation("UserLikedNews")
 }
 
@@ -84,4 +75,11 @@ model User {
   LikedEvents        Events[]     @relation("UserLikedEvents")
   News               News[]       @relation("UserLikedNews")
   participatedEvents Events[]     @relation("UserParticipatedEvents")
+}
+
+model Request {
+  id       Int       @id @default(autoincrement()) @unique
+  status   String
+  userId   String 
+  desc     String
 }
