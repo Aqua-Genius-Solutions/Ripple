@@ -130,6 +130,7 @@ class NewsCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Image.asset('images/news.jpeg'),
             Padding(
               padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 4.0),
               child: Text(
@@ -140,7 +141,10 @@ class NewsCard extends StatelessWidget {
             Padding(
               padding: EdgeInsets.fromLTRB(16.0, 4.0, 16.0, 12.0),
               child: Text(
-                'By $article["author"], ${article["date"].substring(0, 10)}',
+                'By ' +
+                    article["author"] +
+                    ' ' +
+                    article["date"].substring(0, 10),
                 style: TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ),

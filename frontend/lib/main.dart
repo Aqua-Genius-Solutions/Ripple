@@ -20,6 +20,7 @@ import "chat/chat.dart";
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'settings/settings.dart';
 import 'package:lottie/lottie.dart';
+import 'rewards/rewards_page.dart';
 
 void main() async {
   await dotenv.load();
@@ -226,7 +227,13 @@ class _WelcomePageState extends State<WelcomePage>
                           ? AnimatedOpacity(
                               opacity: firstPress ? 1.0 : 0.0,
                               duration: Duration(milliseconds: 1500),
-                              child: Text("Slogan hh"),
+                              child: Text(
+                                " Water is a panacea, wasting is a bad idea 🚰 ",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             )
                           : AnimatedOpacity(
                               opacity: firstPress ? 0.0 : 1.0,

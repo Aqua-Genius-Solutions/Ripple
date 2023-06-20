@@ -7,6 +7,7 @@ import 'package:namer_app/consumption/consumption.dart';
 import 'package:namer_app/payment/bills.dart';
 import 'package:namer_app/profile/profile.dart';
 import "../classes.dart";
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -17,7 +18,16 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 class _HomePageState extends State<HomePage> {
   List<Event> events = [];
+  Map<dynamic, dynamic> user = {};
   final String apiUrl = dotenv.env["API_URL"]!;
+  String? uid = FirebaseAuth.instance.currentUser?.uid;
+  Future<void> getUser() async {
+    final response = await http.get(Uri.parse('$apiUrl/auth/getOne/$uid'));
+
+    setState(() {
+      user = jsonDecode(response.body);
+    });
+  }
 
   Future<void> fetchData() async {
     try {
@@ -49,12 +59,12 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     fetchData();
+    getUser();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -70,10 +80,11 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           children: [
             UserAccountsDrawerHeader(
-              accountName: Text('User Name'),
-              accountEmail: Text('user@example.com'),
+              accountName: Text("${user['name'] ?? ""}"),
+              accountEmail: Text('${user['email'] ?? ""}'),
               currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage('images/user_avatar.jpg'),
+                backgroundImage: NetworkImage(user['Image'] ?? ""),
+                radius: 50, // Adjust the radius as per your requirement
               ),
             ),
             ListTile(
@@ -84,12 +95,13 @@ class _HomePageState extends State<HomePage> {
               },
             ),
             ListTile(
-              leading: Icon(Icons.notifications),
+              leading: Icon(Icons.star),
               title: Text('Become Pro'),
               onTap: () {
                 // Navigate to the notifications page
               },
             ),
+            Expanded(child: SizedBox()),
             ListTile(
               leading: Icon(Icons.logout),
               title: Text('Logout'),
@@ -231,10 +243,11 @@ class _HomePageState extends State<HomePage> {
             children: [
               Center(
                 child: Text(
-                  'OUR LATEST EVENTS',
+                  ' ✧ OUR LATEST EVENTS ✧',
                   style: TextStyle(
-                    fontWeight: FontWeight.w300,
+                    // fontWeight: FontWeight.w300,
                     fontSize: 26.0,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
