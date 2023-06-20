@@ -20,6 +20,7 @@ import "chat/chat.dart";
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'settings/settings.dart';
 import 'package:lottie/lottie.dart';
+import 'rewards/rewards_page.dart';
 
 void main() async {
   await dotenv.load();
