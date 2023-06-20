@@ -128,7 +128,7 @@ async function getProUser(req, res) {
   }
 }
 
-async function getImage (req, res) {
+async function getImage(req, res) {
   const uid = req.params.uid;
 
   try {
@@ -140,14 +140,27 @@ async function getImage (req, res) {
     if (user) {
       res.json({ image: user.Image });
     } else {
-      res.status(404).json({ message: 'User not found' });
+      res.status(404).json({ message: "User not found" });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ message: "Internal server error" });
   }
 }
 
+async function createNewRequest(req, res) {
+  const uid = req.params.uid;
+  const desc = req.body.desc;
+  try {
+    await prisma.request.create({
+      userId: uid,
+      status: "pending",
+      desc,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "error creating request", error });
+  }
+}
 
 module.exports = {
   signup,
@@ -157,4 +170,5 @@ module.exports = {
   getProUser,
   getOne,
   getImage,
+  createNewRequest,
 };

@@ -1,16 +1,20 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
-class RewardsPage extends StatefulWidget {
+class RewardPage extends StatefulWidget {
   @override
   _RewardPageState createState() => _RewardPageState();
 }
 
-class RewardsPageState extends State<RewardsPage> with SingleTickerProviderStateMixin {
-  int points = 10;
-  List<RewardItem> items = [];
+class _RewardPageState extends State<RewardPage> {
+  late List<dynamic> rewardData = [];
+  bool loading = true;
+
+  Future<void> fetchRewardData() async {
+    String apiUrl =
+        'https://aca2-41-225-237-233.ngrok-free.app/erewards'; // Replace with your API URL
+    final response = await http.get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -31,7 +35,6 @@ class RewardsPageState extends State<RewardsPage> with SingleTickerProviderState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(246, 246, 246, 1),
       appBar: AppBar(
         title: Text('Rewards'),
       ),

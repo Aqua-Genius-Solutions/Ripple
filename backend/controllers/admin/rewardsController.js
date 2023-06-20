@@ -15,6 +15,7 @@ async function createReward(req, res) {
     const createdRewards = await prisma.rewards.create({ data: newRewards });
     res.json(createdRewards);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Error creating reward", error });
   }
 }

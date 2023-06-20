@@ -2,7 +2,7 @@ const prisma = require("../../prisma/client");
 
 async function getNews(req, res) {
   try {
-    const news = await prisma.news.findMany();
+    const news = await prisma.news.findMany({ include: { User: true } });
     res.json(news);
   } catch (error) {
     res.status(500).json({ message: "Error fetching news", error });
@@ -41,6 +41,7 @@ async function deleteNews(req, res) {
     });
     res.json(deletedNews);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Error deleting news", error });
   }
 }

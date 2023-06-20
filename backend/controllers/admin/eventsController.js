@@ -2,7 +2,9 @@ const prisma = require("../../prisma/client");
 
 async function getEvents(req, res) {
   try {
-    const events = await prisma.events.findMany();
+    const events = await prisma.events.findMany({
+      include: { LikedBy: true, participants: true },
+    });
     res.json(events);
   } catch (error) {
     res.status(500).json({ message: "Error fetching events", error });
@@ -12,9 +14,17 @@ async function getEvents(req, res) {
 async function createEvent(req, res) {
   try {
     const newEvent = req.body;
-    const createdEvent = await prisma.events.create({ data: newEvent });
+    const createdEvent = await prisma.events.create({
+      data: {
+        ...newEvent,
+        date: new Date(newEvent.date),
+        LikedBy: { connect: [] },
+        participants: { connect: [] },
+      },
+    });
     res.json(createdEvent);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Error creating event", error });
   }
 }

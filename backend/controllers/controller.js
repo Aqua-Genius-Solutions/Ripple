@@ -11,6 +11,7 @@ const getUsers = async (req, res) => {
       CreditCard: true,
     },
   });
+  console.log(users.length);
   res.json(users);
 };
 
