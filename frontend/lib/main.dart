@@ -56,11 +56,24 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
 
   bool firstPress = false;
 
+  void _navigateToWelcomePage() {
+    Navigator.push(
+        context,
+        SlidePageRoute(
+          builder: (context) => WelcomePage(),
+        ));
+  }
+
   @override
   void initState() {
     super.initState();
     _controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 700));
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _navigateToWelcomePage();
+      }
+    });
 
     _firebaseMessaging.getToken().then((token) {
       print('FCM Token: $token');
@@ -106,10 +119,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
               controller: _controller, onLoaded: (compos) {
             _controller
               ..duration = Duration(milliseconds: 4000)
-              ..forward().then((value) {
-                Navigator.push(context,
-                    SlidePageRoute(builder: (context) => WelcomePage()));
-              });
+              ..forward();
           }),
         ),
       ),
@@ -145,7 +155,7 @@ class _WelcomePageState extends State<WelcomePage>
     _animationController.addStatusListener((status) {
       if (status == AnimationStatus.completed) {
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => SignInScreen()));
+            context, SlidePageRoute(builder: (context) => SignInScreen()));
       }
     });
   }
@@ -159,7 +169,7 @@ class _WelcomePageState extends State<WelcomePage>
   void _startAnimation() {
     if (user != null) {
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
+          context, SlidePageRoute(builder: (context) => LoginPage()));
     }
     setState(() {
       firstPress = true;
@@ -191,23 +201,29 @@ class _WelcomePageState extends State<WelcomePage>
                 position: _slideAnimation,
                 child: Stack(
                   children: [
-                    ClipRRect(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(100),
-                        bottomRight: Radius.circular(100),
-                      ),
-                      child: Container(
-                        width: 320,
-                        height: 320,
-                        color: Color.fromRGBO(237, 237, 237, 1),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(100),
+                          bottomRight: Radius.circular(100),
+                        ),
+                        child: Container(
+                          width: 270,
+                          height: 290,
+                          color: Color.fromRGBO(237, 237, 237, 1),
+                        ),
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(top: 50.0),
-                      child: Image.asset(
-                        'images/rip2.png',
-                        width: 300,
-                        height: 300,
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 12.0),
+                        child: Image.asset(
+                          'images/rip2.png',
+                          width: 320,
+                          height: 320,
+                        ),
                       ),
                     ),
                   ],
@@ -261,7 +277,7 @@ class _WelcomePageState extends State<WelcomePage>
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(
+                              SlidePageRoute(
                                   builder: (context) => LoginScreen()));
                         },
                         style: ElevatedButton.styleFrom(
@@ -278,7 +294,7 @@ class _WelcomePageState extends State<WelcomePage>
                         onPressed: () {
                           Navigator.push(
                               context,
-                              MaterialPageRoute(
+                              SlidePageRoute(
                                   builder: (context) => SignInScreen()));
                         },
                         style: ElevatedButton.styleFrom(
@@ -323,19 +339,19 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromRGBO(246, 246, 246, 1),
-        elevation: 0,
-        leading: Padding(
-          padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
-          child: IconButton(
-            icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          ),
-        ),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Color.fromRGBO(246, 246, 246, 1),
+      //   elevation: 0,
+      //   leading: Padding(
+      //     padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
+      //     child: IconButton(
+      //       icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
+      //       onPressed: () {
+      //         Navigator.pop(context);
+      //       },
+      //     ),
+      //   ),
+      // ),
       body: Stack(
         children: [
           _screens[_currentIndex],

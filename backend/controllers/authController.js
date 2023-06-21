@@ -56,7 +56,7 @@ const signup = async (req, res) => {
         address: "",
         isPro: false,
         Referrals: [],
-        Bubbles: 0,
+        Bubbles: 10,
         Image: "",
         isAdmin: false,
         Bill: { connect: [] },

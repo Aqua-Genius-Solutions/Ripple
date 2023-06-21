@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:namer_app/payment/pay_bill.dart';
 
 import '../classes.dart';
+import '../slide_transition.dart';
 
 class BillsScreen extends StatefulWidget {
   @override
@@ -176,7 +177,7 @@ class _BillsScreenState extends State<BillsScreen> {
                                     : () {
                                         Navigator.push(
                                             context,
-                                            MaterialPageRoute(
+                                            SlidePageRoute(
                                                 builder: (context) =>
                                                     PaymentScreen(
                                                         user: user,

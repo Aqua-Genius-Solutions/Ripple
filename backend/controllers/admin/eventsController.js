@@ -1,3 +1,4 @@
+const { sendEventNotification } = require("../../Notifications/events");
 const prisma = require("../../prisma/client");
 
 async function getEvents(req, res) {
@@ -22,6 +23,7 @@ async function createEvent(req, res) {
         participants: { connect: [] },
       },
     });
+    sendEventNotification(createdEvent);
     res.json(createdEvent);
   } catch (error) {
     console.log(error);
