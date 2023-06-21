@@ -6,11 +6,12 @@ const getUsers = async (req, res) => {
     where: { email },
     include: {
       LikedEvents: true,
-      LikedNews: true,
-      bills: true,
-      creditCards: true,
+      News: true,
+      Bill: true,
+      CreditCard: true,
     },
   });
+  console.log(users.length);
   res.json(users);
 };
 

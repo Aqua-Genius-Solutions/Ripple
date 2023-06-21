@@ -12,12 +12,13 @@ const paymentRouter = require("./routes/paymentRoute");
 const rewardRouter = require("./routes/rewardRoute");
 const billRouter = require("./routes/bill");
 const profileRouter = require("./routes/profileRoute");
+const adminRouter = require("./routes/admin/index");
 
 const app = express();
 
 app.use(bodyParser.json());
-app.use(cors());
 app.use(morgan("dev"));
+app.use(cors());
 
 app.use("/users", userRouter);
 app.use("/events", eventRouter);
@@ -27,13 +28,14 @@ app.use("/payment", paymentRouter);
 app.use("/rewards", rewardRouter);
 app.use("/stat", billRouter);
 app.use("/profile", profileRouter);
+app.use("/admin", adminRouter);
 
 app.put("/:id", async (req, res) => {
-  const id = req.params.id;
+  const uid = req.params.id;
   try {
-    await prisma.bill.update({
-      where: { id: Number(id) },
-      data: { paid: true },
+    await prisma.user.update({
+      where: { uid },
+      data: { isPro: true },
     });
     res.json(await prisma.bill.findFirst({ where: { id: Number(id) } }));
   } catch (error) {
@@ -41,6 +43,6 @@ app.put("/:id", async (req, res) => {
   }
 });
 
-app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
+app.listen(3001, () => {
+  console.log("Server is running on http://localhost:3001");
 });

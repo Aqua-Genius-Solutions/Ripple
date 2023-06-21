@@ -17,9 +17,9 @@ const getOne = async (req, res) => {
       where: { uid },
       include: {
         LikedEvents: true,
-        LikedNews: true,
-        bills: true,
-        creditCards: true,
+        News: true,
+        Bill: true,
+        CreditCard: true,
       },
     });
     res.status(200).json(users);
@@ -59,10 +59,10 @@ const signup = async (req, res) => {
         Bubbles: 0,
         Image: "",
         isAdmin: false,
-        bills: { connect: [] },
-        creditCards: { connect: [] },
+        Bill: { connect: [] },
+        CreditCard: { connect: [] },
         LikedEvents: { connect: [] },
-        LikedNews: { connect: [] },
+        News: { connect: [] },
       },
     });
 
@@ -128,6 +128,40 @@ async function getProUser(req, res) {
   }
 }
 
+async function getImage(req, res) {
+  const uid = req.params.uid;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: { uid },
+      select: { Image: true },
+    });
+
+    if (user) {
+      res.json({ image: user.Image });
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+async function createNewRequest(req, res) {
+  const uid = req.params.uid;
+  const desc = req.body.desc;
+  try {
+    await prisma.request.create({
+      userId: uid,
+      status: "pending",
+      desc,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "error creating request", error });
+  }
+}
+
 module.exports = {
   signup,
   getUsers,
@@ -135,4 +169,6 @@ module.exports = {
   getAdminUser,
   getProUser,
   getOne,
+  getImage,
+  createNewRequest,
 };

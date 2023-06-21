@@ -6,12 +6,13 @@ import 'package:namer_app/auth/login.dart';
 import 'package:namer_app/events/events.dart';
 import 'package:namer_app/auth/signup.dart';
 import 'package:namer_app/news/news.dart';
+
 import 'package:namer_app/profile/profile.dart';
+import 'package:namer_app/slide_transition.dart';
 import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
-import 'home/home.dart';
+import 'Home/home.dart';
 import 'payment/bills.dart';
-import 'auth/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'rewards/rewards_page.dart';
@@ -19,7 +20,7 @@ import "chat/chat.dart";
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'settings/settings.dart';
 import 'package:lottie/lottie.dart';
-import 'news/news.dart';
+import 'rewards/rewards_page.dart';
 
 void main() async {
   await dotenv.load();
@@ -88,28 +89,30 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [
-                Color.fromARGB(176, 4, 67, 144),
-                Color.fromARGB(176, 111, 176, 255),
-                Color.fromARGB(176, 129, 222, 248),
-              ],
-            ),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color.fromARGB(200, 129, 222, 248),
+              Color.fromARGB(200, 111, 176, 255),
+              Color.fromARGB(200, 4, 67, 144),
+            ],
           ),
-          child: Center(
-              child: Lottie.network(
-                  "https://assets6.lottiefiles.com/packages/lf20_12G4mZ.json",
-                  controller: _controller, onLoaded: (compos) {
+        ),
+        child: Center(
+          child: Lottie.network(
+              "https://assets6.lottiefiles.com/packages/lf20_12G4mZ.json",
+              controller: _controller, onLoaded: (compos) {
             _controller
               ..duration = Duration(milliseconds: 4000)
               ..forward().then((value) {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => WelcomePage()));
+                    SlidePageRoute(builder: (context) => WelcomePage()));
               });
-          }))),
+          }),
+        ),
+      ),
     );
   }
 }
@@ -225,7 +228,13 @@ class _WelcomePageState extends State<WelcomePage>
                           ? AnimatedOpacity(
                               opacity: firstPress ? 1.0 : 0.0,
                               duration: Duration(milliseconds: 1500),
-                              child: Text("Slogan hh"),
+                              child: Text(
+                                " Water is a panacea, wasting is a bad idea 🚰 ",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             )
                           : AnimatedOpacity(
                               opacity: firstPress ? 0.0 : 1.0,
@@ -307,7 +316,7 @@ class _LoginPageState extends State<LoginPage> {
 
   final List<Widget> _screens = [
     HomePage(),
-    RewardsPage(),
+    RewardPage(),
     NewsList(),
     ChatPage(),
   ];
@@ -315,18 +324,18 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:Color.fromRGBO(246, 246, 246, 1),
-          elevation: 0,
-          leading: Padding(
-            padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
-            child: IconButton(
-              icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
+        backgroundColor: Color.fromRGBO(246, 246, 246, 1),
+        elevation: 0,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
+          child: IconButton(
+            icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ),
+      ),
       body: Stack(
         children: [
           _screens[_currentIndex],

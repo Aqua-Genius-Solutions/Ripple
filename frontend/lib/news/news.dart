@@ -35,6 +35,7 @@ class NewsListState extends State<NewsList> {
                 'date': article['date'] ?? '',
                 'author': article['author'] ?? '',
                 'likes': article['likes'] ?? 0,
+                'userLiked': List<String>.from(article['userLiked'] ?? []),
               };
             }).toList();
           });
@@ -56,26 +57,31 @@ class NewsListState extends State<NewsList> {
       return;
     }
 
+    Map<String, dynamic> article = newsArticles[articleId - 1];
+    final alreadyLiked = article['userLiked'].contains(currentUser.uid);
+
     try {
       final response = await http.put(
         Uri.parse('$apiUrl/news/$articleId/like/${currentUser.uid}'),
         headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'like': !alreadyLiked}),
       );
 
       if (response.statusCode == 200) {
         final dynamic responseData = json.decode(response.body);
         final int numLikes = responseData['numLikes'] as int;
+        final List<dynamic> userLiked =
+            responseData['userLiked'] as List<dynamic>;
 
         setState(() {
           // Update the state with the updated number of likes
-          Map<String, dynamic> article = newsArticles[articleId - 1];
-
           Map<String, dynamic> updatedArticle = {
             'id': article['id'],
             'title': article['title'],
             'date': article['date'],
             'author': article['author'],
             'likes': numLikes,
+            'userLiked': userLiked.map((id) => id.toString()).toList(),
           };
 
           newsArticles[articleId - 1] = updatedArticle;
@@ -95,11 +101,7 @@ class NewsListState extends State<NewsList> {
       itemBuilder: (context, index) {
         final article = newsArticles[index];
         return NewsCard(
-          id: article['id'],
-          title: article['title'],
-          date: article['date'],
-          author: article['author'],
-          likes: article['likes'],
+          article: article,
           likeFunction: likeNewsArticle,
         );
       },
@@ -108,19 +110,11 @@ class NewsListState extends State<NewsList> {
 }
 
 class NewsCard extends StatelessWidget {
-  final int id;
-  final String title;
-  final String date;
-  final String author;
-  final int likes;
+  final Map<String, dynamic> article;
   final Function(int) likeFunction;
 
   NewsCard({
-    required this.id,
-    required this.title,
-    required this.date,
-    required this.author,
-    required this.likes,
+    required this.article,
     required this.likeFunction,
   });
 
@@ -136,17 +130,21 @@ class NewsCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Image.asset('images/news.jpeg'),
             Padding(
               padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 4.0),
               child: Text(
-                title,
+                article['title'],
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
               ),
             ),
             Padding(
               padding: EdgeInsets.fromLTRB(16.0, 4.0, 16.0, 12.0),
               child: Text(
-                'By $author, ${date.substring(0, 10)}',
+                'By ' +
+                    article["author"] +
+                    ' ' +
+                    article["date"].substring(0, 10),
                 style: TextStyle(color: Colors.grey, fontSize: 14),
               ),
             ),
@@ -155,8 +153,8 @@ class NewsCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 LikeButton(
-                  likes: likes,
-                  onPressed: () => likeFunction(id),
+                  article: article,
+                  onPressed: likeFunction,
                 ),
                 IconButton(
                   icon: Icon(Icons.comment),
@@ -170,18 +168,30 @@ class NewsCard extends StatelessWidget {
     );
   }
 }
-class LikeButton extends StatefulWidget {
-  final int likes;
-  final VoidCallback onPressed;
 
-  LikeButton({required this.likes, required this.onPressed});
+class LikeButton extends StatefulWidget {
+  final Map<String, dynamic> article;
+  final Function(int) onPressed;
+
+  LikeButton({required this.article, required this.onPressed});
 
   @override
-  _LikeButtonState createState() => _LikeButtonState();
+  _LikeButtonState createState() => _LikeButtonState(article: article);
 }
 
 class _LikeButtonState extends State<LikeButton> {
-  bool _isLiked = false;
+  final Map<String, dynamic> article;
+  late bool _isLiked;
+
+  _LikeButtonState({required this.article});
+
+  @override
+  void initState() {
+    super.initState();
+    User? currentUser = FirebaseAuth.instance.currentUser;
+    _isLiked =
+        currentUser != null && article['userLiked'].contains(currentUser.uid);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -195,16 +205,13 @@ class _LikeButtonState extends State<LikeButton> {
           onPressed: () {
             setState(() {
               _isLiked = !_isLiked;
-
-              if (_isLiked) {
-                widget.onPressed();
-              }
+              widget.onPressed(article['id']);
             });
           },
         ),
         Padding(
           padding: EdgeInsets.only(left: 8.0),
-          child: Text('${widget.likes}'),
+          child: Text('${article['likes']}'),
         ),
       ],
     );

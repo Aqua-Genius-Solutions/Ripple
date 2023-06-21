@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
@@ -15,6 +16,7 @@ class _ChatPageState extends State<ChatPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Map<dynamic, dynamic>? _currentUser;
   bool _isProUser = false;
+  final String? apiUrl = dotenv.env["API_URL"];
 
   @override
   void initState() {
@@ -24,8 +26,8 @@ class _ChatPageState extends State<ChatPage> {
 
   Future<void> getCurrentUser() async {
     final User? user = _auth.currentUser;
-    final response = await http.get(Uri.parse(
-        'https://8151-41-225-237-233.ngrok-free.app/auth/getOne/${user?.uid}'));
+    final response =
+        await http.get(Uri.parse('$apiUrl/auth/getOne/${user?.uid}'));
 
     print("response received : ${response.body}");
     setState(() {
@@ -69,8 +71,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget build(BuildContext context) {
     if (!_isProUser) {
       return Scaffold(
-        backgroundColor:
-        Color.fromRGBO(246, 246, 246, 1), 
+        backgroundColor: Color.fromRGBO(246, 246, 246, 1),
         body: Center(
           child: Text(
             'You need to be a Pro user to access the chat.',
