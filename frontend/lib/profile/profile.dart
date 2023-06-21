@@ -11,6 +11,8 @@ import 'package:namer_app/consumption/consumption.dart';
 import 'package:namer_app/payment/bills.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../slide_transition.dart';
+
 class ProfileScreen extends StatefulWidget {
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -224,18 +226,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       backgroundColor: Color.fromRGBO(246, 246, 246, 1),
       appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: Padding(
-            padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
-            child: IconButton(
-              icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
+          child: IconButton(
+            icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ),
+      ),
       body: DefaultTabController(
         length: 3,
         child: Column(
@@ -465,7 +467,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     onPressed: () {
                       Navigator.push(
                           context,
-                          MaterialPageRoute(
+                          SlidePageRoute(
                               builder: (context) => BarChartWidget()));
                     },
                     child: Text('Stats'),
@@ -474,10 +476,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Expanded(
                   child: TextButton(
                     onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BillsScreen()));
+                      Navigator.push(context,
+                          SlidePageRoute(builder: (context) => BillsScreen()));
                     },
                     child: Text('Payment'),
                   ),

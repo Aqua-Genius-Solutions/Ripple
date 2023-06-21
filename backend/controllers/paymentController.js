@@ -60,24 +60,34 @@ const pay = async (req, res) => {
     const creditCard = await prisma.creditCard.findFirst({
       where: { id: cId },
     });
-    console.log(creditCard);
+
     if (!bill || !creditCard) {
       return res.status(404).json({ error: "Bill or credit card not found" });
     }
     if (creditCard.balance < bill.price) {
       return res.status(400).json({ error: "Insufficient funds" });
     }
+
     const newBalance = Math.floor(creditCard.balance - bill.price);
-    const updatedCreditCard = await prisma.creditCard.update({
+
+    // Update balance
+    await prisma.creditCard.update({
       where: { id: cId },
       data: { balance: newBalance },
     });
-    console.log("credit card updated:", updatedCreditCard);
+
+    // Update paid status
     await prisma.bill.update({
       where: { id: bId },
       data: { paid: true },
     });
-    console.log("bill paid");
+
+    // Update bubbles
+    await prisma.user.update({
+      where: { uid: bill.userId },
+      data: { Bubbles: { increment: bill.price } },
+    }); 
+
     res.status(200).json("Bill paid successfully");
   } catch (error) {
     console.error("Error paying bill:", error);
