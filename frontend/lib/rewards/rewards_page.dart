@@ -8,9 +8,12 @@ class RewardPage extends StatefulWidget {
   _RewardPageState createState() => _RewardPageState();
 }
 
-class RewardsPageState extends State<RewardsPage> with SingleTickerProviderStateMixin {
-  int points = 10;
-  List<RewardItem> items = [];
+class _RewardPageState extends State<RewardPage> {
+  late List<dynamic> rewardData = [];
+  bool loading = true;
+  final String apiUrl = dotenv.env["API_URL"]!;
+  Future<void> fetchRewardData() async {
+    final response = await http.get(Uri.parse('$apiUrl/rewards'));
 
     if (response.statusCode == 200) {
       setState(() {
