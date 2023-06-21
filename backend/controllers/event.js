@@ -92,6 +92,13 @@ async function participateInEvent(req, res) {
         data: { participants: { connect: { uid: userId.toString() } } },
       });
       console.log(updatedEventPar);
+
+      // Update bubbles
+      await prisma.user.update({
+        where: { uid: bill.userId },
+        data: { Bubbles: { increment: bill.price } },
+      });
+      
       const numParticipants = event.participants
         ? event.participants.length + 1
         : 1;
