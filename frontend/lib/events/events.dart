@@ -104,18 +104,19 @@ class _EventPageState extends State<EventPage>
         print(numLikes);
 
         setState(() {
-          Event event = events[eventId - 1];
-
-          Event updatedEvent = Event(
-            id: event.id,
-            title: event.title,
-            date: event.date,
-            participants: event.participants,
-            likedBy: numLikes,
-            image: event.image,
-          );
-
-          events[eventId - 1] = updatedEvent;
+          events = events.map((event) {
+            if (event.id == eventId) {
+              return Event(
+                id: event.id,
+                title: event.title,
+                date: event.date,
+                participants: event.participants,
+                likedBy: numLikes,
+                image: event.image,
+              );
+            }
+            return event;
+          }).toList();
         });
 
         print(message);
@@ -161,9 +162,9 @@ class _EventPageState extends State<EventPage>
             );
 
             events[eventId - 1] = updatedEvent;
-            print("Dis-participated in event successfully");
+            print("Dis-participated from event successfully");
           } else if (message == "Participated in event successfully") {
-            // Handle participate behavior
+            // Handle participate behavior$
             Event updatedEvent = Event(
               id: event.id,
               title: event.title,
@@ -198,7 +199,8 @@ class _EventPageState extends State<EventPage>
           leading: Padding(
             padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
             child: IconButton(
-              icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
+              icon:
+                  Image.asset('images/left-chevron.png', height: 50, width: 60),
               onPressed: () {
                 Navigator.pop(context);
               },
@@ -208,7 +210,6 @@ class _EventPageState extends State<EventPage>
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            
             AnimatedBuilder(
               animation: _animationController,
               builder: (context, child) {

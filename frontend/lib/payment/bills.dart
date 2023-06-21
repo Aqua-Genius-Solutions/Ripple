@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:namer_app/payment/pay_bill.dart';
 
 import '../classes.dart';
+import '../slide_transition.dart';
 
 class BillsScreen extends StatefulWidget {
   @override
@@ -54,20 +55,20 @@ class _BillsScreenState extends State<BillsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       appBar: AppBar(
-  backgroundColor: Colors.transparent,
-  elevation: 0,
-  leading: Padding(
-    padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
-    child: IconButton(
-      icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    ),
-  ),
-),
-      backgroundColor:Color.fromRGBO(246, 246, 246, 1),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
+          child: IconButton(
+            icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+      ),
+      backgroundColor: Color.fromRGBO(246, 246, 246, 1),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.fromLTRB(16, 30, 16, 0),
@@ -176,7 +177,7 @@ class _BillsScreenState extends State<BillsScreen> {
                                     : () {
                                         Navigator.push(
                                             context,
-                                            MaterialPageRoute(
+                                            SlidePageRoute(
                                                 builder: (context) =>
                                                     PaymentScreen(
                                                         user: user,
@@ -189,7 +190,7 @@ class _BillsScreenState extends State<BillsScreen> {
                                         '${bill.price.toStringAsFixed(2)} TND',
                                         style: TextStyle(
                                           color: Colors.white,
-                                          fontSize: 12,
+                                          fontSize: 10,
                                         ),
                                       ),
                                     ],

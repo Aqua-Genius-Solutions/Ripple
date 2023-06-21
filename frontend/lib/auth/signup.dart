@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
+import '../slide_transition.dart';
 import 'profile_creation.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
@@ -77,7 +78,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 onPressed: () {
                   Navigator.push(
                       context,
-                      MaterialPageRoute(
+                      SlidePageRoute(
                           builder: (context) =>
                               CreateProfileScreen(name: name)));
                 },

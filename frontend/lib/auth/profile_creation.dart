@@ -10,6 +10,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import '../slide_transition.dart';
+
 class CreateProfileScreen extends StatefulWidget {
   final String name;
 
@@ -94,7 +96,7 @@ class _CreateProfileState extends State<CreateProfileScreen> {
 
         print(responseData);
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => LoginPage()));
+            context, SlidePageRoute(builder: (context) => LoginPage()));
       } else {
         // Error handling for Prisma backend request
         print('Prisma backend request failed with status: ${response.body}');
