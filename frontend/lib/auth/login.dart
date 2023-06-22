@@ -5,10 +5,12 @@ import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:namer_app/auth/signup.dart';
 
 import 'package:namer_app/main.dart';
 import 'package:http/http.dart' as http;
 import '../profile/profile.dart';
+import '../slide_transition.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -20,6 +22,13 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController passwordController = TextEditingController();
   Map<dynamic, dynamic> user = {};
   final String apiUrl = dotenv.env["API_URL"]!;
+
+  void onSignUpPressed() {
+    Navigator.push(
+      context,
+      SlidePageRoute(builder: (context) => SignInScreen()), //
+    );
+  }
 
   Future<void> login() async {
     String email = emailController.text.trim();
@@ -65,7 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
       );
 
       Navigator.push(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
+          context, SlidePageRoute(builder: (context) => LoginPage()));
     } on FirebaseAuthException catch (e) {
       // Handle authentication error
       print('Failed to log in: $e');
@@ -95,55 +104,79 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromRGBO(246, 246, 246, 1),
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Logo
-              Image.asset(
-                'images/rip2.png',
-                width: 210,
-                height: 210,
+      body: Stack(children: [
+        Image.asset(
+          'images/bg.png', // Replace with your image asset path
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          fit: BoxFit.cover,
+        ),
+        Align(
+          alignment: Alignment.topCenter,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(16.0, 0, 16, 0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Logo
+                  Image.asset(
+                    'images/rip2.png',
+                    width: 270,
+                    height: 270,
+                  ),
+                  SizedBox(height: 8.0),
+                  // Email Input
+                  TextField(
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  SizedBox(height: 8.0),
+                  // Password Input
+                  TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  SizedBox(height: 16.0),
+                  // Login Button
+                  Positioned(
+                    left: 20,
+                    child: InkWell(
+                      onTap: onSignUpPressed,
+                      child: Text(
+                        "Don't have an account? Sign up now!",
+                        style: TextStyle(
+                          color: Theme.of(context).primaryColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  )
+                ],
               ),
-              SizedBox(height: 16.0),
-              // Email Input
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 8.0),
-              // Password Input
-              TextField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 16.0),
-              // Login Button
-              InkResponse(
-                onTap: login,
-                child: Image.asset(
-                  'images/arrow-blue.png',
-                  width: 60,
-                  height: 60,
-                ),
-              ),
-            ],
+            ),
           ),
         ),
-      ),
+        Positioned(
+          right: 30,
+          bottom: 30,
+          child: InkResponse(
+            onTap: login,
+            child: Image.asset(
+              'images/arrow-blue.png',
+              width: 55,
+              height: 55,
+            ),
+          ),
+        ),
+      ]),
     );
   }
 }
