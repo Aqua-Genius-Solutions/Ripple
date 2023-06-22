@@ -31,11 +31,13 @@ class _EventPageState extends State<EventPage>
     super.initState();
     _opacityAnimation =
         Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
-    _slideAnimation = Tween<Offset>(begin: Offset(0.0, 0.5), end: Offset.zero)
-        .animate(CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOut,
-    ));
+    _slideAnimation =
+        Tween<Offset>(begin: Offset(0.0, 0.5), end: Offset.zero).animate(
+      CurvedAnimation(
+        parent: _animationController,
+        curve: Curves.easeOut,
+      ),
+    );
     fetchData();
   }
 
@@ -163,7 +165,7 @@ class _EventPageState extends State<EventPage>
             events[eventId - 1] = updatedEvent;
             print("Dis-participated from event successfully");
           } else if (message == "Participated in event successfully") {
-            // Handle participate behavior$
+            // Handle participate behavior
             Event updatedEvent = Event(
               id: event.id,
               title: event.title,
@@ -189,180 +191,266 @@ class _EventPageState extends State<EventPage>
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Color.fromRGBO(246, 246, 246, 1),
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: Padding(
-            padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
-            child: IconButton(
-              icon:
-                  Image.asset('images/left-chevron.png', height: 50, width: 60),
-              onPressed: () {
-                Navigator.pop(context);
-              },
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
+          child: IconButton(
+            icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) {
-                return Opacity(
-                  opacity: _opacityAnimation.value,
-                  child: SlideTransition(
-                    position: _slideAnimation,
-                    child: Column(
-                      children: [
-                        Center(
-                          child: Text(
-                            'Events you might like',
-                            style: TextStyle(
-                              fontWeight: FontWeight.w300,
-                              fontSize: 26.0,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-            Expanded(
-              child: LiquidPullToRefresh(
-                onRefresh: fetchData,
-                showChildOpacityTransition: false,
-                child: ListView.builder(
-                  itemCount: events.length,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      margin: EdgeInsets.all(16.0),
-                      elevation: 4.0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
+      ),
+      body: Stack(
+        children: [
+          Image.asset(
+            'images/bg.png',
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            fit: BoxFit.cover,
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              AnimatedBuilder(
+                animation: _animationController,
+                builder: (context, child) {
+                  return Opacity(
+                    opacity: _opacityAnimation.value,
+                    child: SlideTransition(
+                      position: _slideAnimation,
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Stack(
-                            alignment: Alignment.topRight,
-                            children: [
-                              ClipRRect(
-                                borderRadius: BorderRadius.vertical(
-                                  top: Radius.circular(16.0),
-                                ),
-                                child: Image.asset(
-                                  'images/exp.jpeg',
-                                  width: double.infinity,
-                                  height: 200.0,
-                                  fit: BoxFit.cover,
-                                ),
+                          Center(
+                            child: Text(
+                              'Events you might like...',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 26.0,
+                                color: Color.fromARGB(255, 26, 84, 170),
                               ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Color.fromARGB(255, 70, 123, 247),
-                                  borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(16.0),
-                                  ),
-                                ),
-                                padding: EdgeInsets.symmetric(
-                                    vertical: 8.0, horizontal: 16.0),
-                                child: Text(
-                                  DateFormat.yMMMd().format(
-                                      DateTime.parse(events[index].date)),
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 255, 255, 255),
-                                    fontSize: 12.0,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  events[index].title,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 20.0,
-                                  ),
-                                ),
-                                SizedBox(height: 15.0),
-                                Row(
-                                  children: [
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          // Handle like event here
-                                          likeEvent(events[index].id);
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Image.asset(
-                                              'images/unlike.png',
-                                              width: 30.0,
-                                              height: 30.0,
-                                            ),
-                                            SizedBox(width: 5.0),
-                                            Text(
-                                              '${events[index].likedBy}',
-                                              style: TextStyle(
-                                                color: const Color.fromARGB(
-                                                    255, 0, 0, 0),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          // Handle participate event here
-                                          participateInEvent(events[index].id);
-                                        },
-                                        child: Row(
-                                          children: [
-                                            Image.asset(
-                                              'images/add.png',
-                                              width: 30.0,
-                                              height: 30.0,
-                                            ),
-                                            SizedBox(width: 5.0),
-                                            Text(
-                                              '${events[index].participants} Joined',
-                                              style: TextStyle(
-                                                color: const Color.fromARGB(
-                                                    255, 0, 0, 0),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                                SizedBox(height: 15.0),
-                              ],
                             ),
                           ),
                         ],
                       ),
-                    );
-                  },
+                    ),
+                  );
+                },
+              ),
+              Expanded(
+                child: LiquidPullToRefresh(
+                  onRefresh: fetchData,
+                  showChildOpacityTransition: false,
+                  child: ListView.builder(
+                    itemCount: events.length,
+                    itemBuilder: (context, index) {
+                      return Card(
+                        margin: EdgeInsets.all(16.0),
+                        elevation: 4.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Stack(
+                              alignment: Alignment.topRight,
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(16.0),
+                                  ),
+                                  child: Image.asset(
+                                    'images/Climate.png',
+                                    width: double.infinity,
+                                    height: 200.0,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Container(
+                                  width: 50.0,
+                                  height: 50.0,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Color.fromARGB(255, 1, 103, 255),
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(16.0),
+                                    ),
+                                  ),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Color.fromARGB(255, 255, 255, 255),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(15.0),
+                                      ),
+                                    ),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          DateFormat.d().format(
+                                            DateTime.parse(
+                                              events[index].date,
+                                            ),
+                                          ),
+                                          style: TextStyle(
+                                            color: Color.fromARGB(
+                                              255,
+                                              54,
+                                              101,
+                                              255,
+                                            ),
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          DateFormat.MMM().format(
+                                            DateTime.parse(
+                                              events[index].date,
+                                            ),
+                                          ),
+                                          style: TextStyle(
+                                            color: Color.fromARGB(
+                                              255,
+                                              0,
+                                              0,
+                                              0,
+                                            ),
+                                            fontSize: 10.0,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    events[index].title,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 17.0,
+                                    ),
+                                  ),
+                                  SizedBox(height: 15.0),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            // Handle like event here
+                                            likeEvent(events[index].id);
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                              border: Border.all(
+                                                color: Colors.grey[400]!,
+                                              ),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey[200]!,
+                                                  blurRadius: 2.0,
+                                                  spreadRadius: 2.0,
+                                                ),
+                                              ],
+                                            ),
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Image.asset(
+                                                  'images/unlike.png',
+                                                  width: 20.0,
+                                                  height: 20.0,
+                                                ),
+                                                SizedBox(width: 5.0),
+                                                Text(
+                                                  '${events[index].likedBy} Likes',
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 10.0),
+                                      Expanded(
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            // Handle participate event here
+                                            participateInEvent(
+                                                events[index].id);
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                              border: Border.all(
+                                                color: Colors.grey[400]!,
+                                              ),
+                                              boxShadow: [
+                                                BoxShadow(
+                                                  color: Colors.grey[200]!,
+                                                  blurRadius: 2.0,
+                                                  spreadRadius: 2.0,
+                                                ),
+                                              ],
+                                            ),
+                                            padding: EdgeInsets.all(8.0),
+                                            child: Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Image.asset(
+                                                  'images/add.png',
+                                                  width: 20.0,
+                                                  height: 20.0,
+                                                ),
+                                                SizedBox(width: 5.0),
+                                                Text(
+                                                  '${events[index].participants} Participants',
+                                                  style: TextStyle(
+                                                    color: Colors.black,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        ],
       ),
     );
   }
