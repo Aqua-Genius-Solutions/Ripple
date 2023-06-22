@@ -2,16 +2,20 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
+import 'package:flare_flutter/flare_controller.dart';
+import 'reward_item_widget.dart';
+import 'controller.dart';
 class RewardPage extends StatefulWidget {
   @override
   _RewardPageState createState() => _RewardPageState();
 }
 
+
 class _RewardPageState extends State<RewardPage> {
   late List<dynamic> rewardData = [];
   bool loading = true;
   final String apiUrl = dotenv.env["API_URL"]!;
+  final CustomFlareController flareController = CustomFlareController();
   Future<void> fetchRewardData() async {
     final response = await http.get(Uri.parse('$apiUrl/rewards'));
 
@@ -43,23 +47,10 @@ class _RewardPageState extends State<RewardPage> {
               itemCount: rewardData.length,
               itemBuilder: (context, index) {
                 final reward = rewardData[index];
-                return Card(
-                  child: ListTile(
-                    leading: Image.network(
-                      reward['image'],
-                      width: 50,
-                      height: 50,
-                      fit: BoxFit.cover,
-                    ),
-                    title: Text(reward['name']),
-                    subtitle: Text('${reward['price']} points'),
-                    trailing: IconButton(
-                      icon: Icon(Icons.add_shopping_cart),
-                      onPressed: () {
-                        // Add reward item to cart or perform purchase action
-                      },
-                    ),
-                  ),
+                return RewardItemWidget(
+                  rewardItem: RewardItem.fromJson(reward),
+                  onTap: () {},
+                  flareController: flareController,
                 );
               },
             ),

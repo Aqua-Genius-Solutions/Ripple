@@ -30,7 +30,7 @@ dependencies:
   firebase_messaging: ^14.6.2
   cloud_firestore: ^4.8.1
   lottie: ^2.4.0
-
+  flare_flutter: ^3.0.1 
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -114,3 +114,4 @@ flutter:
     - images/schedule.png
     - images/news.jpeg
     - images/bg.png
+    - assets/my_animation.flr
