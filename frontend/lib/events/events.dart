@@ -1,5 +1,3 @@
-// ignore_for_file: library_private_types_in_public_api, camel_case_types
-
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -21,7 +19,6 @@ class _EventPageState extends State<EventPage>
   late Animation<Offset> _slideAnimation;
   double _skygoalLogoOpacity = 0;
   final String apiUrl = dotenv.env["API_URL"]!;
-
   User? user = FirebaseAuth.instance.currentUser;
 
   @override
@@ -36,7 +33,9 @@ class _EventPageState extends State<EventPage>
         Tween<double>(begin: 0.0, end: 1.0).animate(_animationController);
     _slideAnimation = Tween<Offset>(begin: Offset(0.0, 0.5), end: Offset.zero)
         .animate(CurvedAnimation(
-            parent: _animationController, curve: Curves.easeOut));
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
     fetchData();
   }
 
@@ -241,70 +240,51 @@ class _EventPageState extends State<EventPage>
                 child: ListView.builder(
                   itemCount: events.length,
                   itemBuilder: (context, index) {
-                    return Container(
-                      margin: EdgeInsets.all(40.0),
+                    return Card(
+                      margin: EdgeInsets.all(16.0),
+                      elevation: 4.0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Stack(
-                              alignment: Alignment.topRight,
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(26.0),
-                                  child: Image.asset(
-                                    'images/exp.jpeg',
-                                    width: 300.0,
-                                    height: 200.0,
+                          Stack(
+                            alignment: Alignment.topRight,
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(16.0),
+                                ),
+                                child: Image.asset(
+                                  'images/exp.jpeg',
+                                  width: double.infinity,
+                                  height: 200.0,
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Color.fromARGB(255, 70, 123, 247),
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(16.0),
                                   ),
                                 ),
-                                AnimatedOpacity(
-                                  duration: const Duration(milliseconds: 1000),
-                                  opacity: _skygoalLogoOpacity,
-                                  child: Container(
-                                    padding: EdgeInsets.only(top: 20),
-                                    // height: 135,
-                                    width: 164,
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 8.0, horizontal: 16.0),
+                                child: Text(
+                                  DateFormat.yMMMd().format(
+                                      DateTime.parse(events[index].date)),
+                                  style: TextStyle(
+                                    color: Color.fromARGB(255, 255, 255, 255),
+                                    fontSize: 12.0,
                                   ),
                                 ),
-                                Positioned(
-                                  top: 5,
-                                  right: 2.0,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Color.fromARGB(255, 70, 123, 247),
-                                      borderRadius: BorderRadius.circular(6.0),
-                                    ),
-                                    padding: EdgeInsets.all(6.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        // Image.asset(
-                                        //   'images/agenda.png',
-                                        //   width: 18.0,
-                                        //   height: 18.0,
-                                        // ),
-                                        SizedBox(width: 4.0),
-                                        Text(
-                                          DateFormat.yMMMd().format(
-                                            DateTime.parse(events[index].date),
-                                          ),
-                                          style: TextStyle(
-                                            color: Color.fromARGB(
-                                                255, 255, 255, 255),
-                                            fontSize: 12.0,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                           Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16.0),
+                            padding: EdgeInsets.all(16.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -333,7 +313,7 @@ class _EventPageState extends State<EventPage>
                                             ),
                                             SizedBox(width: 5.0),
                                             Text(
-                                              '${events[index].likedBy} ',
+                                              '${events[index].likedBy}',
                                               style: TextStyle(
                                                 color: const Color.fromARGB(
                                                     255, 0, 0, 0),
@@ -346,7 +326,7 @@ class _EventPageState extends State<EventPage>
                                     Expanded(
                                       child: GestureDetector(
                                         onTap: () {
-                                          // Handle like event here
+                                          // Handle participate event here
                                           participateInEvent(events[index].id);
                                         },
                                         child: Row(
@@ -358,7 +338,7 @@ class _EventPageState extends State<EventPage>
                                             ),
                                             SizedBox(width: 5.0),
                                             Text(
-                                              '${events[index].participants} Joined ',
+                                              '${events[index].participants} Joined',
                                               style: TextStyle(
                                                 color: const Color.fromARGB(
                                                     255, 0, 0, 0),
