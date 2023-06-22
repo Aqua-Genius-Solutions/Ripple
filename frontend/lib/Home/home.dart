@@ -171,8 +171,7 @@ class _HomePageState extends State<HomePage> {
                     Navigator.push(context,
                         SlidePageRoute(builder: (context) => MyHomePage()));
                   } catch (e) {
-                    print(
-                        e); // Handle any errors that might occur during sign out
+                    print(e);
                   }
                 },
               ),
