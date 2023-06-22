@@ -46,7 +46,7 @@ const getUserLikedNews = async (req, res) => {
   try {
     const user = await prisma.user.findFirst({
       where: { uid },
-      include: { LikedNews: true },
+      include: { News: true },
     });
     res.status(200).json(user?.LikedNews);
   } catch (error) {
