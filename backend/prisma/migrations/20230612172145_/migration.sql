@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE "Rewards" ALTER COLUMN "image" SET DATA TYPE TEXT;
