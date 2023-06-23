@@ -84,7 +84,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
             TextButton(
               onPressed: () async {
                 try {
-                  final response = await http
+                  await http
                       .put(Uri.parse("$apiUrl/payment/pay/$billId/$cardId"));
                   Navigator.of(context).pop();
                 } catch (error) {

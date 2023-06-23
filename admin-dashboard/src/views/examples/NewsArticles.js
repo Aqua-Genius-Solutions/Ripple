@@ -67,8 +67,8 @@ const Tables = () => {
 
   const updateNewsArticle = () => {
     const updatedNewsArticle = {
-      title: newsArticleName,
-      date: newsArticleDate,
+      author: newsArticleName,
+      date: new Date(newsArticleDate),
       link: newsArticleLink,
       id: newsArticleId,
       image: newsArticleImage,
@@ -89,8 +89,8 @@ const Tables = () => {
 
   const addNewsArticle = () => {
     const newNewsArticle = {
-      title: newsArticleName,
-      date: newsArticleDate,
+      author: newsArticleName,
+      date: new Date(newsArticleDate),
       link: newsArticleLink,
       image: newsArticleImage,
     };

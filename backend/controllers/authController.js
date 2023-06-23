@@ -162,6 +162,49 @@ async function createNewRequest(req, res) {
   }
 }
 
+async function getLeaderboard(req, res) {
+  try {
+    const users = await prisma.user.findMany({
+      orderBy: [
+        {
+          Bubbles: "desc",
+        },
+      ],
+      select: {
+        name: true,
+        surname: true,
+        Bubbles: true,
+        Image: true,
+      },
+    });
+
+    res.status(200).json({
+      status: "success",
+      data: users,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      message: "An error occurred while fetching the leaderboard data.",
+    });
+  }
+}
+
+async function getRequests(req, res) {
+  try {
+    const requests = await prisma.request.findMany();
+
+    res.status(200).json(requests);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      message: "An error occurred while fetching the requests.",
+    });
+  }
+}
+
 module.exports = {
   signup,
   getUsers,
@@ -171,4 +214,6 @@ module.exports = {
   getOne,
   getImage,
   createNewRequest,
+  getLeaderboard,
+  getRequests,
 };

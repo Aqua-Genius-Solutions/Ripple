@@ -45,14 +45,14 @@ flutter:
     - images/bubbles.png
     - images/unnamed.jpg
     - images/background.png
-    - icons/home-page.png
+    - icons/home.png
     - icons/news.png
     - icons/chat.png
     - icons/trophy.png
-    - icons/home-page-colored.png
-    - icons/news-colored.png
-    - icons/chat-colored.png
-    - icons/trophy-colored.png
+    - icons/home1.png
+    - icons/news1.png
+    - icons/chat1.png
+    - icons/trophy1.png
     - images/arrow.png
     - images/phone.png
     - images/savewater.png
@@ -114,4 +114,7 @@ flutter:
     - images/schedule.png
     - images/news.jpeg
     - images/bg.png
+    - images/Climate.png
+    - images/signup-bg.png
+    - images/profile-bg.png
    

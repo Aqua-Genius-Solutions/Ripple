@@ -9,7 +9,6 @@ import 'package:namer_app/auth/signup.dart';
 
 import 'package:namer_app/main.dart';
 import 'package:http/http.dart' as http;
-import '../profile/profile.dart';
 import '../slide_transition.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -106,7 +105,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Scaffold(
       body: Stack(children: [
         Image.asset(
-          'images/bg.png', // Replace with your image asset path
+          'images/bg.png',
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.height,
           fit: BoxFit.cover,
@@ -123,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   Image.asset(
                     'images/rip2.png',
                     width: 270,
-                    height: 270,
+                    height: 110,
                   ),
                   SizedBox(height: 8.0),
                   // Email Input
@@ -165,8 +164,8 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
         Positioned(
-          right: 30,
-          bottom: 30,
+          right: 24,
+          bottom: 24,
           child: InkResponse(
             onTap: login,
             child: Image.asset(

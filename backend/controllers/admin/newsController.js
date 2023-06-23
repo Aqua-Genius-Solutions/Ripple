@@ -12,9 +12,12 @@ async function getNews(req, res) {
 async function createNews(req, res) {
   try {
     const newNews = req.body;
-    const createdNews = await prisma.news.create({ data: newNews });
+    const createdNews = await prisma.news.create({
+      data: { ...newNews, User: { connect: [] } },
+    });
     res.json(createdNews);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "Error creating news", error });
   }
 }
