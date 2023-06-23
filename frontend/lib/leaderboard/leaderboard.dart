@@ -36,9 +36,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Leaderboard'),
-      ),
       body: loading
           ? Center(child: CircularProgressIndicator())
           : ListView.builder(
