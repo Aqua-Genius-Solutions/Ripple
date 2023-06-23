@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_credit_card/credit_card_brand.dart';
 import 'package:flutter_credit_card/flutter_credit_card.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 
 class AppColors {
@@ -38,6 +39,7 @@ class AddCardState extends State<AddCard> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   User? user = FirebaseAuth.instance.currentUser;
+  final String apiUrl = dotenv.env["API_URL"]!;
 
   @override
   void initState() {
@@ -59,19 +61,20 @@ class AddCardState extends State<AddCard> {
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
-              appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            leading: Padding(
-              padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
-              child: IconButton(
-                icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: Padding(
+            padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
+            child: IconButton(
+              icon:
+                  Image.asset('images/left-chevron.png', height: 50, width: 60),
+              onPressed: () {
+                Navigator.pop(context);
+              },
             ),
           ),
+        ),
         resizeToAvoidBottomInset: false,
         body: Container(
           decoration: BoxDecoration(
@@ -222,9 +225,9 @@ class AddCardState extends State<AddCard> {
       try {
         print("number $cardNumber,\n cvc $cvvCode,\n exp date $expiryDate");
         final res = await http.post(
-            Uri.parse(
-                "https://6cbe-197-29-180-115.ngrok-free.app/payment/add/${user?.uid}"),
-            body: jsonEncode({"number": cardNumber, "CVC": cvvCode, "expDate": expiryDate}),
+            Uri.parse("$apiUrl/payment/add/${user?.uid}"),
+            body: jsonEncode(
+                {"number": cardNumber, "CVC": cvvCode, "expDate": expiryDate}),
             headers: {"Content-Type": "application/json"});
 
         print("card added : ${res.body}");

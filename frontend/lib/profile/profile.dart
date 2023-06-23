@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:namer_app/consumption/bar_graph.dart';
 import 'package:namer_app/consumption/consumption.dart';
 import 'package:namer_app/payment/bills.dart';
+import 'package:namer_app/profile/Card/addcard.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../slide_transition.dart';
@@ -238,255 +239,276 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
         ),
       ),
-      body: DefaultTabController(
-        length: 3,
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: CircleAvatar(
-                radius: 40,
-                backgroundImage: profilePicURL.isNotEmpty
-                    ? NetworkImage(profilePicURL)
-                    : null,
-                child: profilePicURL.isEmpty
-                    ? Text(
-                        'Add a photo',
-                        style: TextStyle(fontSize: 12.0),
-                      )
-                    : null,
+      body: Stack(children: [
+        Image.asset(
+          'images/profile-bg.png',
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          fit: BoxFit.cover,
+        ),
+        DefaultTabController(
+          length: 3,
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: CircleAvatar(
+                  radius: 40,
+                  backgroundImage: profilePicURL.isNotEmpty
+                      ? NetworkImage(profilePicURL)
+                      : null,
+                  child: profilePicURL.isEmpty
+                      ? Text(
+                          'Add a photo',
+                          style: TextStyle(fontSize: 12.0),
+                        )
+                      : null,
+                ),
               ),
-            ),
-            TabBar(
-              tabs: [
-                Tab(
-                    child: Text(
-                  'Liked Events',
-                  style: TextStyle(color: Colors.blueGrey),
-                )),
-                Tab(
-                    child: Text(
-                  'Liked News',
-                  style: TextStyle(color: Colors.blueGrey),
-                )),
-                Tab(
-                    child: Text(
-                  'Profile Editing',
-                  style: TextStyle(color: Colors.blueGrey),
-                )),
-              ],
-            ),
-            Expanded(
-              child: TabBarView(
-                children: [
-                  FutureBuilder<List<dynamic>>(
-                    future: !isEventsFetched ? fetchEvents() : null,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Center(
-                          child: Text('Error: ${snapshot.error}'),
-                        );
-                      } else {
-                        if (events.isEmpty) {
+              TabBar(
+                tabs: [
+                  Tab(
+                      child: Text(
+                    'Liked Events',
+                    style: TextStyle(color: Colors.blueGrey),
+                  )),
+                  Tab(
+                      child: Text(
+                    'Liked News',
+                    style: TextStyle(color: Colors.blueGrey),
+                  )),
+                  Tab(
+                      child: Text(
+                    'Profile Editing',
+                    style: TextStyle(color: Colors.blueGrey),
+                  )),
+                ],
+              ),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    FutureBuilder<List<dynamic>>(
+                      future: !isEventsFetched ? fetchEvents() : null,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return Center(
-                            child: Text("You haven't liked any events yet"),
+                            child: CircularProgressIndicator(),
                           );
-                        }
-                        return ListView.builder(
-                          itemCount: events.length,
-                          itemBuilder: (context, index) {
-                            final event = events[index];
-                            return Column(
-                              children: [
-                                SizedBox(height: 16),
-                                EventCard(
-                                  id: event['id'],
-                                  link: event['link'],
-                                  date: DateTime.parse(event['date']),
-                                  image: event['image'],
-                                  title: event['title'],
-                                ),
-                              ],
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          );
+                        } else {
+                          if (events.isEmpty) {
+                            return Center(
+                              child: Text("You haven't liked any events yet"),
                             );
-                          },
-                        );
-                      }
-                    },
-                  ),
-                  FutureBuilder<List<dynamic>>(
-                    future: !isNewsFetched ? fetchNewsArticles() : null,
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      } else if (snapshot.hasError) {
-                        return Center(
-                          child: Text('Error: ${snapshot.error}'),
-                        );
-                      } else {
-                        return ListView.builder(
-                          itemCount: newsArticles.length,
-                          itemBuilder: (context, index) {
-                            final article = newsArticles[index];
-                            final imageName = imageNames.isNotEmpty
-                                ? imageNames[index % imageNames.length]
-                                : '';
-                            final tip = waterSavingTips.isNotEmpty
-                                ? waterSavingTips[
-                                    index % waterSavingTips.length]
-                                : '';
-                            return Column(
-                              children: [
-                                SizedBox(height: 16),
-                                NewsCard(
-                                  imageName: imageName,
-                                  title: article['title'],
-                                  date: article['date'],
-                                  author: article['author'],
-                                  tip: tip,
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      }
-                    },
-                  ),
-                  SingleChildScrollView(
-                    child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: Text('Upload Picture'),
-                                    content: Text('Select source:'),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () async {
-                                          Navigator.of(context).pop();
-                                          await uploadImage(
-                                              ImageSource.gallery);
-                                        },
-                                        child: Text('Gallery'),
-                                      ),
-                                      TextButton(
-                                        onPressed: () async {
-                                          Navigator.of(context).pop();
-                                          await uploadImage(ImageSource.camera);
-                                        },
-                                        child: Text('Camera'),
-                                      ),
-                                    ],
-                                  );
-                                },
+                          }
+                          return ListView.builder(
+                            itemCount: events.length,
+                            itemBuilder: (context, index) {
+                              final event = events[index];
+                              return Column(
+                                children: [
+                                  SizedBox(height: 16),
+                                  EventCard(
+                                    id: event['id'],
+                                    link: event['link'],
+                                    date: DateTime.parse(event['date']),
+                                    image: event['image'],
+                                    title: event['title'],
+                                  ),
+                                ],
                               );
                             },
-                            child: Container(
-                              width: 100,
-                              height: 100,
-                              decoration: BoxDecoration(
-                                border:
-                                    Border.all(width: 2.0, color: Colors.blue),
-                                borderRadius: BorderRadius.circular(50.0),
-                              ),
-                              child: Icon(
-                                Icons.add_a_photo,
-                                size: 48,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ),
-                          TextField(
-                            controller: nameController,
-                            decoration: InputDecoration(
-                              labelText: 'Name',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          SizedBox(height: 8.0),
-                          TextField(
-                            controller: lastnameController,
-                            decoration: InputDecoration(
-                              labelText: 'Surname',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          SizedBox(height: 8.0),
-                          TextField(
-                            controller: addressController,
-                            decoration: InputDecoration(
-                              labelText: 'Address',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          SizedBox(height: 16.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                'Add a Card',
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
+                          );
+                        }
+                      },
+                    ),
+                    FutureBuilder<List<dynamic>>(
+                      future: !isNewsFetched ? fetchNewsArticles() : null,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                            child: Text('Error: ${snapshot.error}'),
+                          );
+                        } else {
+                          return ListView.builder(
+                            itemCount: newsArticles.length,
+                            itemBuilder: (context, index) {
+                              final article = newsArticles[index];
+                              final imageName = imageNames.isNotEmpty
+                                  ? imageNames[index % imageNames.length]
+                                  : '';
+                              final tip = waterSavingTips.isNotEmpty
+                                  ? waterSavingTips[
+                                      index % waterSavingTips.length]
+                                  : '';
+                              return Column(
+                                children: [
+                                  SizedBox(height: 16),
+                                  NewsCard(
+                                    imageName: imageName,
+                                    title: article['title'],
+                                    date: article['date'],
+                                    author: article['author'],
+                                    tip: tip,
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        }
+                      },
+                    ),
+                    SingleChildScrollView(
+                      child: Padding(
+                        padding: EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Upload Picture'),
+                                      content: Text('Select source:'),
+                                      actions: [
+                                        TextButton(
+                                          onPressed: () async {
+                                            Navigator.of(context).pop();
+                                            await uploadImage(
+                                                ImageSource.gallery);
+                                          },
+                                          child: Text('Gallery'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            Navigator.of(context).pop();
+                                            await uploadImage(
+                                                ImageSource.camera);
+                                          },
+                                          child: Text('Camera'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              child: Container(
+                                width: 100,
+                                height: 100,
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 2.0, color: Colors.blue),
+                                  borderRadius: BorderRadius.circular(50.0),
+                                ),
+                                child: Icon(
+                                  Icons.add_a_photo,
+                                  size: 48,
+                                  color: Colors.blue,
                                 ),
                               ),
-                            ],
-                          ),
-                          SizedBox(height: 8.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              ElevatedButton(
-                                onPressed: updateProfile,
-                                child: Text('Update Profile'),
+                            ),
+                            TextField(
+                              controller: nameController,
+                              decoration: InputDecoration(
+                                labelText: 'Name',
+                                border: OutlineInputBorder(),
                               ),
-                            ],
-                          ),
-                        ],
+                            ),
+                            SizedBox(height: 8.0),
+                            TextField(
+                              controller: lastnameController,
+                              decoration: InputDecoration(
+                                labelText: 'Surname',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                            SizedBox(height: 8.0),
+                            TextField(
+                              controller: addressController,
+                              decoration: InputDecoration(
+                                labelText: 'Address',
+                                border: OutlineInputBorder(),
+                              ),
+                            ),
+                            SizedBox(height: 16.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        SlidePageRoute(
+                                            builder: (context) => AddCard()));
+                                  },
+                                  child: Text(
+                                    'Add a Card',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 8.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton(
+                                  onPressed: updateProfile,
+                                  child: Text('Update Profile'),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
+                    ),
+                  ],
+                ),
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            SlidePageRoute(
+                                builder: (context) => BarChartWidget()));
+                      },
+                      child: Text('Stats'),
+                    ),
+                  ),
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            SlidePageRoute(
+                                builder: (context) => BillsScreen()));
+                      },
+                      child: Text('Payment'),
                     ),
                   ),
                 ],
               ),
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          SlidePageRoute(
-                              builder: (context) => BarChartWidget()));
-                    },
-                    child: Text('Stats'),
-                  ),
-                ),
-                Expanded(
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(context,
-                          SlidePageRoute(builder: (context) => BillsScreen()));
-                    },
-                    child: Text('Payment'),
-                  ),
-                ),
-              ],
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
+      ]),
     );
   }
 }

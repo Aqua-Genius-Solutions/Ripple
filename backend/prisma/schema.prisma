@@ -25,7 +25,7 @@ model CreditCard {
   CVC     Int
   expDate DateTime
   ownerId String
-  balance Int
+  balance Decimal
   User    User     @relation(fields: [ownerId], references: [uid])
 }
 

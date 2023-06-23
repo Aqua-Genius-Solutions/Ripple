@@ -36,7 +36,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -50,21 +49,32 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
           ),
         ),
       ),
-      body: loading
-          ? Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              itemCount: leaderboardData.length,
-              itemBuilder: (context, index) {
-                final user = leaderboardData[index];
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(user['Image']),
-                  ),
-                  title: Text('${user['name']} ${user['surname']}'),
-                  trailing: Text('${user['Bubbles']} Bubbles'),
-                );
-              },
-            ),
+      body: Stack(children: [
+        Image.asset(
+          'images/signup-bg.png',
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          fit: BoxFit.cover,
+        ),
+        Center(
+          child: Text(''),
+        ),
+        loading
+            ? Center(child: CircularProgressIndicator())
+            : ListView.builder(
+                itemCount: leaderboardData.length,
+                itemBuilder: (context, index) {
+                  final user = leaderboardData[index];
+                  return ListTile(
+                    leading: CircleAvatar(
+                      backgroundImage: NetworkImage(user['Image']),
+                    ),
+                    title: Text('${user['name']} ${user['surname']}'),
+                    trailing: Text('${user['Bubbles']} Bubbles'),
+                  );
+                },
+              ),
+      ]),
     );
   }
 }
