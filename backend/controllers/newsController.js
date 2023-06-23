@@ -7,7 +7,9 @@ const getAllNews = async (req, res) => {
     res.json(news);
   } catch (error) {
     console.error("An error occurred:", error);
-    res.status(500).json({ error: "An error occurred while fetching news articles" });
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching news articles" });
   }
 };
 
@@ -20,9 +22,9 @@ const likeNews = async (req, res) => {
       where: { uid: userId },
     });
 
-    const updatedNews = await prisma.news.update({
+    await prisma.news.update({
       where: { id: newsId },
-      data: { User: { set: [userId] } },
+      data: { User: { connect: [{ uid: userId }] } },
     });
 
     const news = await prisma.news.findFirst({
@@ -37,7 +39,11 @@ const likeNews = async (req, res) => {
       data: { News: user.News },
     });
 
-    res.json({ message: "News liked successfully", userLiked: news.User, numLikes });
+    res.json({
+      message: "News liked successfully",
+      userLiked: news.User,
+      numLikes,
+    });
   } catch (error) {
     console.error("An error occurred:", error);
     res.status(500).json({ error: "An error occurred while liking the news" });
@@ -56,7 +62,9 @@ const getUserLikedNews = async (req, res) => {
     res.status(200).json(user?.News);
   } catch (error) {
     console.error("An error occurred:", error);
-    res.status(500).json({ error: "An error occurred while fetching user's liked news" });
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching user's liked news" });
   }
 };
 
