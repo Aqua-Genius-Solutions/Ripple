@@ -186,9 +186,7 @@ class NewsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Color.fromRGBO(246, 246, 246, 1),
-      body: Card(
+    return  Card(
         shape:
             RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
         elevation: 5,
@@ -229,7 +227,6 @@ class NewsCard extends StatelessWidget {
             ),
           ],
         ),
-      ),
     );
   }
 }
