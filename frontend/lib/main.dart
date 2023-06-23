@@ -1,5 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:namer_app/auth/login.dart';
@@ -330,6 +332,26 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   int _currentIndex = 0;
+ late Map<dynamic, dynamic> user = {};
+  String? uid = FirebaseAuth.instance.currentUser?.uid;
+ final String apiUrl = dotenv.env["API_URL"]!;
+   
+    @override
+  void initState() {
+    super.initState();
+    getUser();
+    
+  }
+  
+
+  Future<void> getUser() async {
+    final response = await http.get(Uri.parse('$apiUrl/auth/getOne/$uid'));
+
+    setState(() {
+      user = jsonDecode(response.body);
+    });
+  }
+
 
   final List<Widget> _screens = [
     HomePage(),

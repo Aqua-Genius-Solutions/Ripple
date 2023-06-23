@@ -23,7 +23,9 @@ final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
 class _HomePageState extends State<HomePage> {
   List<Event> events = [];
+  int userBubbles = 0;
   Map<dynamic, dynamic> user = {};
+
   final String apiUrl = dotenv.env["API_URL"]!;
   String? uid = FirebaseAuth.instance.currentUser?.uid;
   TextEditingController _descriptionController = TextEditingController();
@@ -33,6 +35,7 @@ class _HomePageState extends State<HomePage> {
 
     setState(() {
       user = jsonDecode(response.body);
+      userBubbles = user['bubbles'] ?? 0;
     });
   }
 
@@ -133,6 +136,28 @@ class _HomePageState extends State<HomePage> {
               onPressed: () => Scaffold.of(context).openDrawer(),
             ),
           ),
+          actions: [
+            Padding(
+              padding: EdgeInsets.only(right: 16.0),
+              child: Row(
+                children: [
+                  Text(
+                    userBubbles.toString(),
+                    style: TextStyle(
+                      color: const Color.fromARGB(255, 56, 56, 56),
+                      fontSize: 16,
+                    ),
+                  ),
+                  Image.asset(
+                    'images/bubble2.png',
+                    width: 50,
+                    height: 50,
+                    // Adjust the width and height as needed
+                  ),
+                ],
+              ),
+            )
+          ],
         ),
         drawer: Drawer(
           child: Column(
@@ -178,7 +203,6 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        backgroundColor: Colors.transparent,
         body: Stack(
           children: [
             Image.asset(//hedhi 
@@ -378,7 +402,7 @@ class _HomePageState extends State<HomePage> {
                                           Row(
                                             children: [
                                               Image.asset(
-                                                'images/calendar.png',
+                                                'images/schedule.png',
                                                 width: 30.0,
                                                 height: 30.0,
                                               ),
