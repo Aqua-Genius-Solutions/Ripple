@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'controller.dart';
+import 'reward_item_widget.dart';
 
 class RewardPage extends StatefulWidget {
   @override
@@ -17,7 +19,7 @@ class _RewardPageState extends State<RewardPage> {
   String? uid = FirebaseAuth.instance.currentUser?.uid;
   final String apiUrl = dotenv.env["API_URL"]!;
   TextEditingController _descriptionController = TextEditingController();
-
+  final CustomFlareController flareController = CustomFlareController();
   Future<void> fetchRewardData() async {
     final response = await http.get(Uri.parse('$apiUrl/rewards'));
 
@@ -28,6 +30,28 @@ class _RewardPageState extends State<RewardPage> {
       });
     } else {
       throw Exception('Failed to load reward data');
+    }
+  }
+
+  Future<void> spendPoints(String userId, int pointsToSpend) async {
+    try {
+      final response = await http.put(
+        Uri.parse('$apiUrl/rewards/$userId/spend-points'),
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: json.encode({'points': pointsToSpend}),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        print(data);
+      } else {
+        final error = json.decode(response.body);
+        print('Error spending points: $error');
+      }
+    } catch (error) {
+      print('Error making request: $error');
     }
   }
 
@@ -106,23 +130,14 @@ class _RewardPageState extends State<RewardPage> {
               itemCount: rewardData.length,
               itemBuilder: (context, index) {
                 final reward = rewardData[index];
-                return Card(
-                  child: ListTile(
-                    leading: Image.network(
-                      reward['image'],
-                      width: 50,
-                      height: 50,
-                      fit: BoxFit.cover,
-                    ),
-                    title: Text(reward['name']),
-                    subtitle: Text('${reward['price']} points'),
-                    trailing: IconButton(
-                      icon: Icon(Icons.add_shopping_cart),
-                      onPressed: () {
-                        // Add reward item to cart or perform purchase action
-                      },
-                    ),
-                  ),
+                return RewardItemWidget(
+                  rewardItem: RewardItem.fromJson(reward),
+                  onTap: () {
+                    String userId = "user-id"; // Replace this with the actual user ID
+                    int pointsToSpend = reward['price'];
+                    spendPoints(userId, pointsToSpend);
+                  },
+                  flareController: flareController,
                 );
               },
             ),
