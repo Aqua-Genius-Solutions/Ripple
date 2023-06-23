@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'package:firebase_auth/firebase_auth.dart';
-import '../slide_transition.dart';
-import 'package:namer_app/profile/profile.dart';
 
 class NewsList extends StatefulWidget {
   @override
@@ -15,7 +13,7 @@ class NewsListState extends State<NewsList> {
   List<Map<String, dynamic>> newsArticles = [];
   final String apiUrl = dotenv.env["API_URL"]!;
   Map<dynamic, dynamic> user = {};
-    int userBubbles = 0;
+  int userBubbles = 0;
 
   String? uid = FirebaseAuth.instance.currentUser?.uid;
   TextEditingController _descriptionController = TextEditingController();
@@ -160,94 +158,21 @@ class NewsListState extends State<NewsList> {
     }
   }
 
-  
-
   @override
   Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      automaticallyImplyLeading: false,
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      leading: Builder(
-        builder: (context) => IconButton(
-          icon: Icon(Icons.menu),
-          color: Color.fromARGB(255, 13, 183, 226),
-          onPressed: () => Scaffold.of(context).openDrawer(),
-        ),
+    return Scaffold(
+      body: ListView.builder(
+        itemCount: newsArticles.length,
+        itemBuilder: (context, index) {
+          final article = newsArticles[index];
+          return NewsCard(
+            article: article,
+            likeFunction: likeNewsArticle,
+          );
+        },
       ),
-      actions: [
-            Padding(
-              padding: EdgeInsets.only(right: 16.0),
-              child: Row(
-                children: [
-                  Text(
-                    userBubbles.toString(),
-                    style: TextStyle(
-                      color: const Color.fromARGB(255, 56, 56, 56),
-                      fontSize: 16,
-                    ),
-                  ),
-                  Image.asset(
-                    'images/bubble2.png',
-                    width: 50,
-                    height: 50,
-                    // Adjust the width and height as needed
-                  ),
-                ],
-              ),
-            )
-          ],
-    ),
-    drawer: Drawer(
-      child: Column(
-        children: [
-          UserAccountsDrawerHeader(
-            onDetailsPressed: () {
-              Navigator.push(context, SlidePageRoute(builder: (context) => ProfileScreen()));
-            },
-            accountName: Text("${user['name'] ?? ""}"),
-            accountEmail: Text('${user['email'] ?? ""}'),
-            currentAccountPicture: CircleAvatar(
-              backgroundImage: NetworkImage(user['Image'] ?? ""),
-              radius: 50,
-            ),
-          ),
-          ListTile(
-            leading: Icon(Icons.notifications),
-            title: Text('Notifications'),
-            onTap: () {
-              // Navigate to the notifications page
-            },
-          ),
-          ListTile(
-            leading: Icon(Icons.star),
-            title: Text('Become Pro'),
-            onTap: () => requestPro(context),
-          ),
-          Expanded(child: SizedBox()),
-          ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('Logout'),
-            onTap: () {
-              // Perform logout action
-            },
-          ),
-        ],
-      ),
-    ),
-    body: ListView.builder(
-      itemCount: newsArticles.length,
-      itemBuilder: (context, index) {
-        final article = newsArticles[index];
-        return NewsCard(
-          article: article,
-          likeFunction: likeNewsArticle,
-        );
-      },
-    ),
-  );
-}
+    );
+  }
 }
 
 class NewsCard extends StatelessWidget {
@@ -262,7 +187,6 @@ class NewsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       backgroundColor: Color.fromRGBO(246, 246, 246, 1),
       body: Card(
         shape:
