@@ -92,7 +92,7 @@ class NewsListState extends State<NewsList> {
 
       if (response.statusCode == 200) {
         final List<dynamic> responseBody = jsonDecode(response.body);
-
+        print(responseBody);
         if (mounted) {
           setState(() {
             newsArticles = responseBody.map((article) {
@@ -101,8 +101,9 @@ class NewsListState extends State<NewsList> {
                 'title': article['title'] ?? '',
                 'date': article['date'] ?? '',
                 'author': article['author'] ?? '',
-                'likes': article['likes'] ?? 0,
-                'userLiked': List<String>.from(article['userLiked'] ?? []),
+                'likes': article['User'].length ?? 0,
+                'userLiked':
+                    List<Map<String, dynamic>>.from(article['userLiked'] ?? []),
               };
             }).toList();
           });
@@ -124,40 +125,38 @@ class NewsListState extends State<NewsList> {
       return;
     }
 
-    Map<String, dynamic> article = newsArticles[articleId - 1];
-    final alreadyLiked = article['userLiked'].contains(currentUser.uid);
-
     try {
       final response = await http.put(
         Uri.parse('$apiUrl/news/$articleId/like/${currentUser.uid}'),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'like': !alreadyLiked}),
       );
 
       if (response.statusCode == 200) {
-        final dynamic responseData = json.decode(response.body);
+        final dynamic responseData = jsonDecode(response.body);
         final int numLikes = responseData['numLikes'] as int;
-        final List<dynamic> userLiked =
-            responseData['userLiked'] as List<dynamic>;
 
         setState(() {
-          // Update the state with the updated number of likes
-          Map<String, dynamic> updatedArticle = {
-            'id': article['id'],
-            'title': article['title'],
-            'date': article['date'],
-            'author': article['author'],
-            'likes': numLikes,
-            'userLiked': userLiked.map((id) => id.toString()).toList(),
-          };
-
-          newsArticles[articleId - 1] = updatedArticle;
+          newsArticles = newsArticles.map((article) {
+            if (article['id'] == articleId) {
+              return {
+                'id': article['id'],
+                'title': article['title'],
+                'date': article['date'],
+                'author': article['author'],
+                'likes': numLikes,
+                'userLiked': List<Map<String, dynamic>>.from(
+                    responseData['userLiked'] ?? []),
+              };
+            }
+            return article;
+          }).toList();
         });
       } else {
         print('Request failed with status: ${response.statusCode}');
       }
-    } catch (error) {
+    } catch (error, stackTrace) {
       print('An error occurred: $error');
+      print('Stack trace: $stackTrace');
     }
   }
 
@@ -296,7 +295,7 @@ class NewsCard extends StatelessWidget {
               children: [
                 LikeButton(
                   article: article,
-                  onPressed: likeFunction,
+                  likeFunction: likeFunction,
                 ),
                 IconButton(
                   icon: Icon(Icons.comment),
@@ -313,26 +312,23 @@ class NewsCard extends StatelessWidget {
 
 class LikeButton extends StatefulWidget {
   final Map<String, dynamic> article;
-  final Function(int) onPressed;
+  final Function(int) likeFunction;
 
-  LikeButton({required this.article, required this.onPressed});
+  LikeButton({required this.article, required this.likeFunction});
 
   @override
-  _LikeButtonState createState() => _LikeButtonState(article: article);
+  _LikeButtonState createState() => _LikeButtonState();
 }
 
 class _LikeButtonState extends State<LikeButton> {
-  final Map<String, dynamic> article;
   late bool _isLiked;
-
-  _LikeButtonState({required this.article});
 
   @override
   void initState() {
     super.initState();
     User? currentUser = FirebaseAuth.instance.currentUser;
-    _isLiked =
-        currentUser != null && article['userLiked'].contains(currentUser.uid);
+    _isLiked = currentUser != null &&
+        widget.article['userLiked'].contains(currentUser.uid);
   }
 
   @override
@@ -347,13 +343,13 @@ class _LikeButtonState extends State<LikeButton> {
           onPressed: () {
             setState(() {
               _isLiked = !_isLiked;
-              widget.onPressed(article['id']);
             });
+            widget.likeFunction(widget.article['id']);
           },
         ),
         Padding(
           padding: EdgeInsets.only(left: 8.0),
-          child: Text('${article['likes']}'),
+          child: Text('${widget.article['likes']}'),
         ),
       ],
     );

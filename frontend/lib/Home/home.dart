@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -6,6 +8,7 @@ import 'package:namer_app/events/events.dart';
 import 'package:namer_app/consumption/consumption.dart';
 import 'package:namer_app/payment/bills.dart';
 import 'package:namer_app/profile/profile.dart';
+import '../main.dart';
 import "../classes.dart";
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -187,8 +190,14 @@ class _HomePageState extends State<HomePage> {
               ListTile(
                 leading: Icon(Icons.logout),
                 title: Text('Logout'),
-                onTap: () {
-                  // Perform logout action
+                onTap: () async {
+                  try {
+                    await FirebaseAuth.instance.signOut();
+                    Navigator.push(context,
+                        SlidePageRoute(builder: (context) => MyHomePage()));
+                  } catch (e) {
+                    print(e);
+                  }
                 },
               ),
             ],
@@ -196,7 +205,7 @@ class _HomePageState extends State<HomePage> {
         ),
         body: Stack(
           children: [
-            Image.asset(
+            Image.asset(//hedhi 
               'images/bg.png', // Replace with your image asset path
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
