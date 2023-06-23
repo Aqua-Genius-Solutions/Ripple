@@ -18,23 +18,27 @@ const likeNews = async (req, res) => {
 
     const updatedNews = await prisma.news.update({
       where: { id: newsId },
-      data: { LikedBy: { connect: { uid: userId } } },
+      data: { User: { connect: { uid: userId } } },
     });
     console.log(updatedNews);
 
     const news = await prisma.news.findFirst({
       where: { id: newsId },
-      include: { LikedBy: true },
+      include: { User: true },
     });
-    console.log(news.LikedBy);
-    const numLikes = news.LikedBy.length;
+    console.log(news.User);
+    const numLikes = news.User.length;
 
     await prisma.user.update({
       where: { uid: userId },
-      data: { LikedNews: user.LikedNews },
+      data: { News: user.News },
     });
 
-    res.json({ message: "News liked successfully", numLikes });
+    res.json({
+      message: "News liked successfully",
+      userLiked: news.User,
+      numLikes,
+    });
   } catch (error) {
     console.error("An error occurred:", error);
     res.status(500).json({ error: "An error occurred while liking the news" });
@@ -48,7 +52,7 @@ const getUserLikedNews = async (req, res) => {
       where: { uid },
       include: { News: true },
     });
-    res.status(200).json(user?.LikedNews);
+    res.status(200).json(user?.News);
   } catch (error) {
     console.error("An error occurred:", error);
     res.status(500).json({ error: "An error occurred while liking the news" });
