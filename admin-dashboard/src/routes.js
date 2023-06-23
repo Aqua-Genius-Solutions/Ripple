@@ -21,10 +21,10 @@ import Header from "components/Headers/Header.js";
 import Index from "views/Index.js";
 import Rewards from "views/examples/Rewards.js";
 import NewsArticles from "views/examples/NewsArticles";
-import Register from "views/examples/Register.js";
 import Login from "views/examples/Login.js";
 import Events from "views/examples/Events";
 import Users from "views/examples/Icons.js";
+import Requests from "views/examples/Requests.js";
 
 const usersRequest = await axios.get(`${process.env.REACT_APP_API_URL}/users`);
 const users = usersRequest.data;
@@ -47,6 +47,11 @@ const rewards = rewardsRequest.data;
 const billsRequest = await axios.get(`${process.env.REACT_APP_API_URL}/bills`);
 const bills = billsRequest.data;
 const paidBills = billsRequest.data.filter((bill) => bill.paid);
+
+const requestsRequest = await axios.get(
+  `${process.env.REACT_APP_API_URL}/requests`
+);
+const requests = requestsRequest.data;
 
 var routes = [
   {
@@ -141,13 +146,23 @@ var routes = [
     ),
     layout: "/admin",
   },
-  // {
-  //   path: "/login",
-  //   name: "Login",
-  //   icon: "ni ni-key-25 text-info",
-  //   component: <Login />,
-  //   layout: "/auth",
-  // },
+  {
+    path: "/requests",
+    name: "Requests",
+    icon: "ni ni-key-25 text-info",
+    component: (
+      <>
+        <Header
+          events={events.length}
+          newsArticles={newsArticles.length}
+          rewards={rewards.length}
+          bills={bills.length}
+        />
+        <Requests requests={requests} />
+      </>
+    ),
+    layout: "/admin",
+  },
   // {
   //   path: "/register",
   //   name: "Register",

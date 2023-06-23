@@ -191,6 +191,20 @@ async function getLeaderboard(req, res) {
   }
 }
 
+async function getRequests(req, res) {
+  try {
+    const requests = await prisma.request.findMany();
+
+    res.status(200).json(requests);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      message: "An error occurred while fetching the requests.",
+    });
+  }
+}
+
 module.exports = {
   signup,
   getUsers,
@@ -201,4 +215,5 @@ module.exports = {
   getImage,
   createNewRequest,
   getLeaderboard,
+  getRequests,
 };
