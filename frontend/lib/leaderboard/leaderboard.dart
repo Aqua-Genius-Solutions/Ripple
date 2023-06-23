@@ -36,6 +36,20 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 16.0, top: 16.0, bottom: 4),
+          child: IconButton(
+            icon: Image.asset('images/left-chevron.png', height: 50, width: 60),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
+        ),
+      ),
       body: loading
           ? Center(child: CircularProgressIndicator())
           : ListView.builder(
