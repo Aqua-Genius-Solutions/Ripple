@@ -181,7 +181,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.transparent,
         body: Stack(
           children: [
-            Image.asset(
+            Image.asset(//hedhi 
               'images/bg.png', // Replace with your image asset path
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height,
