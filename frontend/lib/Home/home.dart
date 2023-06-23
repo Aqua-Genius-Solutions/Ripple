@@ -24,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   List<Event> events = [];
   int userBubbles = 0;
   Map<dynamic, dynamic> user = {};
+  String image = "";
 
   final String apiUrl = dotenv.env["API_URL"]!;
   String? uid = FirebaseAuth.instance.currentUser?.uid;
@@ -384,10 +385,16 @@ class _HomePageState extends State<HomePage> {
                                       left: 16.0, top: 22.0, right: 25.0),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(26.0),
-                                    child: Image.asset(
-                                      'images/exp.jpeg',
+                                    child: Container(
                                       width: 120.0,
                                       height: 150.0,
+                                      decoration: BoxDecoration(
+                                        image: DecorationImage(
+                                          image: NetworkImage(
+                                              events[index].image ?? ""),
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),

@@ -20,6 +20,7 @@ class _EventPageState extends State<EventPage>
   double _skygoalLogoOpacity = 0;
   final String apiUrl = dotenv.env["API_URL"]!;
   User? user = FirebaseAuth.instance.currentUser;
+  String image = '';
 
   @override
   void initState() {
@@ -260,15 +261,18 @@ class _EventPageState extends State<EventPage>
                             Stack(
                               alignment: Alignment.topRight,
                               children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(16.0),
-                                  ),
-                                  child: Image.asset(
-                                    'images/Climate.png',
-                                    width: double.infinity,
-                                    height: 200.0,
-                                    fit: BoxFit.cover,
+                                Container(
+                                  width: double.infinity,
+                                  height: 200.0,
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: NetworkImage(
+                                          events[index].image ?? ""),
+                                      fit: BoxFit.cover,
+                                    ),
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(16.0),
+                                    ),
                                   ),
                                 ),
                                 Container(
@@ -383,7 +387,7 @@ class _EventPageState extends State<EventPage>
                                                 ),
                                                 SizedBox(width: 5.0),
                                                 Text(
-                                                  '${events[index].likedBy}',
+                                                  '${events[index].likedBy} ',
                                                   style: TextStyle(
                                                     color: Colors.black,
                                                   ),
