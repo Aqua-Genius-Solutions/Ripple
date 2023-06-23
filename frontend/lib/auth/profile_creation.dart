@@ -1,6 +1,8 @@
 // ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
 import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -32,6 +34,7 @@ class _CreateProfileState extends State<CreateProfileScreen> {
   final String apiUrl = dotenv.env["API_URL"]!;
 
   String profilePicURL = '';
+  String imageUrl = '';
 
   User? user = FirebaseAuth.instance.currentUser;
 
@@ -208,11 +211,19 @@ class _CreateProfileState extends State<CreateProfileScreen> {
 
         if (response.statusCode == 200) {
           final responseData = jsonDecode(response.body);
-          String imageUrl = responseData['secure_url'];
+          setState(() {
+            imageUrl = responseData['secure_url'];
+          });
+
           // TOD O: Text extraction will be implemented here
+          Random random = Random();
+
+          double price = 20 + random.nextDouble() * (40 - 20);
+          double consumption = 15 + random.nextDouble() * (40 - 15);
+
           Bill newBill = Bill(
-              price: 23.6,
-              consumption: 33,
+              price: price,
+              consumption: consumption,
               paid: true,
               imageUrl: imageUrl,
               userId: user!.uid);
@@ -243,179 +254,165 @@ class _CreateProfileState extends State<CreateProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Sign Up'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: EdgeInsets.all(0),
-                child: Image.asset(
-                  "images/rip2.png",
-                  width: 240,
-                  height: 240,
-                ),
-              ),
-              // Image Upload Widget Above Text Fields
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('Upload Picture'),
-                        content: Text('Select source:'),
-                        actions: [
-                          TextButton(
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              await uploadImage(ImageSource.gallery);
-                            },
-                            child: Text('Gallery'),
-                          ),
-                          TextButton(
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              await uploadImage(ImageSource.camera);
-                            },
-                            child: Text('Camera'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 2.0, color: Colors.blue),
-                    borderRadius: BorderRadius.circular(50.0),
-                  ),
-                  child: Icon(
-                    Icons.add_a_photo,
-                    size: 48,
-                    color: Colors.blue,
+      body: Stack(children: [
+        Image.asset(
+          'images/profile-bg.png',
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          fit: BoxFit.cover,
+        ),
+        SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.fromLTRB(16.0, 56.0, 16.0, 24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(0),
+                  child: Image.asset(
+                    "images/rip2.png",
+                    width: 240,
+                    height: 110,
                   ),
                 ),
-              ),
-              SizedBox(height: 16.0),
-              TextField(
-                controller: addressController,
-                decoration: InputDecoration(
-                  labelText: 'Address',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 8.0),
-              // Nfm Input
-              TextField(
-                controller: nfmController,
-                decoration: InputDecoration(
-                  labelText: 'Nfm',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 16.0),
-              // Image Upload Widget Below Text Fields
-              Text("Your latest bill"),
-              GestureDetector(
-                onTap: () {
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('Upload Picture'),
-                        content: Text('Select source:'),
-                        actions: [
-                          TextButton(
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              await uploadBill(ImageSource.gallery);
-                            },
-                            child: Text('Gallery'),
+                // Image Upload Widget Above Text Fields
+                GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Upload Picture'),
+                          content: Text('Select source:'),
+                          actions: [
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                await uploadImage(ImageSource.gallery);
+                              },
+                              child: Text('Gallery'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                await uploadImage(ImageSource.camera);
+                              },
+                              child: Text('Camera'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 2.0, color: Colors.blue),
+                      borderRadius: BorderRadius.circular(50.0),
+                    ),
+                    child: imageUrl.isNotEmpty
+                        ? CircleAvatar(
+                            backgroundImage: NetworkImage(imageUrl),
+                          )
+                        : Icon(
+                            Icons.add_a_photo,
+                            size: 48,
+                            color: Colors.blue,
                           ),
-                          TextButton(
-                            onPressed: () async {
-                              Navigator.of(context).pop();
-                              await uploadBill(ImageSource.camera);
-                            },
-                            child: Text('Camera'),
-                          ),
-                        ],
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                  width: 250,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 2.0, color: Colors.blue),
-                    borderRadius: BorderRadius.circular(34.0),
-                  ),
-                  child: Icon(
-                    Icons.add_a_photo,
-                    size: 48,
-                    color: Colors.blue,
                   ),
                 ),
-              ),
-              SizedBox(height: 16.0),
-              // Sign Up Button
-              InkResponse(
-                onTap: signUp,
-                child: Image.asset(
-                  'images/arrow-blue.png',
-                  width: 45,
-                  height: 45,
+                SizedBox(height: 16.0),
+                TextField(
+                  controller: addressController,
+                  decoration: InputDecoration(
+                    labelText: 'Address',
+                    border: OutlineInputBorder(),
+                  ),
                 ),
-              ),
-            ],
+                SizedBox(height: 8.0),
+                TextField(
+                  controller: nfmController,
+                  decoration: InputDecoration(
+                    labelText: 'N° Family Members',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                SizedBox(height: 16.0),
+                Padding(
+                  padding: EdgeInsets.all(22.0),
+                  child: Text(
+                    ' Your Latest Bill ',
+                    style: TextStyle(
+                      fontSize: 24.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          title: Text('Upload Picture'),
+                          content: Text('Select source:'),
+                          actions: [
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                await uploadBill(ImageSource.gallery);
+                              },
+                              child: Text('Gallery'),
+                            ),
+                            TextButton(
+                              onPressed: () async {
+                                Navigator.of(context).pop();
+                                await uploadBill(ImageSource.camera);
+                              },
+                              child: Text('Camera'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    width: 250,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 2.0, color: Colors.blue),
+                      borderRadius: BorderRadius.circular(34.0),
+                    ),
+                    child: Icon(
+                      Icons.add_a_photo,
+                      size: 48,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16.0),
+                // Sign Up Button
+              ],
+            ),
           ),
         ),
-      ),
+        Padding(
+          padding: EdgeInsets.all(24.0),
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: InkResponse(
+              onTap: signUp,
+              child: Image.asset(
+                'images/arrow-blue.png',
+                width: 45,
+                height: 45,
+              ),
+            ),
+          ),
+        ),
+      ]),
     );
-  }
-}
-
-class YourPrismaPackage {
-  static Future<void> createUser({
-    required String uid,
-    required String name,
-    required String nfm,
-    required String email,
-  }) async {
-    try {
-      final response = await http.post(
-        Uri.parse('http://localhost:3000/auth/signup'),
-        body: {
-          'uid': uid,
-          'name': name,
-          'nfm': nfm,
-          'email': email,
-          // Add any additional fields you want to send
-        },
-      );
-
-      if (response.statusCode == 201) {
-        // Request to Prisma backend successful
-        final responseData = response.body;
-        // Process the response data as needed
-        print(responseData);
-      } else {
-        // Error handling for Prisma backend request
-        print(
-            'Prisma backend request failed with status: ${response.statusCode}');
-      }
-    } catch (error) {
-      // Exception handling
-      print('An error occurred: $error');
-    }
   }
 }
 

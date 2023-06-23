@@ -32,7 +32,6 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-  
   const MyApp({Key? key});
 
   @override
@@ -103,29 +102,29 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: WelcomePage(),
-      // body: Container(
-      //   decoration: BoxDecoration(
-      //     gradient: LinearGradient(
-      //       begin: Alignment.topCenter,
-      //       end: Alignment.bottomCenter,
-      //       colors: [
-      //         Color.fromARGB(200, 129, 222, 248),
-      //         Color.fromARGB(200, 111, 176, 255),
-      //         Color.fromARGB(200, 4, 67, 144),
-      //       ],
-      //     ),
-      //   ),
-      //   child: Center(
-      //     child: Lottie.network(
-      //         "https://assets6.lottiefiles.com/packages/lf20_12G4mZ.json",
-      //         controller: _controller, onLoaded: (compos) {
-      //       _controller
-      //         ..duration = Duration(milliseconds: 4000)
-      //         ..forward();
-      //     }),
-      //   ),
-      // ),
+      // body: WelcomePage(),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color.fromARGB(200, 129, 222, 248),
+              Color.fromARGB(200, 111, 176, 255),
+              Color.fromARGB(200, 4, 67, 144),
+            ],
+          ),
+        ),
+        child: Center(
+          child: Lottie.network(
+              "https://assets6.lottiefiles.com/packages/lf20_12G4mZ.json",
+              controller: _controller, onLoaded: (compos) {
+            _controller
+              ..duration = Duration(milliseconds: 4000)
+              ..forward();
+          }),
+        ),
+      ),
     );
   }
 }
@@ -332,17 +331,15 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   int _currentIndex = 0;
- late Map<dynamic, dynamic> user = {};
+  late Map<dynamic, dynamic> user = {};
   String? uid = FirebaseAuth.instance.currentUser?.uid;
- final String apiUrl = dotenv.env["API_URL"]!;
-   
-    @override
+  final String apiUrl = dotenv.env["API_URL"]!;
+
+  @override
   void initState() {
     super.initState();
     getUser();
-    
   }
-  
 
   Future<void> getUser() async {
     final response = await http.get(Uri.parse('$apiUrl/auth/getOne/$uid'));
@@ -351,7 +348,6 @@ class _LoginPageState extends State<LoginPage> {
       user = jsonDecode(response.body);
     });
   }
-
 
   final List<Widget> _screens = [
     HomePage(),

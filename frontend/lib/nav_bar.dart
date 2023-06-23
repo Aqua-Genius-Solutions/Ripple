@@ -28,7 +28,7 @@ class BottomNavigationBarWidget extends StatefulWidget {
 }
 
 class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
-  int userBubbles = 0;
+  late String userBubbles = "0";
   bool isPro = false;
   Map<dynamic, dynamic> user = {};
 
@@ -41,9 +41,18 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
 
     setState(() {
       user = jsonDecode(response.body);
-      userBubbles = user['bubbles'] ?? 0;
+      userBubbles = user['Bubbles']?.toString() ?? "0";
       isPro = user['isPro'];
     });
+
+    print(userBubbles);
+    print(user['Bubbles']);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getUser();
   }
 
   Future<void> requestPro(BuildContext context) async {
@@ -121,39 +130,45 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
       backgroundColor: Color.fromRGBO(246, 246, 246, 1),
       appBar: widget.currentIndex == 3 && !isPro
           ? null
-          : AppBar(
-              automaticallyImplyLeading: false,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              leading: Builder(
-                builder: (context) => IconButton(
-                  icon: Icon(Icons.menu),
-                  color: Color.fromARGB(255, 13, 183, 226),
-                  onPressed: () => Scaffold.of(context).openDrawer(),
+          : PreferredSize(
+              preferredSize: Size.fromHeight(kToolbarHeight + 16.0),
+              child: Padding(
+                padding: EdgeInsets.only(top: 16),
+                child: AppBar(
+                  automaticallyImplyLeading: false,
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  leading: Builder(
+                    builder: (context) => IconButton(
+                      icon: Icon(Icons.menu),
+                      color: Color.fromARGB(255, 13, 183, 226),
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                    ),
+                  ),
+                  actions: [
+                    Padding(
+                      padding: EdgeInsets.only(right: 16.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            userBubbles,
+                            style: TextStyle(
+                              color: const Color.fromARGB(255, 56, 56, 56),
+                              fontSize: 16,
+                            ),
+                          ),
+                          Image.asset(
+                            'images/bubble2.png',
+                            width: 40,
+                            height: 40,
+                            // Adjust the width and height as needed
+                          ),
+                        ],
+                      ),
+                    )
+                  ],
                 ),
               ),
-              actions: [
-                Padding(
-                  padding: EdgeInsets.only(right: 16.0),
-                  child: Row(
-                    children: [
-                      Text(
-                        userBubbles.toString(),
-                        style: TextStyle(
-                          color: const Color.fromARGB(255, 56, 56, 56),
-                          fontSize: 16,
-                        ),
-                      ),
-                      Image.asset(
-                        'images/bubble2.png',
-                        width: 50,
-                        height: 50,
-                        // Adjust the width and height as needed
-                      ),
-                    ],
-                  ),
-                )
-              ],
             ),
       drawer: Drawer(
         child: Column(

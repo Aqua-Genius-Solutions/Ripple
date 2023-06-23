@@ -1,14 +1,14 @@
 // ignore_for_file: use_build_context_synchronously, library_private_types_in_public_api
 
 import 'dart:convert';
-import 'package:awesome_notifications/awesome_notifications.dart';
+
+import 'login.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../slide_transition.dart';
 import 'profile_creation.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 
 class SignInScreen extends StatefulWidget {
   @override
@@ -21,6 +21,7 @@ class _SignInScreenState extends State<SignInScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+
   final String apiUrl = dotenv.env["API_URL"]!;
 
   Future<void> signUp() async {
@@ -135,157 +136,171 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color.fromRGBO(246, 246, 246, 1),
-      appBar: AppBar(
-        title: Text('Sign Up'),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Logo
-              Image.asset(
-                'images/rip2.png',
-                width: 210,
-                height: 210,
-              ),
-              SizedBox(height: 16.0),
-              // Name Input
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 8.0),
-              // Surname Input
-              TextField(
-                controller: surnameController,
-                decoration: InputDecoration(
-                  labelText: 'Surname',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 8.0),
-              // Email Input
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 8.0),
-              // Password Input
-              TextField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Password',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 8.0),
-              // Confirm Password Input
-              TextField(
-                controller: confirmPasswordController,
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: 'Confirm Password',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 16.0),
-              // Sign Up Button
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    margin: EdgeInsets.symmetric(horizontal: 8.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Expanded(
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 5.3, vertical: 5.3),
-                            child: InkResponse(
-                              onTap: signUp,
-                              child: Image.asset(
-                                'images/google.png',
-                                width: 30,
-                                height: 30,
+      body: Stack(
+        children: [
+          Image.asset(
+            'images/signup-bg.png',
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height,
+            fit: BoxFit.cover,
+          ),
+          SafeArea(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // Logo
+                        Image.asset(
+                          'images/rip2.png',
+                          width: 210,
+                          height: 110,
+                        ),
+                        SizedBox(height: 16.0),
+                        // Name Input
+                        TextField(
+                          controller: nameController,
+                          decoration: InputDecoration(
+                            labelText: 'Name',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        SizedBox(height: 8.0),
+                        // Surname Input
+                        TextField(
+                          controller: surnameController,
+                          decoration: InputDecoration(
+                            labelText: 'Surname',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        SizedBox(height: 8.0),
+                        // Email Input
+                        TextField(
+                          controller: emailController,
+                          decoration: InputDecoration(
+                            labelText: 'Email',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        SizedBox(height: 8.0),
+                        // Password Input
+                        TextField(
+                          controller: passwordController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            labelText: 'Password',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        SizedBox(height: 8.0),
+                        // Confirm Password Input
+                        TextField(
+                          controller: confirmPasswordController,
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            labelText: 'Confirm Password',
+                            border: OutlineInputBorder(),
+                          ),
+                        ),
+                        SizedBox(height: 16.0),
+                        // Sign Up Button
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Container(
+                                margin: EdgeInsets.symmetric(horizontal: 8.0),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Colors.grey,
+                                    width: 1.0,
+                                  ),
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.only(left: 70.0),
+                                  child: Container(
+                                    height: 40,
+                                    child: Row(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 5.3, vertical: 5.3),
+                                          child: InkResponse(
+                                            onTap: signUp,
+                                            child: Image.asset(
+                                              'images/google.png',
+                                              width: 25,
+                                              height: 25,
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 4.0),
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 5.3, vertical: 5.3),
+                                          child: Text(
+                                            'Signup with Google',
+                                            style: TextStyle(
+                                                fontSize: 16.0,
+                                                color: Color.fromARGB(
+                                                    255, 133, 133, 133)),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                          SizedBox(width: 16.0),
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 5.3, vertical: 5.3),
-                            child: Text(
-                              'Signup with Google',
-                              style: TextStyle(
-                                  fontSize: 16.0,
-                                  color: Color.fromARGB(255, 133, 133, 133)),
+                          ],
+                        ),
+                        SizedBox(height: 8.0),
+                        // Login Text
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              SlidePageRoute(
+                                  builder: (context) => LoginScreen()),
+                            );
+                          },
+                          child: Text(
+                            'Already have an account? Login',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Theme.of(context).primaryColor,
                             ),
-                          )
-                        ],
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  InkResponse(
-                    onTap: signUp,
-                    child: Image.asset(
-                      'images/arrow-blue.png',
-                      width: 45,
-                      height: 45,
-                    ),
-                  ),
-                ],
-              )
-            ],
+                  ],
+                ),
+              ),
+            ),
           ),
-        ),
+          Padding(
+            padding: EdgeInsets.all(24.0),
+            child: Align(
+              alignment: Alignment.bottomRight,
+              child: InkResponse(
+                onTap: signUp,
+                child: Image.asset(
+                  'images/arrow-blue.png',
+                  width: 45,
+                  height: 45,
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
-  }
-}
-
-class YourPrismaPackage {
-  static Future<void> createUser({
-    required String uid,
-    required String name,
-    required String surname,
-    required String email,
-  }) async {
-    try {
-      final response = await http.post(
-        Uri.parse('http://localhost:3000/auth/signup'),
-        body: {
-          'uid': uid,
-          'name': name,
-          'surname': surname,
-          'email': email,
-        },
-      );
-
-      if (response.statusCode == 201) {
-        final responseData = response.body;
-        print(responseData);
-      } else {
-        print(
-            'Prisma backend request failed with status: ${response.statusCode}');
-      }
-    } catch (error) {
-      print('An error occurred: $error');
-    }
   }
 }
