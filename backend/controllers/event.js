@@ -21,7 +21,6 @@ async function likeEvent(req, res) {
     const event = await prisma.events.findFirst({
       where: { id: eventId },
       include: { LikedBy: true },
-      // include: { LikedBy: { select: { uid: true } } },
     });
 
     console.log(event);
@@ -95,8 +94,8 @@ async function participateInEvent(req, res) {
 
       // Update bubbles
       await prisma.user.update({
-        where: { uid: bill.userId },
-        data: { Bubbles: { increment: bill.price } },
+        where: { uid: userId.toString() },
+        data: { Bubbles: { increment: 15 } },
       });
       
       const numParticipants = event.participants
@@ -113,6 +112,7 @@ async function participateInEvent(req, res) {
       .status(500)
       .json({ error: "An error occurred while participating in the event" });
   }
+  
 }
 
 const getUserLikedEvents = async (req, res) => {
