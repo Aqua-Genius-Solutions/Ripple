@@ -13,20 +13,20 @@ class BottomNavigationBarWidget extends StatelessWidget {
 
   final List<List<String>> _iconData = [
     [
-      'icons/home-page.png',
-      'icons/home-page-colored.png',
+      'icons/home.png',
+      'icons/home1.png',
     ],
     [
       'icons/trophy.png',
-      'icons/trophy-colored.png',
+      'icons/trophy1.png',
     ],
     [
       'icons/news.png',
-      'icons/news-colored.png',
+      'icons/news1.png',
     ],
     [
       'icons/chat.png',
-      'icons/chat-colored.png',
+      'icons/chat1.png',
     ],
   ];
 

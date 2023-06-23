@@ -40,13 +40,13 @@ model Events {
 }
 
 model News {
-  id          Int       @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   author      String
   description String
   link        String
   date        DateTime
   image       String
-  User        User[]    @relation("UserLikedNews")
+  User        User[]   @relation("UserLikedNews")
 }
 
 model Rewards {
@@ -78,8 +78,8 @@ model User {
 }
 
 model Request {
-  id       Int       @id @default(autoincrement()) @unique
-  status   String
-  userId   String 
-  desc     String
+  id     Int    @id @unique @default(autoincrement())
+  status String
+  userId String
+  desc   String
 }
