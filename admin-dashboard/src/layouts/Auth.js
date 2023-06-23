@@ -65,9 +65,9 @@ const Auth = (props) => {
                 style={{
                   position: "relative",
                   top: 0,
-                  marginTop: -160,
-                  marginBottom: -120,
-                  marginRight: 75,
+                  marginTop: 60,
+                  paddingBottom: 120,
+                  // marginRight: 75,
                 }}
               >
                 <Col lg="5" md="6">

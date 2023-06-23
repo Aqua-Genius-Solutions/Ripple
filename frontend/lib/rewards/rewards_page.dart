@@ -64,7 +64,7 @@ class _RewardPageState extends State<RewardPage> {
 
   Future<void> getUser() async {
     final response = await http.get(Uri.parse('$apiUrl/auth/getOne/$uid'));
-
+    print(uid);
     setState(() {
       user = jsonDecode(response.body);
       userBubbles = user['bubbles'] ?? 0;
@@ -131,9 +131,10 @@ class _RewardPageState extends State<RewardPage> {
               itemBuilder: (context, index) {
                 final reward = rewardData[index];
                 return RewardItemWidget(
-                  rewardItem: RewardItem.fromJson(reward),
+                  rewardItem: reward,
                   onTap: () {
-                    String userId = "user-id"; // Replace this with the actual user ID
+                    String userId =
+                        user["uid"]; // Replace this with the actual user ID
                     int pointsToSpend = reward['price'];
                     spendPoints(userId, pointsToSpend);
                   },

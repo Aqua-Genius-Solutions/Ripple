@@ -21,9 +21,9 @@ const addBill = async (req, res) => {
       data: {
         price,
         consumption,
-        paid,
+        paid: false,
         imageUrl,
-        user: {
+        User: {
           connect: { uid: userId },
         },
         startDate: new Date(startDate) || new Date(),

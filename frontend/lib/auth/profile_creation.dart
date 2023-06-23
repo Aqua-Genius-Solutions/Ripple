@@ -219,7 +219,7 @@ class _CreateProfileState extends State<CreateProfileScreen> {
           Random random = Random();
 
           double price = 20 + random.nextDouble() * (40 - 20);
-          double consumption = 15 + random.nextDouble() * (40 - 15);
+          int consumption = 15 + random.nextInt(40 - 15);
 
           Bill newBill = Bill(
               price: price,
@@ -417,7 +417,7 @@ class _CreateProfileState extends State<CreateProfileScreen> {
 }
 
 class Bill {
-  final double consumption;
+  final int consumption;
   final double price;
   final bool paid;
   final String imageUrl;

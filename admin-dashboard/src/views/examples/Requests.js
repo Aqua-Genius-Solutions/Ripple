@@ -42,7 +42,7 @@ const Requests = () => {
 
   const fetchRequests = async () => {
     const requestsRequest = await axios.get(
-      `${process.env.REACT_APP_API_URL}/auth/requests`
+      "http://localhost:3001/auth/requests"
     );
     setRequests(requestsRequest.data);
   };
@@ -100,17 +100,18 @@ const Requests = () => {
           <div className="col">
             <Card className="shadow">
               <CardHeader className="bg-transparent">
-                <h3 className="mb-0">Icons</h3>
+                <h3 className="mb-0">Requests</h3>
               </CardHeader>
               <CardBody>
                 <Row className="icon-examples">
                   {requests?.map((request) => {
+                    const user = getUser(request);
                     return (
                       <Col
                         lg="3"
                         md="6"
                         key={request.id}
-                        onClick={() => openModal(getUser(request))}
+                        onClick={() => openModal(user)}
                       >
                         <button
                           className="btn-icon-clipboard"
@@ -119,7 +120,7 @@ const Requests = () => {
                         >
                           <div>
                             <img
-                              src={request.Image}
+                              src={user.Image}
                               alt="Profile"
                               style={{
                                 borderRadius: "50%",
@@ -127,7 +128,7 @@ const Requests = () => {
                                 height: 30,
                               }}
                             />
-                            <span>{`${request.name} ${request.surname}`}</span>
+                            <span>{`${user.name} ${user.surname}`}</span>
                           </div>
                         </button>
                         <UncontrolledTooltip
@@ -135,7 +136,7 @@ const Requests = () => {
                           trigger="hover focus"
                           target={`tooltip-${request.id}`}
                         >
-                          {request.uid}
+                          {request.desc}
                         </UncontrolledTooltip>
                       </Col>
                     );

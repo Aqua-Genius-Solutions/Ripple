@@ -5,24 +5,18 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:namer_app/auth/login.dart';
-import 'package:namer_app/events/events.dart';
 import 'package:namer_app/auth/signup.dart';
 import 'package:namer_app/news/news.dart';
 
-import 'package:namer_app/profile/profile.dart';
 import 'package:namer_app/slide_transition.dart';
-import 'profile/Card/addcard.dart';
 import 'nav_bar.dart';
 import 'Home/home.dart';
-import 'payment/bills.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'rewards/rewards_page.dart';
 import "chat/chat.dart";
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'settings/settings.dart';
 import 'package:lottie/lottie.dart';
-import 'rewards/rewards_page.dart';
 
 void main() async {
   await dotenv.load();

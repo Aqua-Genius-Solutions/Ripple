@@ -48,11 +48,6 @@ const billsRequest = await axios.get(`${process.env.REACT_APP_API_URL}/bills`);
 const bills = billsRequest.data;
 const paidBills = billsRequest.data.filter((bill) => bill.paid);
 
-const requestsRequest = await axios.get(
-  `${process.env.REACT_APP_API_URL}/requests`
-);
-const requests = requestsRequest.data;
-
 var routes = [
   {
     path: "/index",
@@ -158,10 +153,15 @@ var routes = [
           rewards={rewards.length}
           bills={bills.length}
         />
-        <Requests requests={requests} />
+        <Requests />
       </>
     ),
     layout: "/admin",
+  },
+  {
+    path: "/login",
+    component: <Login />,
+    layout: "/auth",
   },
   // {
   //   path: "/register",

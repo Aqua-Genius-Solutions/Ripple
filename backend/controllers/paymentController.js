@@ -21,7 +21,7 @@ const addCard = async (req, res) => {
         CVC: Number(CVC),
         expDate: new Date(),
         balance: Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000,
-        owner: {
+        User: {
           connect: { uid },
         },
       },
@@ -39,7 +39,7 @@ const getCreditCards = async (req, res) => {
   try {
     const creditCards = await prisma.creditCard.findMany({
       where: { ownerId: uid },
-      include: { owner: true },
+      include: { User: true },
     });
     res.status(200).json(creditCards);
   } catch (error) {
@@ -85,8 +85,8 @@ const pay = async (req, res) => {
     // Update bubbles
     await prisma.user.update({
       where: { uid: bill.userId },
-      data: { Bubbles: { increment: bill.price } },
-    }); 
+      data: { Bubbles: { increment: Math.ceil(bill.price) } },
+    });
 
     res.status(200).json("Bill paid successfully");
   } catch (error) {
