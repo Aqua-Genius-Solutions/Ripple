@@ -75,7 +75,7 @@ const Index = ({ events, newsArticles, bills, paidBills, users, rewards }) => {
                     <h6 className="text-uppercase text-light ls-1 mb-1">
                       Overview
                     </h6>
-                    <h2 className="text-white mb-0">Sales value</h2>
+                    <h2 className="text-white mb-0">Event Likes</h2>
                   </div>
                   <div className="col">
                     <Nav className="justify-content-end" pills>
@@ -177,7 +177,7 @@ const Index = ({ events, newsArticles, bills, paidBills, users, rewards }) => {
               <CardHeader className="border-0">
                 <Row className="align-items-center">
                   <div className="col">
-                    <h3 className="mb-0">Redeemed Rewards</h3>
+                    <h3 className="mb-0">Event Participations</h3>
                   </div>
                   <div className="col text-right">
                     <Button

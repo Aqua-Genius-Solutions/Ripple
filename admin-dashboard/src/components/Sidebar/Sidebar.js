@@ -120,10 +120,15 @@ const Sidebar = (props) => {
         {logo ? (
           <img
             alt={logo.imgAlt}
-            style={{ marginTop: -36, marginBottom: -12, paddingRight: 120 }}
+            style={{
+              // marginTop: -12,
+              // marginBottom: -12,
+              // paddingRight: 220,
+              // paddingLeft: 0,
+              width: "100%",
+              height: "19vh",
+            }}
             src={logo.imgSrc}
-            width={300}
-            height={150}
           />
         ) : null}
         {/* User */}
