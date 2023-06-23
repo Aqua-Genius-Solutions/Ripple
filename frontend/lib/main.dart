@@ -101,29 +101,29 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // body: WelcomePage(),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color.fromARGB(200, 129, 222, 248),
-              Color.fromARGB(200, 111, 176, 255),
-              Color.fromARGB(200, 4, 67, 144),
-            ],
-          ),
-        ),
-        child: Center(
-          child: Lottie.network(
-              "https://assets6.lottiefiles.com/packages/lf20_12G4mZ.json",
-              controller: _controller, onLoaded: (compos) {
-            _controller
-              ..duration = Duration(milliseconds: 4000)
-              ..forward();
-          }),
-        ),
-      ),
+      body: WelcomePage(),
+      // body: Container(
+      //   decoration: BoxDecoration(
+      //     gradient: LinearGradient(
+      //       begin: Alignment.topCenter,
+      //       end: Alignment.bottomCenter,
+      //       colors: [
+      //         Color.fromARGB(200, 129, 222, 248),
+      //         Color.fromARGB(200, 111, 176, 255),
+      //         Color.fromARGB(200, 4, 67, 144),
+      //       ],
+      //     ),
+      //   ),
+      //   child: Center(
+      //     child: Lottie.network(
+      //         "https://assets6.lottiefiles.com/packages/lf20_12G4mZ.json",
+      //         controller: _controller, onLoaded: (compos) {
+      //       _controller
+      //         ..duration = Duration(milliseconds: 4000)
+      //         ..forward();
+      //     }),
+      //   ),
+      // ),
     );
   }
 }

@@ -25,7 +25,7 @@ class NewsListState extends State<NewsList> {
 
       if (response.statusCode == 200) {
         final List<dynamic> responseBody = jsonDecode(response.body);
-
+        print(responseBody);
         if (mounted) {
           setState(() {
             newsArticles = responseBody.map((article) {
@@ -34,8 +34,9 @@ class NewsListState extends State<NewsList> {
                 'title': article['title'] ?? '',
                 'date': article['date'] ?? '',
                 'author': article['author'] ?? '',
-                'likes': article['likes'] ?? 0,
-                'userLiked': List<String>.from(article['userLiked'] ?? []),
+                'likes': article['User'].length ?? 0,
+                'userLiked':
+                    List<Map<String, dynamic>>.from(article['userLiked'] ?? []),
               };
             }).toList();
           });
@@ -76,7 +77,8 @@ class NewsListState extends State<NewsList> {
                 'date': article['date'],
                 'author': article['author'],
                 'likes': numLikes,
-                'userLiked': List<Map<String,dynamic>>.from(responseData['userLiked'] ?? []),
+                'userLiked': List<Map<String, dynamic>>.from(
+                    responseData['userLiked'] ?? []),
               };
             }
             return article;
@@ -183,8 +185,8 @@ class _LikeButtonState extends State<LikeButton> {
   void initState() {
     super.initState();
     User? currentUser = FirebaseAuth.instance.currentUser;
-    _isLiked =
-        currentUser != null && widget.article['userLiked'].contains(currentUser.uid);
+    _isLiked = currentUser != null &&
+        widget.article['userLiked'].contains(currentUser.uid);
   }
 
   @override
