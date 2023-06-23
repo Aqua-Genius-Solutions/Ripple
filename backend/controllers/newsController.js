@@ -3,7 +3,7 @@ const prisma = new PrismaClient();
 
 const getAllNews = async (req, res) => {
   try {
-    const news = await prisma.news.findMany();
+    const news = await prisma.news.findMany({ include: { User: true } });
     res.json(news);
   } catch (error) {
     console.error("An error occurred:", error);
