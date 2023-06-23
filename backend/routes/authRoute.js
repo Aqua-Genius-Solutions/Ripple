@@ -8,6 +8,7 @@ const {
   getProUser,
   getImage,
   createNewRequest,
+  getLeaderboard,
 } = require("../controllers/authController");
 
 router.get("/pro", getProUser);
@@ -15,6 +16,7 @@ router.get("/admin", getAdminUser);
 
 router.get("/getUsers", getUsers);
 router.get("/getOne/:uid", getOne);
+router.get("/leaderboard", getLeaderboard);
 
 router.post("/signup", signup);
 router.get("/getone/:uid", getImage);
