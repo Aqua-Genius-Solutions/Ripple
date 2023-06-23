@@ -383,7 +383,7 @@ class _EventPageState extends State<EventPage>
                                                 ),
                                                 SizedBox(width: 5.0),
                                                 Text(
-                                                  '${events[index].likedBy} Likes',
+                                                  '${events[index].likedBy}',
                                                   style: TextStyle(
                                                     color: Colors.black,
                                                   ),
