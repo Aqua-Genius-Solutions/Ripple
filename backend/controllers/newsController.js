@@ -34,9 +34,13 @@ const likeNews = async (req, res) => {
 
     const numLikes = news.User.length;
 
-    await prisma.user.update({
-      where: { uid: userId },
-      data: { News: user.News },
+    await prisma.news.update({
+      where: { id: newsId },
+      data: {
+        User: {
+          connect: [{ uid: userId }],
+        },
+      },
     });
 
     res.json({
