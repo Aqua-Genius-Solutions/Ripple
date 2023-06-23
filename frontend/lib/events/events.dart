@@ -359,11 +359,13 @@ class _EventPageState extends State<EventPage>
                                               borderRadius:
                                                   BorderRadius.circular(10.0),
                                               border: Border.all(
-                                                color: Colors.grey[400]!,
+                                                color: Color.fromARGB(
+                                                    255, 255, 252, 252),
                                               ),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors.grey[200]!,
+                                                  color: Color.fromARGB(
+                                                      171, 224, 224, 224),
                                                   blurRadius: 2.0,
                                                   spreadRadius: 2.0,
                                                 ),
@@ -404,11 +406,13 @@ class _EventPageState extends State<EventPage>
                                               borderRadius:
                                                   BorderRadius.circular(10.0),
                                               border: Border.all(
-                                                color: Colors.grey[400]!,
+                                                color: Color.fromARGB(
+                                                    255, 255, 252, 252),
                                               ),
                                               boxShadow: [
                                                 BoxShadow(
-                                                  color: Colors.grey[200]!,
+                                                  color: Color.fromARGB(
+                                                      171, 224, 224, 224),
                                                   blurRadius: 2.0,
                                                   spreadRadius: 2.0,
                                                 ),
