@@ -56,9 +56,6 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
           height: MediaQuery.of(context).size.height,
           fit: BoxFit.cover,
         ),
-        Center(
-          child: Text(''),
-        ),
         loading
             ? Center(child: CircularProgressIndicator())
             : ListView.builder(

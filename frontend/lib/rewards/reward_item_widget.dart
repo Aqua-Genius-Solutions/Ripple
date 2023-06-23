@@ -3,11 +3,14 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:flare_flutter/flare_controller.dart';
 
 class RewardItemWidget extends StatelessWidget {
-  final RewardItem rewardItem;
+  final Map<dynamic, dynamic> rewardItem;
   final VoidCallback onTap;
   final FlareController flareController;
 
-  RewardItemWidget({required this.rewardItem, required this.onTap, required this.flareController});
+  RewardItemWidget(
+      {required this.rewardItem,
+      required this.onTap,
+      required this.flareController});
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +28,7 @@ class RewardItemWidget extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(10)),
                   child: Image.network(
-                    rewardItem.imageUrl,
+                    rewardItem["image"],
                     fit: BoxFit.cover,
                     width: double.infinity,
                     height: 150,
@@ -37,11 +40,12 @@ class RewardItemWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        rewardItem.name,
-                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        rewardItem["name"],
+                        style: TextStyle(
+                            fontSize: 20, fontWeight: FontWeight.bold),
                       ),
                       SizedBox(height: 8),
-                      Text('Price: ${rewardItem.price} points'),
+                      Text('Price: ${rewardItem["price"]} points'),
                     ],
                   ),
                 ),
