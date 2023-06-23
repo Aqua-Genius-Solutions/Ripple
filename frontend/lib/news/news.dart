@@ -50,49 +50,46 @@ class NewsListState extends State<NewsList> {
   }
 
   Future<void> likeNewsArticle(int articleId) async {
-  User? currentUser = FirebaseAuth.instance.currentUser;
+    User? currentUser = FirebaseAuth.instance.currentUser;
 
-  if (currentUser == null) {
-    print("No user is currently signed in");
-    return;
-  }
-
-  try {
-    final response = await http.put(
-      Uri.parse('$apiUrl/news/$articleId/like/${currentUser.uid}'),
-      headers: {'Content-Type': 'application/json'},
-    );
-
-    if (response.statusCode == 200) {
-      final dynamic responseData = json.decode(response.body);
-      final String? message = responseData['message']?.toString();
-      final int numLikes = responseData['numLikes'] as int;
-
-      setState(() {
-        newsArticles = newsArticles.map((article) {
-          if (article['id'] == articleId) {
-            return {
-              'id': article['id'],
-              'title': article['title'],
-              'date': article['date'],
-              'author': article['author'],
-              'likes': numLikes,
-              'userLiked': List<String>.from(responseData['userLiked'] ?? []),
-            };
-          }
-          return article;
-        }).toList();
-      });
-
-      print(message);
-    } else {
-      print('Request failed with status: ${response.statusCode}');
+    if (currentUser == null) {
+      print("No user is currently signed in");
+      return;
     }
-  } catch (error) {
-    print('An error occurred: $error');
-  }
-}
 
+    try {
+      final response = await http.put(
+        Uri.parse('$apiUrl/news/$articleId/like/${currentUser.uid}'),
+        headers: {'Content-Type': 'application/json'},
+      );
+
+      if (response.statusCode == 200) {
+        final dynamic responseData = jsonDecode(response.body);
+        final int numLikes = responseData['numLikes'] as int;
+
+        setState(() {
+          newsArticles = newsArticles.map((article) {
+            if (article['id'] == articleId) {
+              return {
+                'id': article['id'],
+                'title': article['title'],
+                'date': article['date'],
+                'author': article['author'],
+                'likes': numLikes,
+                'userLiked': List<Map<String,dynamic>>.from(responseData['userLiked'] ?? []),
+              };
+            }
+            return article;
+          }).toList();
+        });
+      } else {
+        print('Request failed with status: ${response.statusCode}');
+      }
+    } catch (error, stackTrace) {
+      print('An error occurred: $error');
+      print('Stack trace: $stackTrace');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +121,8 @@ class NewsCard extends StatelessWidget {
       color: Color.fromRGBO(246, 246, 246, 1),
       margin: EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
       child: Card(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
         elevation: 5,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,7 +151,7 @@ class NewsCard extends StatelessWidget {
               children: [
                 LikeButton(
                   article: article,
-                  onPressed: likeFunction,
+                  likeFunction: likeFunction,
                 ),
                 IconButton(
                   icon: Icon(Icons.comment),
@@ -170,26 +168,23 @@ class NewsCard extends StatelessWidget {
 
 class LikeButton extends StatefulWidget {
   final Map<String, dynamic> article;
-  final Function(int) onPressed;
+  final Function(int) likeFunction;
 
-  LikeButton({required this.article, required this.onPressed});
+  LikeButton({required this.article, required this.likeFunction});
 
   @override
-  _LikeButtonState createState() => _LikeButtonState(article: article);
+  _LikeButtonState createState() => _LikeButtonState();
 }
 
 class _LikeButtonState extends State<LikeButton> {
-  final Map<String, dynamic> article;
   late bool _isLiked;
-
-  _LikeButtonState({required this.article});
 
   @override
   void initState() {
     super.initState();
     User? currentUser = FirebaseAuth.instance.currentUser;
     _isLiked =
-        currentUser != null && article['userLiked'].contains(currentUser.uid);
+        currentUser != null && widget.article['userLiked'].contains(currentUser.uid);
   }
 
   @override
@@ -204,13 +199,13 @@ class _LikeButtonState extends State<LikeButton> {
           onPressed: () {
             setState(() {
               _isLiked = !_isLiked;
-              widget.onPressed(article['id']);
             });
+            widget.likeFunction(widget.article['id']);
           },
         ),
         Padding(
           padding: EdgeInsets.only(left: 8.0),
-          child: Text('${article['likes']}'),
+          child: Text('${widget.article['likes']}'),
         ),
       ],
     );
