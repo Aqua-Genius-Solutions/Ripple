@@ -34,7 +34,8 @@ class _CreateProfileState extends State<CreateProfileScreen> {
   final String apiUrl = dotenv.env["API_URL"]!;
 
   String profilePicURL = '';
-  String imageUrl = '';
+  String billUrl = '';
+  String profilePicUrl = '';
 
   User? user = FirebaseAuth.instance.currentUser;
 
@@ -212,7 +213,7 @@ class _CreateProfileState extends State<CreateProfileScreen> {
         if (response.statusCode == 200) {
           final responseData = jsonDecode(response.body);
           setState(() {
-            imageUrl = responseData['secure_url'];
+            billUrl = responseData['secure_url'];
           });
 
           // TOD O: Text extraction will be implemented here
