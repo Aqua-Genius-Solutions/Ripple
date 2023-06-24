@@ -4,7 +4,7 @@ class Event {
   final String title;
   final String date;
   final int participants;
-  final int likedBy;
+  int likedBy;
   final String image;
 
   Event({

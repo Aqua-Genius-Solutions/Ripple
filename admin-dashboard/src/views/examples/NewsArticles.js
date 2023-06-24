@@ -138,7 +138,7 @@ const Tables = () => {
                       <tr key={newsArticle.id}>
                         <th scope="row" className="">
                           <span className="mb-0 mr-4 text-sm">
-                            {newsArticle.description}
+                            {newsArticle.author}
                           </span>
                         </th>
                         <td>{newsArticle.date.substring(0, 10)}</td>
