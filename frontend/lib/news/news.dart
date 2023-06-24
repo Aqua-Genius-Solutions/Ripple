@@ -100,6 +100,7 @@ class NewsListState extends State<NewsList> {
                 'date': article['date'] ?? '',
                 'author': article['author'] ?? '',
                 'likes': article['User'].length ?? 0,
+                'image': article['image'] ?? '',
                 'userLiked':
                     List<Map<String, dynamic>>.from(article['userLiked'] ?? []),
               };
@@ -165,6 +166,7 @@ class NewsListState extends State<NewsList> {
         itemCount: newsArticles.length,
         itemBuilder: (context, index) {
           final article = newsArticles[index];
+          print(article);
           return NewsCard(
             article: article,
             likeFunction: likeNewsArticle,
@@ -186,14 +188,33 @@ class NewsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Card(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-        elevation: 5,
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      // elevation: 5,
+      child: Container(
+        height: 400,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.asset('images/news.jpeg'),
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: EdgeInsets.only(left: 16.0, top: 22.0, right: 25.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(26.0),
+                  child: Container(
+                    width: double.infinity,
+                    height: 800.0,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(article['image'] ?? ""),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
             Padding(
               padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 4.0),
               child: Text(
@@ -227,6 +248,7 @@ class NewsCard extends StatelessWidget {
             ),
           ],
         ),
+      ),
     );
   }
 }
