@@ -39,6 +39,7 @@ import {
 const Requests = () => {
   const [requests, setRequests] = useState([]);
   const [selectedRequest, setSelectedRequest] = useState(null);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const fetchRequests = async () => {
     const requestsRequest = await axios.get(
@@ -49,9 +50,9 @@ const Requests = () => {
 
   const getUser = async (request) => {
     const user = await axios.get(
-      `${process.env.REACT_APP_API_URL}/auth/getOne/${request.userId}`
+      `http://localhost:3001/auth/getOne/${request.userId}`
     );
-    return user;
+    setCurrentUser(user.data);
   };
 
   const openModal = (request) => {
@@ -105,40 +106,37 @@ const Requests = () => {
               <CardBody>
                 <Row className="icon-examples">
                   {requests?.map((request) => {
-                    const user = getUser(request);
+                    getUser(request);
                     return (
-                      <Col
-                        lg="3"
-                        md="6"
-                        key={request.id}
-                        onClick={() => openModal(user)}
-                      >
-                        <button
-                          className="btn-icon-clipboard"
-                          id={`tooltip-${request.id}`}
-                          type="button"
-                        >
-                          <div>
-                            <img
-                              src={user.Image}
-                              alt="Profile"
-                              style={{
-                                borderRadius: "50%",
-                                width: 30,
-                                height: 30,
-                              }}
-                            />
-                            <span>{`${user.name} ${user.surname}`}</span>
-                          </div>
-                        </button>
-                        <UncontrolledTooltip
-                          delay={0}
-                          trigger="hover focus"
-                          target={`tooltip-${request.id}`}
-                        >
-                          {request.desc}
-                        </UncontrolledTooltip>
-                      </Col>
+                      currentUser && (
+                        <Col lg="3" md="6" key={request.id}>
+                          <button
+                            className="btn-icon-clipboard"
+                            id={`tooltip-${request.id}`}
+                            type="button"
+                          >
+                            <div>
+                              <img
+                                src={currentUser.Image}
+                                alt="Profile"
+                                style={{
+                                  borderRadius: "50%",
+                                  width: 30,
+                                  height: 30,
+                                }}
+                              />
+                              <span>{`${currentUser.name} ${currentUser.surname}`}</span>
+                            </div>
+                          </button>
+                          <UncontrolledTooltip
+                            delay={0}
+                            trigger="hover focus"
+                            target={`tooltip-${request.id}`}
+                          >
+                            {request.desc}
+                          </UncontrolledTooltip>
+                        </Col>
+                      )
                     );
                   })}
 

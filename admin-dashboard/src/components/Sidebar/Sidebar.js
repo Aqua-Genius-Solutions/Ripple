@@ -121,12 +121,12 @@ const Sidebar = (props) => {
           <img
             alt={logo.imgAlt}
             style={{
-              // marginTop: -12,
+              marginTop: 12,
               // marginBottom: -12,
-              // paddingRight: 220,
+              paddingRight: 180,
               // paddingLeft: 0,
-              width: "100%",
-              height: "19vh",
+              width: "200%",
+              height: "15vh",
             }}
             src={logo.imgSrc}
           />

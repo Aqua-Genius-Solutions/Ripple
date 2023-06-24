@@ -97,7 +97,7 @@ async function participateInEvent(req, res) {
         where: { uid: userId.toString() },
         data: { Bubbles: { increment: 15 } },
       });
-      
+      console.log(user.Bubbles);
       const numParticipants = event.participants
         ? event.participants.length + 1
         : 1;
@@ -112,7 +112,6 @@ async function participateInEvent(req, res) {
       .status(500)
       .json({ error: "An error occurred while participating in the event" });
   }
-  
 }
 
 const getUserLikedEvents = async (req, res) => {

@@ -86,8 +86,24 @@ class _EventPageState extends State<EventPage>
     }
   }
 
-  Future<void> likeEvent(int eventId) async {
+  Future<void> likeEvent(Event event) async {
     print(user);
+    final int eventId = event.id;
+    setState(() {
+      events = events.map((event) {
+        if (event.id == eventId) {
+          return Event(
+            id: event.id,
+            title: event.title,
+            date: event.date,
+            participants: event.participants,
+            likedBy: event.likedBy + 1,
+            image: event.image,
+          );
+        }
+        return event;
+      }).toList();
+    });
     try {
       final response = await http.put(
         Uri.parse('$apiUrl/events/$eventId/like/${user?.uid}'),
@@ -356,7 +372,7 @@ class _EventPageState extends State<EventPage>
                                         child: GestureDetector(
                                           onTap: () {
                                             // Handle like event here
-                                            likeEvent(events[index].id);
+                                            likeEvent(events[index]);
                                           },
                                           child: Container(
                                             decoration: BoxDecoration(
