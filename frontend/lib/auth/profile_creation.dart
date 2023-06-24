@@ -35,7 +35,6 @@ class _CreateProfileState extends State<CreateProfileScreen> {
 
   String profilePicURL = '';
   String billUrl = '';
-  String profilePicUrl = '';
 
   User? user = FirebaseAuth.instance.currentUser;
 
@@ -226,7 +225,7 @@ class _CreateProfileState extends State<CreateProfileScreen> {
               price: price,
               consumption: consumption,
               paid: true,
-              imageUrl: imageUrl,
+              imageUrl: billUrl,
               userId: user!.uid);
 
           Map<String, dynamic> billData = {
@@ -312,9 +311,9 @@ class _CreateProfileState extends State<CreateProfileScreen> {
                       border: Border.all(width: 2.0, color: Colors.blue),
                       borderRadius: BorderRadius.circular(50.0),
                     ),
-                    child: imageUrl.isNotEmpty
+                    child: profilePicURL.isNotEmpty
                         ? CircleAvatar(
-                            backgroundImage: NetworkImage(imageUrl),
+                            backgroundImage: NetworkImage(profilePicURL),
                           )
                         : Icon(
                             Icons.add_a_photo,
@@ -385,11 +384,15 @@ class _CreateProfileState extends State<CreateProfileScreen> {
                       border: Border.all(width: 2.0, color: Colors.blue),
                       borderRadius: BorderRadius.circular(34.0),
                     ),
-                    child: Icon(
-                      Icons.add_a_photo,
-                      size: 48,
-                      color: Colors.blue,
-                    ),
+                    child: billUrl.isNotEmpty
+                        ? CircleAvatar(
+                            backgroundImage: NetworkImage(billUrl),
+                          )
+                        : Icon(
+                            Icons.add_a_photo,
+                            size: 48,
+                            color: Colors.blue,
+                          ),
                   ),
                 ),
                 SizedBox(height: 16.0),
