@@ -323,19 +323,10 @@ let chartExample1 = {
   },
   data1: (canvas) => {
     return {
-      labels: [
-        "COP27",
-        "COP27",
-        "COP27",
-        "COP27",
-        "COP27",
-        "COP27",
-        "COP27",
-        "COP27",
-      ],
+      labels: ["0", "COP27", "WWW23", "EWMCE", "WRE"],
       datasets: [
         {
-          data: [0, 20, 10, 30, 15, 40, 20, 44, 44],
+          data: [0, 2, 6, 3, 5, 15],
         },
       ],
     };

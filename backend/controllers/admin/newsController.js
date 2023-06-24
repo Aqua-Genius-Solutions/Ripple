@@ -12,6 +12,7 @@ async function getNews(req, res) {
 async function createNews(req, res) {
   try {
     const newNews = req.body;
+    console.log(newNews);
     const createdNews = await prisma.news.create({
       data: { ...newNews, User: { connect: [] } },
     });

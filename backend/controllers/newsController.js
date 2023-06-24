@@ -62,7 +62,7 @@ const getUserLikedNews = async (req, res) => {
       where: { uid },
       include: { News: true },
     });
-
+    console.log(user?.News);
     res.status(200).json(user?.News);
   } catch (error) {
     console.error("An error occurred:", error);

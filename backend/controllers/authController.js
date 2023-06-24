@@ -153,11 +153,12 @@ async function createNewRequest(req, res) {
   const desc = req.body.desc;
   try {
     await prisma.request.create({
-      userId: uid,
-      status: "pending",
-      desc,
+      data: { userId: uid, status: "pending", desc },
     });
+
+    res.status(200).json("Request created successfully");
   } catch (error) {
+    console.log(error);
     res.status(500).json({ message: "error creating request", error });
   }
 }
