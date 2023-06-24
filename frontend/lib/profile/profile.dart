@@ -38,7 +38,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List<Map<String, dynamic>> newsArticles = [];
   List<Map<String, dynamic>> events = [];
 
-  List<String> imageNames = [];
   List<String> waterSavingTips = [];
 
   String? uid = FirebaseAuth.instance.currentUser?.uid;
@@ -47,6 +46,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   void initState() {
     super.initState();
     getUser();
+    fetchNewsArticles();
   }
 
   Future<void> getUser() async {
@@ -65,7 +65,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         newsArticles = responseBody.map((article) {
           return {
             'id': article['id'] ?? '',
-            'imageUrl': article['imageUrl'] ?? '',
+            'image': article['image'] ?? '',
             'title': article['title'] ?? '',
             'date': article['date'] ?? '',
             'author': article['author'] ?? '',
@@ -73,7 +73,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         }).toList();
         isNewsFetched = true;
       });
-
+      print(newsArticles[0]);
       return newsArticles.toList();
     } else {
       throw Exception('Failed to fetch news articles');
@@ -326,45 +326,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         }
                       },
                     ),
-                    FutureBuilder<List<dynamic>>(
-                      future: !isNewsFetched ? fetchNewsArticles() : null,
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(
-                            child: CircularProgressIndicator(),
-                          );
-                        } else if (snapshot.hasError) {
-                          return Center(
-                            child: Text('Error: ${snapshot.error}'),
-                          );
-                        } else {
-                          return ListView.builder(
-                            itemCount: newsArticles.length,
-                            itemBuilder: (context, index) {
-                              final article = newsArticles[index];
-                              final imageName = imageNames.isNotEmpty
-                                  ? imageNames[index % imageNames.length]
-                                  : '';
-                              final tip = waterSavingTips.isNotEmpty
-                                  ? waterSavingTips[
-                                      index % waterSavingTips.length]
-                                  : '';
-                              return Column(
-                                children: [
-                                  SizedBox(height: 16),
-                                  NewsCard(
-                                    imageName: imageName,
-                                    title: article['title'],
-                                    date: article['date'],
-                                    author: article['author'],
-                                    tip: tip,
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        }
+                    ListView.builder(
+                      itemCount: newsArticles.length,
+                      itemBuilder: (context, index) {
+                        final article = newsArticles[index];
+                        print('${article["image"]} ');
+                        return NewsCard(
+                          article: article,
+                        );
                       },
                     ),
                     SingleChildScrollView(
@@ -513,78 +482,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 }
 
-class NewsCard extends StatelessWidget {
-  final String imageName;
-  final String title;
-  final String date;
-  final String author;
-  final String tip;
-
-  const NewsCard({
-    Key? key,
-    required this.imageName,
-    required this.title,
-    required this.date,
-    required this.author,
-    required this.tip,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            offset: Offset(0, 2),
-            blurRadius: 4,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Image.asset(
-            'assets/images/$imageName',
-            width: double.infinity,
-            height: 160,
-            fit: BoxFit.cover,
-          ),
-          SizedBox(height: 16),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 8),
-          Row(
-            children: [
-              Icon(Icons.calendar_today, size: 16),
-              SizedBox(width: 4),
-              Text(date),
-              SizedBox(width: 16),
-              Icon(Icons.person, size: 16),
-              SizedBox(width: 4),
-              Text(author),
-            ],
-          ),
-          SizedBox(height: 16),
-          Text(
-            tip,
-            style: TextStyle(fontSize: 14),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class EventCard extends StatelessWidget {
   final int id;
   final String link;
@@ -612,6 +509,66 @@ class EventCard extends StatelessWidget {
             subtitle: Text(date.toString()),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class NewsCard extends StatelessWidget {
+  final Map<String, dynamic> article;
+
+  NewsCard({
+    required this.article,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+      // elevation: 5,
+      child: Container(
+        height: 400,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              flex: 3,
+              child: Padding(
+                padding: EdgeInsets.only(left: 16.0, top: 22.0, right: 25.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(26.0),
+                  child: Container(
+                    width: double.infinity,
+                    height: 800.0,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: NetworkImage(article['image'] ?? ""),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 4.0),
+              child: Text(
+                article['title'],
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(16.0, 4.0, 16.0, 12.0),
+              child: Text(
+                'By ' +
+                    article["author"] +
+                    ' ' +
+                    article["date"].substring(0, 10),
+                style: TextStyle(color: Colors.grey, fontSize: 14),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
