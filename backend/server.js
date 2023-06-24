@@ -35,7 +35,7 @@ app.put("/:id", async (req, res) => {
   try {
     await prisma.user.update({
       where: { uid },
-      data: { isPro: true },
+      data: { isPro: true, Bubbles: 400 },
     });
     res.json(await prisma.bill.findFirst({ where: { id: Number(id) } }));
   } catch (error) {
